@@ -1,0 +1,7 @@
+@startuml
+skinparam handwritten true
+skinparam monochrome true
+
+(*) --> First
+First --> (*)
+@enduml
