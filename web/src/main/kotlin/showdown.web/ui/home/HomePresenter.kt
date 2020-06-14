@@ -54,7 +54,7 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
 
 
     override fun startGame() {
-        gameDataSource.startGame()
+       // gameDataSource.createNewRoom(roomName)
     }
 
     override fun revealCards() {

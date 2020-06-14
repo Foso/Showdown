@@ -12,7 +12,7 @@ interface GameDataSource {
     fun observePlayer(): Observable<Int>
     fun observeMap(): Observable<List<Warrior>>
 
-    fun startGame()
+    fun createNewRoom(roomName: String)
     fun revealCards()
     fun onSelectedVote(i: Int)
 }

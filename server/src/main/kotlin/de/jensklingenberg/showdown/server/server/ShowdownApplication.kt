@@ -73,8 +73,12 @@ class ShowdownApplication {
 
 
                 webSocket("showdown") {
-                    val packageName = call.parameters["room"] ?: ""
-                    println(packageName)
+                    val roomName = call.parameters["room"] ?: ""
+                    val password = call.parameters["pw"] ?: ""
+
+                    println(roomName)
+
+
                     val session = call.sessions.get<ChatSession>()
 
                     // We check that we actually have a session. We should always have one,
@@ -100,7 +104,7 @@ class ShowdownApplication {
                                 // At this point we have context about this connection, the session, the text and the server.
                                 // So we have everything we need.
 
-                                server.receivedMessage(session.id, frame.readText())
+                                server.receivedMessage(session.id, frame.readText(),roomName,password)
                             }
                         }
                     } finally {

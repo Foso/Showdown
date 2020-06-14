@@ -6,7 +6,7 @@ import kotlinx.serialization.json.JsonConfiguration
 
 
 enum class ClientCommands {
-     ERROR,  STATE_CHANGED, MESSAGE, PLAYER_EVENT,CARDS
+     ERROR,  STATE_CHANGED, MESSAGE, PLAYER_EVENT,CARDS,UNKNOWN
 }
 
 @Serializable
@@ -40,9 +40,9 @@ fun ServerResponse.PlayerVotes.toJson(): String {
 }
 
 
-fun getClientCommandType(toString: String): ClientCommands? {
+fun getClientCommandType(toString: String): ClientCommands {
 
     return ClientCommands.values().firstOrNull() {
         toString.startsWith("{\"id\":${it.ordinal}")
-    }
+    }?:ClientCommands.UNKNOWN
 }

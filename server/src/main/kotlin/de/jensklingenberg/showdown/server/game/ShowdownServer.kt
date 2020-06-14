@@ -1,13 +1,13 @@
 package de.jensklingenberg.showdown.server.game
 
 import de.jensklingenberg.showdown.model.*
-
 import io.ktor.http.cio.websocket.CloseReason
 import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.WebSocketSession
 import io.ktor.http.cio.websocket.close
-import kotlinx.coroutines.*
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.ClosedSendChannelException
+import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
@@ -20,9 +20,9 @@ import java.util.concurrent.atomic.AtomicInteger
  */
 class ShowdownServer : GameServer {
 
-   // private val gameSource = GameSource(this)
-
-    private val gameList  = arrayListOf<GameSource>()
+    // private val gameSource = GameSource(this)
+    private val gameMap = mutableMapOf<String, GameSource>()
+    private val gameList = arrayListOf<GameSource>()
 
     /**
      * Atomic counter used to get unique user-names based on the maxiumum users the server had.
@@ -189,8 +189,15 @@ class ShowdownServer : GameServer {
     /**
      * We received a message. Let's process it.
      */
-    suspend fun receivedMessage(sessionId: String, command: String) {
-        val gameSource = gameList.getOrNull(0)
+    suspend fun receivedMessage(
+        sessionId: String,
+        command: String,
+        roomName: String,
+        password: String
+    ) {
+        println("Receiver ROOM:"+roomName+  " PW: "+password)
+        val gameSource = gameMap[roomName]
+       // val gameSource = gameList.getOrNull(0)
         val playerId = members.keys.indexOf(sessionId)
 
         when (val type = getServerCommandType(command)) {
@@ -205,25 +212,27 @@ class ShowdownServer : GameServer {
 
                     is PlayerRequestEvent.JoinGameRequest -> {
                         if (!playersSessions.containsKey(sessionId)) {
-                            gameSource?.addPlayer(sessionId,event.playerName)
-                        }else{
-                            gameSource?.onPlayerRejoined(sessionId,event.playerName)
+                            gameSource?.addPlayer(sessionId, event.playerName)
+                        } else {
+                            gameSource?.onPlayerRejoined(sessionId, event.playerName)
                         }
                     }
 
                     is PlayerRequestEvent.CreateRoom -> {
-                        gameList.add(GameSource(this,event.gameMode,event.name))
-                        println("CREATE ROOM")
+                        val game = GameSource(this, event.gameMode, event.name)
+                        gameMap.putIfAbsent(event.name,game)
+                        gameList.add(game)
+                        println("CREATE ROOM"+roomName)
                     }
                     is PlayerRequestEvent.ShowVotes -> {
                         gameSource?.showVotes(playerId)
                     }
                     is PlayerRequestEvent.Voted -> {
-                        gameSource?.onPlayerVoted(playerId,event.cardId)
+                        gameSource?.onPlayerVoted(playerId, event.voteId)
                     }
                 }
             }
-            ServerRequestTypes.MESSAGE,ServerRequestTypes.ERROR ,ServerRequestTypes.UNKNOWN -> TODO()
+            ServerRequestTypes.MESSAGE, ServerRequestTypes.ERROR, ServerRequestTypes.UNKNOWN -> TODO()
         }
         // game.makeMove(playerId,)
         // We are going to handle commands (text starting with '/') and normal messages

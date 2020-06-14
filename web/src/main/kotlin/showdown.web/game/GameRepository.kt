@@ -23,8 +23,8 @@ class GameRepository(private val gameApiHandler: GameApiHandler) : GameDataSourc
         gameApiHandler.start(this)
     }
 
-    override fun startGame() {
-        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.CreateRoom(GameMode.Fibo(),"MyRoom")).toJson()
+    override fun createNewRoom(roomName: String) {
+        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.CreateRoom(GameMode.Fibo(),roomName)).toJson()
         gameApiHandler.sendMessage(jsonData)
     }
 

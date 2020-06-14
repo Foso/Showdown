@@ -54,15 +54,18 @@ dependencies {
     implementation "org.jetbrains:kotlin-styled:1.0.0-$kotlin_wrappers_version"
     implementation "org.jetbrains:kotlin-extensions:1.0.1-$kotlin_wrappers_version"
     implementation "org.jetbrains:kotlin-css-js:1.0.0-$kotlin_wrappers_version"
+    implementation 'org.jetbrains.kotlin:kotlin-source-map-loader:1.3.72'
 
     implementation 'org.jetbrains:kotlin-react-router-dom:5.1.2-pre.104-kotlin-1.3.72'
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:0.20.0"
-
+    implementation "subroh0508.net.kotlinmaterialui:core:0.4.2"
+    implementation "subroh0508.net.kotlinmaterialui:lab:0.4.2"
     implementation 'com.badoo.reaktive:reaktive-js:1.1.13'
     implementation(npm('react', libs.react_version))
 
     implementation(npm('@material-ui/core', libs.material_ui_core))
     implementation(npm('core-js', ''))
+
     implementation(npm("@material-ui/icons"))
     implementation("com.ccfraser.muirwik:muirwik-components:0.5.1")
     implementation(npm('inline-style-prefixer', ''))

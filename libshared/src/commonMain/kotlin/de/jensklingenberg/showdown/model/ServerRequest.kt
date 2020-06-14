@@ -13,8 +13,10 @@ enum class ServerRequestTypes {
 }
 @Serializable
 sealed class GameMode(open val list: List<String>) {
+    @Serializable
     class Fibo : GameMode(listOf("0", "1", "2", "3", "5", "8", "13", "21", "34", "55", "89", "?"))
-    class Custom(override val list: List<String> = listOf("Hund", "Katze", "Maus", "Bär", "Tiger")) : GameMode(list)
+    @Serializable
+    class Custom(val list2: List<String> = listOf("Hund", "Katze", "Maus", "Bär", "Tiger")) : GameMode(list2)
 }
 
 @Serializable
@@ -27,11 +29,13 @@ sealed class PlayerRequestEvent {
     class JoinGameRequest(val playerName:String) : PlayerRequestEvent()
 
     @Serializable
-    class Voted(val cardId: Int) : PlayerRequestEvent()
+    class Voted(val voteId: Int) : PlayerRequestEvent()
 
     @Serializable
     class ShowVotes : PlayerRequestEvent()
 
+    @Serializable
+    class ResetRequest : PlayerRequestEvent()
 }
 
 @Serializable

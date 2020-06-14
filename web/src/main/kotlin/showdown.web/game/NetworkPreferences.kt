@@ -19,11 +19,21 @@ class NetworkPreferences {
     var hostUri: String = "${window}+${window.location}+${window.location.hostname}"
 
     val hostname = if (hostUri.contains("localhost")) {
-        console.log("HOST " + window.location.hostname)
+        console.log("HOST " + window.location.toString().substringAfter("game?",missingDelimiterValue = ""))
         "ws://localhost:23567/"
     } else {
         "wss://hidden-plateau-72953.herokuapp.com/"
     }
+
+    fun websocketUrl(): String {
+
+            //http://localhost:3001/#/game?room=MyRoom&pw=Hallo
+            val socketPath =window.location.toString().substringAfter("game",missingDelimiterValue = "")
+            console.log( hostname+"showdown"+socketPath)
+          return   hostname+"showdown"+socketPath
+
+
+        }
 
 
 }
