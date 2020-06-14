@@ -1,4 +1,4 @@
-package showdown.web.ui.home
+package showdown.web.ui.new
 
 import Application
 import com.badoo.reaktive.observable.subscribe
@@ -21,8 +21,6 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
 
         gameDataSource.observeGameState().subscribe(onNext = { state ->
             when (state) {
-
-
                 is GameState.VoteUpdate -> {
                     clientVotes= state.clientVotes
                     view.setPlayerId(state.clientVotes)

@@ -1,4 +1,4 @@
-package showdown.web.ui.home
+package showdown.web.ui.new
 
 import de.jensklingenberg.showdown.model.ClientVote
 import de.jensklingenberg.showdown.model.Option
@@ -25,7 +25,7 @@ interface HomeContract {
         fun joinGame()
         fun startGame()
         fun revealCards()
-        fun onSelectedVote(i: Int)
+        fun onSelectedVote(voteId: Int)
     }
 
     interface HomeViewState : RState {

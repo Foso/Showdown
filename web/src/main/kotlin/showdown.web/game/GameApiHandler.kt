@@ -15,7 +15,7 @@ class GameApiHandler {
 
     fun start(observer: NetworkApiObserver) {
         this.observer = observer
-        socket = org.w3c.dom.WebSocket(NetworkPreferences().hostname + "showdown")
+        socket = org.w3c.dom.WebSocket(NetworkPreferences().hostname + "showdown?room=1")
 
         socket?.onmessage = { event: Event ->
             onMessage((event as MessageEvent))

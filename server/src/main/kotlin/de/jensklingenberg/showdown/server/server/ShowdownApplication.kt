@@ -1,6 +1,7 @@
 package de.jensklingenberg.showdown.server.server
 
-import de.jensklingenberg.showdown.server.ChatSession
+import de.jensklingenberg.showdown.server.model.ChatSession
+import de.jensklingenberg.showdown.server.game.ShowdownServer
 import io.ktor.application.ApplicationCallPipeline
 import io.ktor.application.call
 import io.ktor.application.install
@@ -22,7 +23,12 @@ import io.ktor.websocket.WebSockets
 import io.ktor.websocket.webSocket
 import kotlinx.coroutines.channels.consumeEach
 
-class ChatApplication {
+fun main() {
+    ShowdownApplication()
+}
+
+
+class ShowdownApplication {
 
     val server = ShowdownServer()
 
@@ -67,7 +73,8 @@ class ChatApplication {
 
 
                 webSocket("showdown") {
-
+                    val packageName = call.parameters["room"] ?: ""
+                    println(packageName)
                     val session = call.sessions.get<ChatSession>()
 
                     // We check that we actually have a session. We should always have one,

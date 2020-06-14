@@ -13,7 +13,6 @@ class GameRepository(private val gameApiHandler: GameApiHandler) : GameDataSourc
 
     private var activePlayerId: Player? = null
     private val warriorSubject: BehaviorSubject<List<Warrior>> = BehaviorSubject(emptyList())
-    private val nextTurnSubject: BehaviorSubject<Player> = BehaviorSubject(Player(-1, ""))
 
     private val gameStateSubject: BehaviorSubject<GameState> = BehaviorSubject(GameState.NotConnected)
     private val playerSubject: BehaviorSubject<Int> = BehaviorSubject(-1)
@@ -24,11 +23,8 @@ class GameRepository(private val gameApiHandler: GameApiHandler) : GameDataSourc
         gameApiHandler.start(this)
     }
 
-    override fun observeNextTurn(): Observable<Player> = nextTurnSubject
-
-
     override fun startGame() {
-        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.StartGame()).toJson()
+        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.CreateRoom(GameMode.Fibo(),"MyRoom")).toJson()
         gameApiHandler.sendMessage(jsonData)
     }
 
@@ -37,7 +33,7 @@ class GameRepository(private val gameApiHandler: GameApiHandler) : GameDataSourc
         gameApiHandler.sendMessage(jsonData)
     }
 
-    override fun onSelectedCard(i: Int) {
+    override fun onSelectedVote(i: Int) {
         val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.Voted(i)).toJson()
         gameApiHandler.sendMessage(jsonData)
     }

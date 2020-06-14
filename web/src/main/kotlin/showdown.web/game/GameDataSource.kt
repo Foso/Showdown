@@ -11,10 +11,9 @@ interface GameDataSource {
     fun requestReset()
     fun observePlayer(): Observable<Int>
     fun observeMap(): Observable<List<Warrior>>
-    fun observeNextTurn(): Observable<Player>
 
     fun startGame()
     fun revealCards()
-    fun onSelectedCard(i: Int)
+    fun onSelectedVote(i: Int)
 }
 

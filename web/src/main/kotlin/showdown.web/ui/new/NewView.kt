@@ -1,10 +1,17 @@
-package showdown.web.ui.home
+package showdown.web.ui.new
 
 import challenge.ui.toolbar
 import challenge.usecase.MessageUseCase
+import com.ccfraser.muirwik.components.MColor
+import com.ccfraser.muirwik.components.button.MButtonVariant
+import com.ccfraser.muirwik.components.button.mButton
+import com.ccfraser.muirwik.components.mPaper
+import com.ccfraser.muirwik.components.spacingUnits
+import com.ccfraser.muirwik.components.table.*
 import de.jensklingenberg.showdown.model.ClientVote
 import de.jensklingenberg.showdown.model.Option
 import de.jensklingenberg.showdown.model.Result
+import kotlinx.css.*
 
 import kotlinx.html.DIV
 import kotlinx.html.js.onClickFunction
@@ -13,17 +20,25 @@ import react.RComponent
 import react.RProps
 import react.dom.*
 import react.setState
+import styled.css
 
 
 interface MyProps : RProps
 
-class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract.View {
+class NewView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract.View {
 
     private val messageUseCase = MessageUseCase()
 
     private val presenter: HomeContract.Presenter by lazy {
         HomePresenter(this)
     }
+
+    private val androidDeserts = mutableListOf(
+            TestTables.Dessert(1, "Cupcake", 305, 3.7, 67, 4.3),
+            TestTables.Dessert(2, "Donut", 452, 25.0, 51, 4.9),
+            TestTables.Dessert(3, "Eclair", 262, 16.0, 24, 6.0)
+
+    )
 
     override fun HomeContract.HomeViewState.init() {
         showSnackbar = false
@@ -35,6 +50,7 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
 
     override fun componentDidMount() {
         presenter.onCreate()
+
     }
 
     override fun RBuilder.render() {
@@ -47,62 +63,20 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
 
             button {
                 attrs {
-                    text("Show Votes")
+                    text("New")
                     onClickFunction = {
-                        presenter.revealCards()
+                        presenter.startGame()
                     }
                 }
             }
 
-            div {
-                state.playerList.forEach {
-                    p {
-                        attrs {
-                            text("Player: " + it.playerName + " Number:" + it.voteValue)
-                            onClickFunction = {
 
-                            }
-                        }
-                    }
-                }
-            }
 
-            state.options.forEach { option ->
-                div {
-                    button {
-                        attrs {
-                            text(option.text)
-                            onClickFunction = {
-                                presenter.onSelectedVote(option.id)
-                            }
-                        }
-                    }
-                }
-            }
+        }
 
-            p {
-                attrs {
-                    text("Result")
-                    onClickFunction = {
-
-                    }
-                }
-            }
-
-            table("myTable") {
-                tbody {
-                    state.results.forEachIndexed { index, result ->
-                        tr {
-                            td {
-                                +"${index+1} ${result.name}"
-                            }
-                            td {
-                                +result.voters
-                            }
-                        }
-                    }
-                }
-            }
+        mButton(caption = "Hallo",variant = MButtonVariant.contained,color = MColor.primary) {}
+        //simpleTable()
+        input {
 
         }
     }
@@ -165,10 +139,44 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
             this.results = message
         }
     }
+
+
+    fun RBuilder.simpleTable() {
+        mPaper {
+            css {
+                width = 100.pct
+                marginTop = 3.spacingUnits
+                overflowX = Overflow.auto
+            }
+            mTable() {
+                css { minWidth = 700.px }
+                mTableHead {
+                    mTableRow {
+                        mTableCell { +"Dessert (100g serving)" }
+                        mTableCell(align = MTableCellAlign.right) { +"Calories" }
+                        mTableCell(align = MTableCellAlign.right) { +"Fat (g)" }
+                        mTableCell(align = MTableCellAlign.right) { +"Carbs (g)" }
+                        mTableCell(align = MTableCellAlign.right) { +"Protein (g)" }
+                    }
+                }
+                mTableBody {
+                    androidDeserts.subList(0, 1).forEach {
+                        mTableRow(key = it.id) {
+                            mTableCell { +it.dessertName }
+                            mTableCell(align = MTableCellAlign.right) { +it.calories.toString() }
+                            mTableCell(align = MTableCellAlign.right) { +it.fat.toString() }
+                            mTableCell(align = MTableCellAlign.right) { +it.carbs.toString() }
+                            mTableCell(align = MTableCellAlign.right) { +it.protein.toString() }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 
-fun RBuilder.home() = child(HomeView::class) {
+fun RBuilder.home() = child(NewView::class) {
     this.attrs {
 
     }

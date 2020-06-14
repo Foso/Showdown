@@ -1,8 +1,7 @@
-package de.jensklingenberg.showdown.server.server
+package de.jensklingenberg.showdown.server.game
 
 import de.jensklingenberg.showdown.model.*
-import de.jensklingenberg.showdown.server.game.ShowdownContract
-import de.jensklingenberg.showdown.server.game.ShowdownPresenter
+
 import io.ktor.http.cio.websocket.CloseReason
 import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.WebSocketSession
@@ -19,10 +18,11 @@ import java.util.concurrent.atomic.AtomicInteger
  * Class in charge of the logic of the chat server.
  * It contains handlers to events and commands to send messages to specific users in the server.
  */
-class ShowdownServer : ShowdownContract.RpsGameServer {
+class ShowdownServer : GameServer {
 
-    private val gamePresenter: ShowdownContract.Presenter =
-        ShowdownPresenter(this)
+   // private val gameSource = GameSource(this)
+
+    private val gameList  = arrayListOf<GameSource>()
 
     /**
      * Atomic counter used to get unique user-names based on the maxiumum users the server had.
@@ -106,12 +106,6 @@ class ShowdownServer : ShowdownContract.RpsGameServer {
         }
     }
 
-    /**
-     * Handles the 'who' command by sending the member a list of all all members names in the server.
-     */
-    suspend fun who(sender: String) {
-        members[sender]?.send(Frame.Text(memberNames.values.joinToString(prefix = "[server::who] ")))
-    }
 
     /**
      * Handles the 'help' command by sending the member a list of available commands.
@@ -196,14 +190,13 @@ class ShowdownServer : ShowdownContract.RpsGameServer {
      * We received a message. Let's process it.
      */
     suspend fun receivedMessage(sessionId: String, command: String) {
+        val gameSource = gameList.getOrNull(0)
         val playerId = members.keys.indexOf(sessionId)
-        val commandType = getServerCommandType(command)
 
-        when (commandType) {
+        when (val type = getServerCommandType(command)) {
 
             ServerRequestTypes.RESET -> {
-                gamePresenter.onReset()
-                members.clear()
+                gameSource?.onReset()
             }
 
             ServerRequestTypes.PLAYEREVENT -> {
@@ -212,33 +205,33 @@ class ShowdownServer : ShowdownContract.RpsGameServer {
 
                     is PlayerRequestEvent.JoinGameRequest -> {
                         if (!playersSessions.containsKey(sessionId)) {
-                            gamePresenter.onAddPlayer(sessionId,event.playerName)
+                            gameSource?.addPlayer(sessionId,event.playerName)
                         }else{
-                            gamePresenter.onPlayerRejoined(sessionId,event.playerName)
+                            gameSource?.onPlayerRejoined(sessionId,event.playerName)
                         }
                     }
 
-                    is PlayerRequestEvent.StartGame -> {
-                        //gamePresenter.onPlayerReady(playerId)
+                    is PlayerRequestEvent.CreateRoom -> {
+                        gameList.add(GameSource(this,event.gameMode,event.name))
+                        println("CREATE ROOM")
                     }
                     is PlayerRequestEvent.ShowVotes -> {
-                        gamePresenter.showVotes()
+                        gameSource?.showVotes(playerId)
                     }
                     is PlayerRequestEvent.Voted -> {
-                        gamePresenter.onPlayerVoted(playerId,event.cardId)
+                        gameSource?.onPlayerVoted(playerId,event.cardId)
                     }
                 }
             }
-            ServerRequestTypes.MESSAGE -> TODO()
-            ServerRequestTypes.ERROR -> TODO()
-            ServerRequestTypes.UNKNOWN -> TODO()
-            null -> TODO()
+            ServerRequestTypes.MESSAGE,ServerRequestTypes.ERROR ,ServerRequestTypes.UNKNOWN -> TODO()
         }
         // game.makeMove(playerId,)
         // We are going to handle commands (text starting with '/') and normal messages
         when {
-            // The command `who` responds the user about all the member names connected to the user.
-            command.startsWith("/who") -> who(sessionId)
+            command.startsWith("/newGame") -> {
+
+            }
+
             // The command `user` allows the user to set its name.
             command.startsWith("/user") -> {
                 // We strip the command part to get the rest of the parameters.
