@@ -12,9 +12,6 @@ sealed class GameState {
     @Serializable
     object NotConnected : GameState()
 
-    /**
-     * A player is waiting for other players
-     */
 
     @Serializable
     object Started : GameState()

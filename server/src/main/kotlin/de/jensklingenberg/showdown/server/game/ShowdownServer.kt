@@ -221,16 +221,11 @@ class ShowdownServer : GameServer {
                             } else {
                                 gameSource?.onPlayerRejoined(sessionId, event.playerName)
                             }
+                        }else{
+                            sendTo(sessionId,ServerResponse.ErrorEvent(ShowdownError.NotAuthorizedError()).toJson())
                         }
                     }
 
-                    is PlayerRequestEvent.CreateRoom -> {
-                        val game = GameSource(this, event.gameConfig)
-
-                        gameMap.putIfAbsent(roomName, game)
-                        gameList.add(game)
-                        println("CREATE ROOM" + roomName)
-                    }
                     is PlayerRequestEvent.ShowVotes -> {
                         if (playerId == -1) {
                             return
@@ -240,7 +235,7 @@ class ShowdownServer : GameServer {
                     is PlayerRequestEvent.Voted -> {
                         gameSource?.onPlayerVoted(playerId, event.voteId)
                     }
-                    is PlayerRequestEvent.ResetRequest -> {
+                    is PlayerRequestEvent.RestartRequest -> {
                         gameSource?.onReset()
                     }
                     is PlayerRequestEvent.ChangeConfig -> {

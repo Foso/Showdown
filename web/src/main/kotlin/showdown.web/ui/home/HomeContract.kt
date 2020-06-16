@@ -37,6 +37,7 @@ interface HomeContract {
         var showShareDialog: Boolean
         var selectedOptionId: Int
         var timerStart: Int
+        var roomPassword: String
 
     }
 }

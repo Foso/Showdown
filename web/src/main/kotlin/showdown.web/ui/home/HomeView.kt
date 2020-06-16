@@ -22,13 +22,27 @@ import react.dom.h2
 import react.dom.key
 import react.dom.p
 import react.setState
-import showdown.web.ui.new.gameModeOptions
+
 import showdown.web.wrapper.material.QrCode
 import styled.css
 import styled.styledDiv
 
 
 interface MyProps : RProps
+
+
+class Navigation {
+    companion object {
+        fun navigateToGame(roomName: String) = "/#/game?room=${roomName}&pw=Hallo"
+
+    }
+}
+val gameModeOptions: List<Pair<String, Int>>
+    get() = listOf(
+            "Fibonacci" to 0,
+            "T-Shirt" to 1,
+            "Custom" to 2
+    )
 
 class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract.View {
 
@@ -50,6 +64,7 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
         showShareDialog = false
         selectedOptionId = -1
         timerStart = 0
+        roomPassword="geheim"
 
 
     }
@@ -74,24 +89,7 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
 
         optionsList()
         participants()
-        div {
-            textField {
-                attrs {
-                    variant = FormControlVariant.filled
-                    label {
-                        +"Insert a Password ☕"
-                    }
-                    onChangeFunction = {
-                        val target = it.target as HTMLInputElement
 
-                        setState {
-
-                        }
-                    }
-                }
-
-            }
-        }
 
 
         if (admin) {
@@ -125,6 +123,26 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
                 }
 
             }
+            div {
+                textField {
+                    attrs {
+                        variant = FormControlVariant.filled
+                        value(state.roomPassword)
+                        label {
+                            +"Insert a Password ☕"
+                        }
+                        onChangeFunction = {
+                            val target = it.target as HTMLInputElement
+
+                            setState {
+                                this.roomPassword = target.value
+                            }
+                        }
+                    }
+
+                }
+            }
+
             button {
                 attrs {
                     text("Join Game")

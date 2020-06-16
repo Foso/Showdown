@@ -1,4 +1,4 @@
-package showdown.web.game
+package showdown.web.network
 
 import kotlin.browser.window
 

@@ -5,6 +5,7 @@ import com.badoo.reaktive.observable.subscribe
 import de.jensklingenberg.showdown.model.GameConfig
 import de.jensklingenberg.showdown.model.GameMode
 import de.jensklingenberg.showdown.model.GameState
+import de.jensklingenberg.showdown.model.ShowdownError
 import showdown.web.game.GameDataSource
 
 class HomePresenter(private val view: HomeContract.View) : HomeContract.Presenter {
@@ -13,6 +14,17 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
 
     override fun onCreate() {
         gameDataSource.prepareGame()
+
+        gameDataSource.observeErrors().subscribe(onNext = {error->
+            when(error){
+                is ShowdownError.NotAuthorizedError -> {
+
+                }
+                null-> {
+                    //Do nothing
+                }
+            }
+        })
 
         gameDataSource.observeGameState().subscribe(onNext = { state ->
             when (state) {
@@ -53,9 +65,12 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
     }
 
     override fun joinGame() {
+       val playerName=  view.getState().playerName
+        val password=  view.getState().roomPassword
+
         console.log("HALLLLOOOOO")
-        console.log("Player+" + view.getState().playerName)
-        gameDataSource.joinRoom(view.getState().playerName)
+        console.log("Player+" +password )
+        gameDataSource.joinRoom(playerName,password)
     }
 
     override fun createNewRoom(roomName: String, gameModeId: Int) {

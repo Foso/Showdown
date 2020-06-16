@@ -4,6 +4,8 @@ import de.jensklingenberg.showdown.model.*
 import org.w3c.dom.MessageEvent
 import org.w3c.dom.WebSocket
 import org.w3c.dom.events.Event
+import showdown.web.network.NetworkApiObserver
+import showdown.web.network.NetworkPreferences
 
 class GameApiHandler {
 

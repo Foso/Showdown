@@ -1,4 +1,4 @@
-package showdown.web.game
+package showdown.web.network
 
 import de.jensklingenberg.showdown.model.ServerResponse
 import de.jensklingenberg.showdown.model.GameState
@@ -8,5 +8,5 @@ interface NetworkApiObserver {
 
     fun onGameStateChanged(gameState: GameState)
     fun onPlayerEventChanged(gameResponse: PlayerResponseEvent)
-    fun onError(gameJoined: ServerResponse.ErrorEvent)
+    fun onError(errorEvent: ServerResponse.ErrorEvent)
 }

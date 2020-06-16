@@ -3,12 +3,14 @@ package showdown.web.game
 import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.subject.behavior.BehaviorSubject
 import de.jensklingenberg.showdown.model.*
+import showdown.web.network.NetworkApiObserver
 
-
+class ErrorContainer(showdownError: ShowdownError?=null)
 
 class GameRepository(private val gameApiHandler: GameApiHandler) : GameDataSource, NetworkApiObserver {
 
     private val gameStateSubject: BehaviorSubject<GameState> = BehaviorSubject(GameState.NotConnected)
+    private val errorSubject: BehaviorSubject<ShowdownError?> = BehaviorSubject(null)
 
 
     override fun prepareGame() {
@@ -16,8 +18,8 @@ class GameRepository(private val gameApiHandler: GameApiHandler) : GameDataSourc
     }
 
     override fun createNewRoom(roomName: String) {
-        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.CreateRoom(GameConfig( GameMode.Fibo()))).toJson()
-        gameApiHandler.sendMessage(jsonData)
+       // val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.CreateRoom(GameConfig( GameMode.Fibo()))).toJson()
+        //gameApiHandler.sendMessage(jsonData)
     }
 
     override fun showVotes() {
@@ -37,17 +39,19 @@ class GameRepository(private val gameApiHandler: GameApiHandler) : GameDataSourc
 
     override fun observeGameState(): Observable<GameState> = gameStateSubject
 
-    override fun joinRoom(name:String) {
+    override fun joinRoom(name:String,password:String) {
         console.log("joinRoom+"+name)
 
-        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.JoinGameRequest(name,"geheim")).toJson()
+        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.JoinGameRequest(name,password)).toJson()
         gameApiHandler.sendMessage(jsonData)
     }
 
     override fun requestReset() {
-        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.ResetRequest()).toJson()
+        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.RestartRequest()).toJson()
         gameApiHandler.sendMessage(jsonData)
     }
+
+    override fun observeErrors(): Observable<ShowdownError?> = errorSubject
 
 
     override fun onGameStateChanged(gameState: GameState) {
@@ -62,8 +66,8 @@ class GameRepository(private val gameApiHandler: GameApiHandler) : GameDataSourc
         }
     }
 
-    override fun onError(gameJoined: ServerResponse.ErrorEvent) {
-
+    override fun onError(errorEvent: ServerResponse.ErrorEvent) {
+        errorSubject.onNext(errorEvent.error)
     }
 
 }

@@ -13,7 +13,7 @@ class NewPresenter(private val view: NewContract.View) : NewContract.Presenter {
     }
 
     override fun joinGame() {
-        gameDataSource.joinRoom("NOt set")
+        gameDataSource.joinRoom("NOt set","geheim")
     }
 
     override fun createNewRoom(roomName: String,gameModeId:Int) {
