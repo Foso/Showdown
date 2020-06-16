@@ -5,19 +5,20 @@ import de.jensklingenberg.showdown.model.*
 
 import de.jensklingenberg.showdown.server.model.TempVote
 
-fun getDefaultConfig() = GameConfig(GameMode.Fibo(),true)
+fun getDefaultConfig() = GameConfig(GameMode.Fibo(), true)
 
 class GameSource(private val server: GameServer, var gameConfig: GameConfig) {
 
     private val playerList = mutableListOf<Player>()
     private val tempVotes = arrayListOf<TempVote>()
     var ownerID = 0
-
+    var gameState: GameState = GameState.Started
     fun onReset() {
+        gameState = GameState.Started
         tempVotes.clear()
 
         sendMembers()
-        sendGameStateChanged(GameState.Started)
+        sendGameStateChanged(gameState)
     }
 
     fun addPlayer(sessionId: String, name: String) {
@@ -32,15 +33,21 @@ class GameSource(private val server: GameServer, var gameConfig: GameConfig) {
 
     }
 
-    fun changeConfig(gameConfig: GameConfig){
-        this.gameConfig=gameConfig
+    fun changeConfig(gameConfig: GameConfig) {
+        this.gameConfig = gameConfig
         //sendOptions()
+        tempVotes.clear()
         sendGameStateChanged(GameState.GameConfigUpdate(gameConfig))
 
     }
 
 
     fun onPlayerVoted(playerId: Int, voteId: Int) {
+        if (gameState is GameState.Showdown) {
+            return
+        }
+        println("player: " + playerId + "VOted: " + voteId)
+        tempVotes.removeIf { it.playerId == playerId }
         tempVotes.add(TempVote(voteId, playerId))
         sendMembers()
         if (gameConfig.autoReveal) {
@@ -64,7 +71,7 @@ class GameSource(private val server: GameServer, var gameConfig: GameConfig) {
             val symbol = if (voted) {
                 "Voted"
             } else {
-                "Not voted"
+                "?"
             }
 
             ClientVote(player.name, symbol)
@@ -79,6 +86,7 @@ class GameSource(private val server: GameServer, var gameConfig: GameConfig) {
     }
 
     private fun showVotes() {
+
         val results = tempVotes.groupBy { it.voteId }.map {
             val (votedId, tempVotesList) = it
             val voteText = gameConfig.gameMode.options[votedId].text
@@ -87,8 +95,8 @@ class GameSource(private val server: GameServer, var gameConfig: GameConfig) {
             } + " (${tempVotesList.size} Voters)"
             Result(voteText, voters)
         }
-
-        sendGameStateChanged(GameState.Showdown(results))
+        gameState = GameState.Showdown(results)
+        sendGameStateChanged(gameState)
     }
 
 

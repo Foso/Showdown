@@ -1,32 +1,31 @@
 package showdown.web.ui.home
 
 import challenge.usecase.MessageUseCase
-import de.jensklingenberg.showdown.model.Option
-import kotlinx.css.*
-import kotlinx.html.DIV
-import kotlinx.html.TD
+import kotlinx.css.Color
+import kotlinx.css.backgroundColor
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonColor
 import materialui.components.button.enums.ButtonVariant
+import materialui.components.dialog.dialog
 import materialui.components.formcontrol.enums.FormControlVariant
 import materialui.components.menuitem.menuItem
-import materialui.components.modal.modal
-import materialui.components.paper.paper
 import materialui.components.textfield.textField
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.Event
 import react.RBuilder
 import react.RComponent
 import react.RProps
-import react.dom.*
+import react.dom.div
+import react.dom.h2
+import react.dom.key
+import react.dom.p
 import react.setState
 import showdown.web.ui.new.gameModeOptions
 import showdown.web.wrapper.material.QrCode
 import styled.css
 import styled.styledDiv
-import styled.styledP
 
 
 interface MyProps : RProps
@@ -42,12 +41,16 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
     override fun HomeContract.HomeViewState.init() {
         showSnackbar = false
         players = emptyList()
-        hidden = true
         options = listOf()
         results = emptyList()
         gameModeId = 0
         playerName = "Jens"
         customOptions = ""
+        showEntryPopup = true
+        showShareDialog = false
+        selectedOptionId = -1
+        timerStart = 0
+
 
     }
 
@@ -62,67 +65,15 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
 
     override fun RBuilder.render() {
 
-        modal{
-            attrs {
-                open=true
-
-            }
-
-
-              styledDiv {
-                    css {
-                        //backgroundColor= Color.green
-                        //height=LinearDimension("100%")
-                    }
-
-                      +"Hallo"
-
-              }
-
-
-
-        }
+        entryDialog()
+        shareDialog()
 
         messageUseCase.showErrorSnackbar(this, state.errorMessage, snackbarVisibility())
 
-        div {
+        toolbar()
 
-            toolbar()
-
-            table("myTable") {
-                tbody {
-
-                    tr {
-                        td("mytd") {
-                            leftSide()
-                        }
-                        td("mytd") {
-                            rightSide()
-                        }
-                    }
-                }
-            }
-        }
-
-        div {
-            textField {
-                attrs {
-                    variant = FormControlVariant.filled
-                    label {
-                        +"Insert a Name"
-                    }
-                    value(state.playerName)
-                    onChangeFunction = {
-                        val target = it.target as HTMLInputElement
-
-                        setState {
-                            this.playerName = target.value
-                        }
-                    }
-                }
-
-            }
-        }
+        optionsList()
+        participants()
         div {
             textField {
                 attrs {
@@ -141,23 +92,6 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
 
             }
         }
-        p {
-            button {
-                attrs {
-                    variant = ButtonVariant.contained
-                    color = ButtonColor.primary
-                    text("New")
-                    onClickFunction = {
-                        presenter.createNewRoom("hans", 0)
-                    }
-                }
-            }
-        }
-        QrCode {
-            attrs {
-                value = "http://localhost:3001/#/game?room=hans"
-            }
-        }
 
 
         if (admin) {
@@ -165,84 +99,144 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
         }
     }
 
-    private fun RDOMBuilder<TD>.rightSide() {
-        div {
-            state.players.forEach {
-                p {
+    private fun RBuilder.entryDialog() {
+        dialog {
+            attrs {
+                this.open = state.showEntryPopup
+            }
+
+            div {
+                textField {
                     attrs {
-                        text("Player: " + it.playerName + " Status:" + it.voteValue)
-                        onClickFunction = {
-
+                        variant = FormControlVariant.filled
+                        label {
+                            +"Insert a Name"
                         }
+                        value(state.playerName)
+                        onChangeFunction = {
+                            val target = it.target as HTMLInputElement
+
+                            setState {
+                                this.playerName = target.value
+                            }
+                        }
+                    }
+
+                }
+
+            }
+            button {
+                attrs {
+                    text("Join Game")
+                    variant = ButtonVariant.contained
+                    color = ButtonColor.primary
+                    onClickFunction = {
+                        console.log("HALLLLOOOOO")
+                        setState {
+                            this.showEntryPopup = false
+                        }
+                        presenter.joinGame()
                     }
                 }
             }
-        }
 
-
-        table("myTable2") {
-            thead {
-
-                +"Result"
-
-            }
-            tbody {
-                state.results.forEachIndexed { index, result ->
-                    tr {
-                        td {
-                            +"${index + 1} \"${result.name}\""
-                        }
-                        td {
-                            +result.voters
-                        }
-                    }
-                }
-            }
         }
     }
 
-    private fun RDOMBuilder<TD>.leftSide() {
-        state.options.forEach { option ->
-            div {
-                button {
-                    attrs {
-                        variant = ButtonVariant.contained
-                        color = ButtonColor.primary
-                        text(option.text)
-                        onClickFunction = {
-                            presenter.onSelectedVote(option.id)
+    private fun RBuilder.shareDialog() {
+        dialog {
+            attrs {
+                this.open = state.showShareDialog
+            }
+            QrCode {
+                attrs {
+                    value = "http://localhost:3001/#/game?room=hans"
+                }
+            }
+
+            button {
+                attrs {
+                    text("Okay")
+                    variant = ButtonVariant.contained
+                    color = ButtonColor.primary
+                    onClickFunction = {
+                        setState {
+                            this.showShareDialog = false
                         }
+
                     }
                 }
             }
+
+        }
+    }
+
+    private fun RBuilder.participants() {
+        h2 {
+            +"Members"
+        }
+        div {
+            state.players.forEach {
+
+                p {
+                    attrs {
+                        text("Player: " + it.playerName + " Status:" + it.voteValue + "\n")
+                        onClickFunction = {
+
+                        }
+
+                    }
+                }
+
+            }
+
+            h2 {
+                +"Result:"
+            }
+
+            state.results.forEachIndexed { index, result ->
+                p {
+                    +"${index + 1}) \"${result.name}\" ${result.voters}"
+                }
+
+            }
+
+        }
+
+
+    }
+
+    private fun RBuilder.optionsList() {
+        h2 {
+            +"Options"
+        }
+        state.options.forEachIndexed { index, option ->
+
+            button {
+                attrs {
+                    this.color = if (index != state.selectedOptionId) {
+                        ButtonColor.primary
+                    } else {
+                        ButtonColor.secondary
+                    }
+                    variant = ButtonVariant.outlined
+                    onClickFunction = {
+                        setState {
+                            this.selectedOptionId = index
+                        }
+                        presenter.onSelectedVote(option.id)
+                    }
+
+                }
+                +option.text
+
+            }
+
         }
     }
 
     private fun RBuilder.adminMenu() {
-        button {
-            attrs {
-                text("Join Game")
-                variant = ButtonVariant.contained
-                color = ButtonColor.primary
-                onClickFunction = {
-                    console.log("HALLLLOOOOO")
 
-                    presenter.joinGame()
-                }
-            }
-        }
-        p {
-            button {
-                attrs {
-                    variant = ButtonVariant.contained
-                    color = ButtonColor.primary
-                    text("Save")
-                    onClickFunction = {
-                        presenter.changeConfig()
-                    }
-                }
-            }
-        }
 
         div {
             textField {
@@ -296,32 +290,66 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
                 }
             }
         }
+
+        p {
+            button {
+                attrs {
+                    variant = ButtonVariant.contained
+                    color = ButtonColor.primary
+                    text("Save")
+                    onClickFunction = {
+                        presenter.changeConfig()
+                    }
+                }
+            }
+        }
     }
 
-    private fun RDOMBuilder<DIV>.toolbar() {
+    private fun RBuilder.toolbar() {
 
 
-        button {
-            attrs {
-                variant = ButtonVariant.contained
-                color = ButtonColor.primary
-                text("Reset")
-                onClickFunction = {
-                    presenter.reset()
+        styledDiv {
+            css {
+                backgroundColor = Color.tomato
+            }
+
+
+            button {
+                attrs {
+                    variant = ButtonVariant.contained
+                    color = ButtonColor.primary
+                    text("Share")
+                    onClickFunction = {
+                        setState {
+                            this.showShareDialog = true
+                        }
+                        //presenter.createNewRoom("hans", 0)
+                    }
                 }
             }
-        }
-        button {
-            attrs {
-                variant = ButtonVariant.contained
-                color = ButtonColor.primary
-                text("Show Votes")
-                onClickFunction = {
-                    presenter.showVotes()
+
+            button {
+                attrs {
+                    variant = ButtonVariant.contained
+                    color = ButtonColor.primary
+                    text("Reset")
+                    onClickFunction = {
+                        presenter.reset()
+                    }
                 }
             }
+            button {
+                attrs {
+                    variant = ButtonVariant.contained
+                    color = ButtonColor.primary
+                    text("Show Votes")
+                    onClickFunction = {
+                        presenter.showVotes()
+                    }
+                }
+            }
+            ticker(0)
         }
-        ticker(0)
     }
 
 

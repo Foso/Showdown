@@ -29,11 +29,14 @@ interface HomeContract {
         var errorMessage: String
         var showSnackbar: Boolean
         var players: List<ClientVote>
-        var hidden: Boolean
         var options: List<Option>
         var results : List<Result>
         var gameModeId: Int
         var customOptions : String
+        var showEntryPopup:Boolean
+        var showShareDialog: Boolean
+        var selectedOptionId: Int
+        var timerStart: Int
 
     }
 }

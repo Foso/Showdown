@@ -21,6 +21,7 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
                 GameState.Started -> {
                     view.newState {
                         this.results = emptyList()
+                        this.selectedOptionId=-1
                     }
                 }
 
@@ -32,12 +33,13 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
 
                 is GameState.GameConfigUpdate -> {
                     view.newState {
+                        this.results = emptyList()
+                        this.selectedOptionId=-1
                         this.options = state.gameConfig.gameMode.options
                     }
                 }
                 is GameState.Showdown -> {
                     view.newState {
-                        this.hidden = false
                         this.results = state.results
                     }
                 }

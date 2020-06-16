@@ -10,18 +10,22 @@ class NetworkPreferences {
 
     val herokuUrl = "wss://hidden-plateau-72953.herokuapp.com/"
 
-    val apiVersion = "v1"
-
 
     val port = window.location.port
 
 
-    var hostUri: String = "${window}+${window.location}+${window.location.hostname}"
+    var hostUri: String = "${window.location}+${window.location.hostname}"
 
     val hostname = if (hostUri.contains("localhost")) {
+
         console.log("HOST " + window.location.toString().substringAfter("game?",missingDelimiterValue = ""))
         "ws://localhost:23567/"
-    } else {
+    } else if(hostUri.startsWith("http://192.")) {
+        "ws://192.168.178.58:23567/"
+    }
+
+    else {
+        console.log("HOST " + hostUri)
         "wss://hidden-plateau-72953.herokuapp.com/"
     }
 

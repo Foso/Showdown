@@ -25,7 +25,7 @@ sealed class GameMode(open val options: List<Option>) {
     })
     @Serializable
     class Custom(val list2: List<String> = list3) : GameMode(list2.mapIndexed { index, s ->
-        Option(index, "$index: $s")
+        Option(index, s)
     })
 }
 
