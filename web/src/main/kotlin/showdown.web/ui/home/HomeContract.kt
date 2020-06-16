@@ -1,40 +1,39 @@
 package showdown.web.ui.home
 
 import de.jensklingenberg.showdown.model.ClientVote
+import de.jensklingenberg.showdown.model.GameConfig
 import de.jensklingenberg.showdown.model.Option
 import de.jensklingenberg.showdown.model.Result
 
 import react.RState
 
-class Player(val name: String,val value :String)
-
-
 interface HomeContract {
     interface View {
-        fun showError(error: String)
-        fun setPlayerId(list: List<ClientVote>)
-
-        fun setHidden(hidden:Boolean)
-        fun setOptions(list:List<Option>)
-        fun setResults(message: List<Result>)
+        fun newState(buildState: HomeViewState.(HomeViewState) -> Unit)
+        fun getState(): HomeViewState
     }
 
     interface Presenter {
         fun onCreate()
         fun reset()
         fun joinGame()
-        fun startGame()
-        fun revealCards()
-        fun onSelectedVote(i: Int)
+        fun showVotes()
+        fun onSelectedVote(voteId: Int)
+        fun createNewRoom(roomName: String, gameModeId: Int)
+        fun changeConfig()
+
     }
 
     interface HomeViewState : RState {
+        var playerName: String
         var errorMessage: String
         var showSnackbar: Boolean
-        var playerList: List<ClientVote>
+        var players: List<ClientVote>
         var hidden: Boolean
         var options: List<Option>
         var results : List<Result>
+        var gameModeId: Int
+        var customOptions : String
 
     }
 }

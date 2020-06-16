@@ -1,4 +1,3 @@
-import challenge.ui.toolbar
 import kotlinext.js.requireAll
 import react.Component
 import react.RProps
@@ -12,9 +11,6 @@ import showdown.web.game.GameDataSource
 import showdown.web.game.GameRepository
 import showdown.web.model.Route
 import showdown.web.ui.home.HomeView
-import showdown.web.ui.home.home
-import showdown.web.ui.new.NewView
-import showdown.web.ui.new.TestTables
 import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.reflect.KClass
@@ -22,8 +18,8 @@ import kotlin.reflect.KClass
 
 class Application {
 
-    val routeList = listOf(
-            Route("/", NewView::class, true),
+    private val routeList = listOf(
+            Route("/", HomeView::class, true),
             Route("/game", HomeView::class, true)
 
     )

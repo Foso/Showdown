@@ -5,30 +5,22 @@ import com.badoo.reaktive.subject.behavior.BehaviorSubject
 import de.jensklingenberg.showdown.model.*
 
 
-sealed class GameEvent{
-    class Reveal(message:String): GameEvent()
-}
 
 class GameRepository(private val gameApiHandler: GameApiHandler) : GameDataSource, NetworkApiObserver {
 
-    private var activePlayerId: Player? = null
-    private val warriorSubject: BehaviorSubject<List<Warrior>> = BehaviorSubject(emptyList())
-
     private val gameStateSubject: BehaviorSubject<GameState> = BehaviorSubject(GameState.NotConnected)
-    private val playerSubject: BehaviorSubject<Int> = BehaviorSubject(-1)
 
-    override fun getPlayer(): Player? = activePlayerId
 
     override fun prepareGame() {
         gameApiHandler.start(this)
     }
 
     override fun createNewRoom(roomName: String) {
-        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.CreateRoom(GameMode.Fibo(),roomName)).toJson()
+        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.CreateRoom(GameConfig( GameMode.Fibo()))).toJson()
         gameApiHandler.sendMessage(jsonData)
     }
 
-    override fun revealCards() {
+    override fun showVotes() {
         val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.ShowVotes()).toJson()
         gameApiHandler.sendMessage(jsonData)
     }
@@ -38,19 +30,22 @@ class GameRepository(private val gameApiHandler: GameApiHandler) : GameDataSourc
         gameApiHandler.sendMessage(jsonData)
     }
 
+    override fun changeConfig(gameConfig: GameConfig) {
+        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.ChangeConfig(gameConfig)).toJson()
+        gameApiHandler.sendMessage(jsonData)
+    }
+
     override fun observeGameState(): Observable<GameState> = gameStateSubject
-    override fun observePlayer(): Observable<Int> = playerSubject
-    override fun observeMap(): Observable<List<Warrior>> = warriorSubject
 
+    override fun joinRoom(name:String) {
+        console.log("joinRoom+"+name)
 
-
-    override fun join() {
-        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.JoinGameRequest("Jens")).toJson()
+        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.JoinGameRequest(name,"geheim")).toJson()
         gameApiHandler.sendMessage(jsonData)
     }
 
     override fun requestReset() {
-        val jsonData = ServerRequest.ResetRequest().toJson()
+        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.ResetRequest()).toJson()
         gameApiHandler.sendMessage(jsonData)
     }
 
@@ -62,8 +57,7 @@ class GameRepository(private val gameApiHandler: GameApiHandler) : GameDataSourc
     override fun onPlayerEventChanged(gameResponse: PlayerResponseEvent) {
         when (gameResponse) {
             is PlayerResponseEvent.JOINED -> {
-                activePlayerId = gameResponse.yourPlayer
-                playerSubject.onNext(gameResponse.yourPlayer.id)
+
             }
         }
     }
@@ -72,8 +66,5 @@ class GameRepository(private val gameApiHandler: GameApiHandler) : GameDataSourc
 
     }
 
-    override fun onPlayerCardRevealed(gameState: ServerResponse.PlayerVotes) {
-        gameStateSubject.onNext(GameState.Showdown(gameState.message))
-    }
 }
 

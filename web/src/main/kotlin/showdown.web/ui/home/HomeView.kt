@@ -1,18 +1,32 @@
 package showdown.web.ui.home
 
-import challenge.ui.toolbar
 import challenge.usecase.MessageUseCase
-import de.jensklingenberg.showdown.model.ClientVote
 import de.jensklingenberg.showdown.model.Option
-import de.jensklingenberg.showdown.model.Result
-
+import kotlinx.css.*
 import kotlinx.html.DIV
+import kotlinx.html.TD
+import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
+import materialui.components.button.button
+import materialui.components.button.enums.ButtonColor
+import materialui.components.button.enums.ButtonVariant
+import materialui.components.formcontrol.enums.FormControlVariant
+import materialui.components.menuitem.menuItem
+import materialui.components.modal.modal
+import materialui.components.paper.paper
+import materialui.components.textfield.textField
+import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.events.Event
 import react.RBuilder
 import react.RComponent
 import react.RProps
 import react.dom.*
 import react.setState
+import showdown.web.ui.new.gameModeOptions
+import showdown.web.wrapper.material.QrCode
+import styled.css
+import styled.styledDiv
+import styled.styledP
 
 
 interface MyProps : RProps
@@ -20,17 +34,26 @@ interface MyProps : RProps
 class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract.View {
 
     private val messageUseCase = MessageUseCase()
-
+    val admin = true
     private val presenter: HomeContract.Presenter by lazy {
         HomePresenter(this)
     }
 
     override fun HomeContract.HomeViewState.init() {
         showSnackbar = false
-        playerList = emptyList()
+        players = emptyList()
         hidden = true
-        options = listOf(Option(0, "0"), Option(1, "1"), Option(2, "2"), Option(3, "3"), Option(5, "5"))
+        options = listOf()
         results = emptyList()
+        gameModeId = 0
+        playerName = "Jens"
+        customOptions = ""
+
+    }
+
+    private fun handleOnChange(prop: String): (Event) -> Unit = { event ->
+        val value = event.target.asDynamic().value
+        setState { asDynamic()[prop] = value }
     }
 
     override fun componentDidMount() {
@@ -38,132 +61,280 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
     }
 
     override fun RBuilder.render() {
-        toolbar()
+
+        modal{
+            attrs {
+                open=true
+
+            }
+
+
+              styledDiv {
+                    css {
+                        //backgroundColor= Color.green
+                        //height=LinearDimension("100%")
+                    }
+
+                      +"Hallo"
+
+              }
+
+
+
+        }
+
         messageUseCase.showErrorSnackbar(this, state.errorMessage, snackbarVisibility())
 
-        div("imagesGrid") {
+        div {
 
             toolbar()
 
-            button {
-                attrs {
-                    text("Show Votes")
-                    onClickFunction = {
-                        presenter.revealCards()
-                    }
-                }
-            }
-
-            div {
-                state.playerList.forEach {
-                    p {
-                        attrs {
-                            text("Player: " + it.playerName + " Number:" + it.voteValue)
-                            onClickFunction = {
-
-                            }
-                        }
-                    }
-                }
-            }
-
-            state.options.forEach { option ->
-                div {
-                    button {
-                        attrs {
-                            text(option.text)
-                            onClickFunction = {
-                                presenter.onSelectedVote(option.id)
-                            }
-                        }
-                    }
-                }
-            }
-
-            p {
-                attrs {
-                    text("Result")
-                    onClickFunction = {
-
-                    }
-                }
-            }
-
             table("myTable") {
                 tbody {
-                    state.results.forEachIndexed { index, result ->
-                        tr {
-                            td {
-                                +"${index+1} ${result.name}"
-                            }
-                            td {
-                                +result.voters
-                            }
+
+                    tr {
+                        td("mytd") {
+                            leftSide()
+                        }
+                        td("mytd") {
+                            rightSide()
                         }
                     }
                 }
             }
+        }
 
+        div {
+            textField {
+                attrs {
+                    variant = FormControlVariant.filled
+                    label {
+                        +"Insert a Name"
+                    }
+                    value(state.playerName)
+                    onChangeFunction = {
+                        val target = it.target as HTMLInputElement
+
+                        setState {
+                            this.playerName = target.value
+                        }
+                    }
+                }
+
+            }
+        }
+        div {
+            textField {
+                attrs {
+                    variant = FormControlVariant.filled
+                    label {
+                        +"Insert a Password ☕"
+                    }
+                    onChangeFunction = {
+                        val target = it.target as HTMLInputElement
+
+                        setState {
+
+                        }
+                    }
+                }
+
+            }
+        }
+        p {
+            button {
+                attrs {
+                    variant = ButtonVariant.contained
+                    color = ButtonColor.primary
+                    text("New")
+                    onClickFunction = {
+                        presenter.createNewRoom("hans", 0)
+                    }
+                }
+            }
+        }
+        QrCode {
+            attrs {
+                value = "http://localhost:3001/#/game?room=hans"
+            }
+        }
+
+
+        if (admin) {
+            adminMenu()
         }
     }
 
-    private fun RDOMBuilder<DIV>.toolbar() {
+    private fun RDOMBuilder<TD>.rightSide() {
+        div {
+            state.players.forEach {
+                p {
+                    attrs {
+                        text("Player: " + it.playerName + " Status:" + it.voteValue)
+                        onClickFunction = {
+
+                        }
+                    }
+                }
+            }
+        }
+
+
+        table("myTable2") {
+            thead {
+
+                +"Result"
+
+            }
+            tbody {
+                state.results.forEachIndexed { index, result ->
+                    tr {
+                        td {
+                            +"${index + 1} \"${result.name}\""
+                        }
+                        td {
+                            +result.voters
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun RDOMBuilder<TD>.leftSide() {
+        state.options.forEach { option ->
+            div {
+                button {
+                    attrs {
+                        variant = ButtonVariant.contained
+                        color = ButtonColor.primary
+                        text(option.text)
+                        onClickFunction = {
+                            presenter.onSelectedVote(option.id)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun RBuilder.adminMenu() {
         button {
             attrs {
                 text("Join Game")
+                variant = ButtonVariant.contained
+                color = ButtonColor.primary
                 onClickFunction = {
+                    console.log("HALLLLOOOOO")
+
                     presenter.joinGame()
                 }
             }
         }
+        p {
+            button {
+                attrs {
+                    variant = ButtonVariant.contained
+                    color = ButtonColor.primary
+                    text("Save")
+                    onClickFunction = {
+                        presenter.changeConfig()
+                    }
+                }
+            }
+        }
+
+        div {
+            textField {
+                attrs {
+                    select = true
+                    label { +"GameMode" }
+                    // classes("$marginStyle $textFieldStyle")
+                    inputProps {
+                        attrs {
+                            //  startAdornment(startAdornment("Kg"))
+                        }
+                    }
+                    value(state.gameModeId)
+                    onChangeFunction = { event ->
+                        val value = event.target.asDynamic().value
+                        setState {
+                            this.gameModeId = value
+                        }
+                    }
+                }
+                gameModeOptions.forEach {
+                    menuItem {
+                        attrs {
+                            key = it.first
+                            setProp("value", it.second)
+                        }
+                        +it.first
+                    }
+                }
+            }
+        }
+
+        if (state.gameModeId == 2) {
+            div {
+                textField {
+                    attrs {
+                        variant = FormControlVariant.filled
+                        label {
+                            +"Insert Custom options"
+                        }
+                        value(state.customOptions)
+                        onChangeFunction = {
+                            val target = it.target as HTMLInputElement
+
+                            setState {
+                                this.customOptions = target.value
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+
+    private fun RDOMBuilder<DIV>.toolbar() {
+
 
         button {
             attrs {
+                variant = ButtonVariant.contained
+                color = ButtonColor.primary
                 text("Reset")
                 onClickFunction = {
                     presenter.reset()
                 }
             }
         }
+        button {
+            attrs {
+                variant = ButtonVariant.contained
+                color = ButtonColor.primary
+                text("Show Votes")
+                onClickFunction = {
+                    presenter.showVotes()
+                }
+            }
+        }
+        ticker(0)
     }
 
 
-    private fun snackbarVisibility(): Boolean {
-        return state.showSnackbar
+    private fun snackbarVisibility(): Boolean = state.showSnackbar
 
-    }
-
-
-    override fun showError(error: String) {
+    override fun newState(buildState: HomeContract.HomeViewState.(HomeContract.HomeViewState) -> Unit) {
         setState {
-            showSnackbar = true
-            errorMessage = error
+            buildState(this)
         }
     }
 
-
-    override fun setPlayerId(list: List<ClientVote>) {
-        setState {
-            this.playerList = list
-        }
-    }
-
-    override fun setHidden(hidden: Boolean) {
-        setState {
-            this.hidden = hidden
-        }
-    }
-
-    override fun setOptions(list: List<Option>) {
-        setState {
-            this.options = list
-        }
-    }
-
-    override fun setResults(message: List<Result>) {
-        setState {
-            this.results = message
-        }
+    override fun getState(): HomeContract.HomeViewState {
+        return state
     }
 }
 

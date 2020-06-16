@@ -6,9 +6,3 @@ import kotlinx.serialization.json.JsonConfiguration
 
 @Serializable
 data class Player(val id: Int, val name: String = "Unnamed")
-
-fun Player.toJson(): String {
-    val json = Json(JsonConfiguration.Stable)
-    val jsonData = json.stringify(Player.serializer(), this)
-    return jsonData
-}

@@ -190,49 +190,67 @@ class ShowdownServer : GameServer {
      * We received a message. Let's process it.
      */
     suspend fun receivedMessage(
-        sessionId: String,
-        command: String,
-        roomName: String,
-        password: String
+            sessionId: String,
+            command: String,
+            roomName: String,
+            password: String
     ) {
-        println("Receiver ROOM:"+roomName+  " PW: "+password)
+
+
+        println("Receiver ROOM:" + roomName + " PW: " + password)
         val gameSource = gameMap[roomName]
-       // val gameSource = gameList.getOrNull(0)
-        val playerId = members.keys.indexOf(sessionId)
+        // val gameSource = gameList.getOrNull(0)
+        val playerId = playersSessions[sessionId]?.id ?: -1
+        val type = getServerRequest(command)
 
-        when (val type = getServerCommandType(command)) {
-
-            ServerRequestTypes.RESET -> {
-                gameSource?.onReset()
+        if (type !is ServerRequest.PlayerRequest) {
+            if (playerId == -1) {
+                return
             }
+        }
 
-            ServerRequestTypes.PLAYEREVENT -> {
-                val cmd = ServerCommandParser.getPlayerRequest(command)
-                when (val event = cmd.playerRequestEvent) {
+        when (type) {
+
+            is ServerRequest.PlayerRequest -> {
+                when (val event = type.playerRequestEvent) {
 
                     is PlayerRequestEvent.JoinGameRequest -> {
-                        if (!playersSessions.containsKey(sessionId)) {
-                            gameSource?.addPlayer(sessionId, event.playerName)
-                        } else {
-                            gameSource?.onPlayerRejoined(sessionId, event.playerName)
+                        if (event.password == "geheim") {
+                            if (!playersSessions.containsKey(sessionId)) {
+                                gameSource?.addPlayer(sessionId, event.playerName)
+                            } else {
+                                gameSource?.onPlayerRejoined(sessionId, event.playerName)
+                            }
                         }
                     }
 
                     is PlayerRequestEvent.CreateRoom -> {
-                        val game = GameSource(this, event.gameMode, event.name)
-                        gameMap.putIfAbsent(event.name,game)
+                        val game = GameSource(this, event.gameConfig)
+
+                        gameMap.putIfAbsent(roomName, game)
                         gameList.add(game)
-                        println("CREATE ROOM"+roomName)
+                        println("CREATE ROOM" + roomName)
                     }
                     is PlayerRequestEvent.ShowVotes -> {
+                        if (playerId == -1) {
+                            return
+                        }
                         gameSource?.showVotes(playerId)
                     }
                     is PlayerRequestEvent.Voted -> {
                         gameSource?.onPlayerVoted(playerId, event.voteId)
                     }
+                    is PlayerRequestEvent.ResetRequest -> {
+                        gameSource?.onReset()
+                    }
+                    is PlayerRequestEvent.ChangeConfig -> {
+                        gameSource?.changeConfig(event.gameConfig)
+                    }
                 }
             }
-            ServerRequestTypes.MESSAGE, ServerRequestTypes.ERROR, ServerRequestTypes.UNKNOWN -> TODO()
+            else -> {
+
+            }
         }
         // game.makeMove(playerId,)
         // We are going to handle commands (text starting with '/') and normal messages
@@ -250,9 +268,9 @@ class ShowdownServer : GameServer {
                 when {
                     newName.isEmpty() -> sendTo(sessionId, "server::help", "/user [newName]")
                     newName.length > 50 -> sendTo(
-                        sessionId,
-                        "server::help",
-                        "new name is too long: 50 characters limit"
+                            sessionId,
+                            "server::help",
+                            "new name is too long: 50 characters limit"
                     )
                     else -> memberRenamed(sessionId, newName)
                 }
@@ -261,9 +279,9 @@ class ShowdownServer : GameServer {
             command.startsWith("/help") -> help(sessionId)
             // If no commands matched at this point, we notify about it.
             command.startsWith("/") -> sendTo(
-                sessionId,
-                "server::help",
-                "Unknown command ${command.takeWhile { !it.isWhitespace() }}"
+                    sessionId,
+                    "server::help",
+                    "Unknown command ${command.takeWhile { !it.isWhitespace() }}"
             )
             // Handle a normal message.
             else -> {
@@ -289,6 +307,14 @@ class ShowdownServer : GameServer {
     override fun onPlayerAdded(sessionId: String, player: Player) {
         playersSessions[sessionId] = player
 
+    }
+
+    override fun createNewRoom(roomName: String) {
+        val game = GameSource(this, getDefaultConfig())
+
+        gameMap.putIfAbsent(roomName, game)
+        gameList.add(game)
+        println("CREATE ROOM " + roomName)
     }
 
 

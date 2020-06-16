@@ -16,15 +16,16 @@ interface NewContract {
     interface Presenter {
         fun onCreate()
         fun joinGame()
-        fun createNewRoom(roomName:String)
+        fun createNewRoom(roomName: String, gameModeId: Int)
     }
 
     interface HomeViewState : RState {
         var errorMessage: String
         var showSnackbar: Boolean
+        var weightRange: Int
 
         var options: List<Option>
         var roomName : String
-
+        var password : String
     }
 }

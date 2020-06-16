@@ -11,5 +11,6 @@ class ServerCommandParser {
             return json.parse(ServerRequest.PlayerRequest.serializer(), jsonStr)
 
         }
+
     }
 }

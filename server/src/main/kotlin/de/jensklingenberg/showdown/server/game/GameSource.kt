@@ -5,19 +5,18 @@ import de.jensklingenberg.showdown.model.*
 
 import de.jensklingenberg.showdown.server.model.TempVote
 
-class GameSource(private val server: GameServer, var gameMode: GameMode = GameMode.Fibo(), var name: String = "") {
+fun getDefaultConfig() = GameConfig(GameMode.Fibo(),true)
+
+class GameSource(private val server: GameServer, var gameConfig: GameConfig) {
 
     private val playerList = mutableListOf<Player>()
     private val tempVotes = arrayListOf<TempVote>()
-    private val autoReveal = true
     var ownerID = 0
 
     fun onReset() {
         tempVotes.clear()
-        sendGameStateChanged(GameState.Showdown(emptyList()))
 
         sendMembers()
-        sendOptions()
         sendGameStateChanged(GameState.Started)
     }
 
@@ -29,14 +28,22 @@ class GameSource(private val server: GameServer, var gameMode: GameMode = GameMo
 
         sendPlayerEvent(PlayerResponseEvent.JOINED(player))
         sendMembers()
-        sendOptions()
+        sendGameStateChanged(GameState.GameConfigUpdate(gameConfig))
+
+    }
+
+    fun changeConfig(gameConfig: GameConfig){
+        this.gameConfig=gameConfig
+        //sendOptions()
+        sendGameStateChanged(GameState.GameConfigUpdate(gameConfig))
+
     }
 
 
     fun onPlayerVoted(playerId: Int, voteId: Int) {
         tempVotes.add(TempVote(voteId, playerId))
         sendMembers()
-        if (autoReveal) {
+        if (gameConfig.autoReveal) {
             if (tempVotes.size == playerList.size) {
                 showVotes()
             }
@@ -45,7 +52,8 @@ class GameSource(private val server: GameServer, var gameMode: GameMode = GameMo
 
     fun onPlayerRejoined(sessionId: String, name: String) {
         sendMembers()
-        sendOptions()
+        sendGameStateChanged(GameState.GameConfigUpdate(gameConfig))
+
     }
 
     private fun sendMembers() {
@@ -73,32 +81,16 @@ class GameSource(private val server: GameServer, var gameMode: GameMode = GameMo
     private fun showVotes() {
         val results = tempVotes.groupBy { it.voteId }.map {
             val (votedId, tempVotesList) = it
-            val voteText = gameMode.list[votedId]
+            val voteText = gameConfig.gameMode.options[votedId].text
             val voters = tempVotesList.joinToString(separator = ", ") { temp ->
                 playerList.find { it.id == temp.playerId }?.name ?: ""
-            } + " (${tempVotesList.size})"
+            } + " (${tempVotesList.size} Voters)"
             Result(voteText, voters)
         }
 
         sendGameStateChanged(GameState.Showdown(results))
     }
 
-    private fun sendOptions() {
-        val symbol = when (gameMode) {
-            is GameMode.Fibo -> {
-                gameMode.list.mapIndexed { index, s ->
-                    Option(index, s)
-                }
-            }
-            is GameMode.Custom -> {
-                gameMode.list.mapIndexed { index, s ->
-                    Option(index, "$index: $s")
-                }
-            }
-        }
-
-        sendGameStateChanged(GameState.OptionsUpdate(symbol))
-    }
 
     private fun sendGameStateChanged(gameState: GameState) {
         val json2 = ServerResponse.GameStateChanged(gameState).toJson()

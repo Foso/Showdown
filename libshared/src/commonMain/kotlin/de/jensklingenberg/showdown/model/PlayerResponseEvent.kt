@@ -7,6 +7,4 @@ sealed class PlayerResponseEvent {
     @Serializable
     class JOINED(val yourPlayer: Player) : PlayerResponseEvent()
 
-
-
 }

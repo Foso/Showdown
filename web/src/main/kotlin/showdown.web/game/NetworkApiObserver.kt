@@ -9,5 +9,4 @@ interface NetworkApiObserver {
     fun onGameStateChanged(gameState: GameState)
     fun onPlayerEventChanged(gameResponse: PlayerResponseEvent)
     fun onError(gameJoined: ServerResponse.ErrorEvent)
-    fun onPlayerCardRevealed(gameState: ServerResponse.PlayerVotes)
 }

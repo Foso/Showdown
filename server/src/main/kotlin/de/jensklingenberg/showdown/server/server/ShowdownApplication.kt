@@ -64,11 +64,17 @@ class ShowdownApplication {
 
             routing {
                 get("") {
-                    call.respond("I'm alive!")
+                    val roomName = call.parameters["room"] ?: ""
+                    call.respond("I'm alive! Roomname:"+roomName)
                 }
 
                 get("hello") {
                     call.respond(HttpStatusCode.Accepted, "Hello ")
+                }
+                get("room/{roomName}") {
+                    val roomName = call.parameters["roomName"] ?: ""
+                    server.createNewRoom(roomName)
+                    call.respond("I'm alive! Roomname:"+roomName)
                 }
 
 

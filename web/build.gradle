@@ -66,8 +66,9 @@ dependencies {
     implementation(npm('@material-ui/core', libs.material_ui_core))
     implementation(npm('core-js', ''))
 
+    implementation(npm('react-qr-code', ''))
+
     implementation(npm("@material-ui/icons"))
-    implementation("com.ccfraser.muirwik:muirwik-components:0.5.1")
     implementation(npm('inline-style-prefixer', ''))
     implementation(npm('styled-components', ''))
     implementation(npm('uglifyjs-webpack-plugin', ''))

@@ -2,36 +2,43 @@ package showdown.web.ui.new
 
 import challenge.ui.toolbar
 import challenge.usecase.MessageUseCase
-import com.ccfraser.muirwik.components.MColor
-import com.ccfraser.muirwik.components.button.MButtonVariant
-import com.ccfraser.muirwik.components.button.mButton
-import de.jensklingenberg.showdown.model.ClientVote
-import de.jensklingenberg.showdown.model.Option
-import de.jensklingenberg.showdown.model.Result
-
-import kotlinx.html.DIV
-import kotlinx.html.classes
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
-import kotlinx.html.onChange
+import materialui.components.button.button
+import materialui.components.button.enums.ButtonColor
 import materialui.components.button.enums.ButtonVariant
+import materialui.components.formcontrol.enums.FormControlVariant
+import materialui.components.menuitem.menuItem
+import materialui.components.textfield.textField
 import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.events.Event
 import react.RBuilder
 import react.RComponent
 import react.RProps
-import react.dom.*
+import react.dom.a
+import react.dom.div
+import react.dom.p
 import react.setState
-import materialui.components.button.button
-import materialui.components.button.enums.ButtonColor
-import materialui.components.button.enums.ButtonStyle
 
 class Navigation {
     companion object {
-        fun navigateToGame(roomName:String) = "/#/game?room=${roomName}&pw=Hallo"
+        fun navigateToGame(roomName: String) = "/#/game?room=${roomName}&pw=Hallo"
 
     }
 }
+val gameModeOptions: List<Pair<String, Int>>
+    get() = listOf(
+            "Fibonacci" to 0,
+            "T-Shirt" to 1,
+            "Custom" to 2
+    )
 
+val gameModes: List<Pair<String, Int>>
+    get() = listOf(
+        "Fibonacci" to 0,
+        "T-Shirt" to 1,
+        "Custom" to 2
+    )
 interface MyProps : RProps
 
 class NewView : RComponent<MyProps, NewContract.HomeViewState>(), NewContract.View {
@@ -43,15 +50,20 @@ class NewView : RComponent<MyProps, NewContract.HomeViewState>(), NewContract.Vi
     }
 
 
-
     override fun NewContract.HomeViewState.init() {
         showSnackbar = false
-        roomName=""
+        roomName = ""
+        weightRange = 0
+
     }
 
     override fun componentDidMount() {
         presenter.onCreate()
 
+    }
+    private fun handleOnChange(prop: String): (Event) -> Unit = { event ->
+        val value = event.target.asDynamic().value
+        setState { asDynamic()[prop] = value }
     }
 
     override fun RBuilder.render() {
@@ -62,48 +74,120 @@ class NewView : RComponent<MyProps, NewContract.HomeViewState>(), NewContract.Vi
 
             toolbar()
 
-            button {
-                attrs {
-                    text("New")
-                    onClickFunction = {
-                        presenter.createNewRoom(state.roomName)
+
+
+
+        }
+
+        textField {
+            attrs {
+                variant = FormControlVariant.filled
+                label {
+                    +"Insert Roomname"
+                }
+                onChangeFunction = {
+                    val target = it.target as HTMLInputElement
+                    console.log(target.value)
+                    setState {
+                        this.roomName = target.value
                     }
                 }
             }
-            a {
-                +"linkItem.title"
+        }
+
+        div {
+            textField {
                 attrs {
-                    href = Navigation.navigateToGame(state.roomName)
+                    variant = FormControlVariant.filled
+                    label {
+                        +"Insert a Password ☕"
+                    }
+                    onChangeFunction = {
+                        val target = it.target as HTMLInputElement
+                        console.log(target.value)
+                        setState {
+                            this.password = target.value
+                        }
+                    }
+                }
+
+            }
+        }
+        div {
+            textField {
+                attrs {
+                    select = true
+                    label { + "GameMode" }
+                    // classes("$marginStyle $textFieldStyle")
+                    inputProps {
+                        attrs {
+                            //  startAdornment(startAdornment("Kg"))
+                        }
+                    }
+                    value(state.weightRange)
+                    onChangeFunction = handleOnChange("weightRange")
+                }
+                gameModeOptions.forEach {
+                    menuItem {
+                        attrs {
+                            key = it.first
+                            setProp("value", it.second)
+                        }
+                        +it.first
+                    }
                 }
             }
-
-
         }
 
-        label { +"ROOMNAME" }
-        input {
-            attrs {
-                this.onChangeFunction={
-                    val target = it.target as HTMLInputElement
-                    console.log(target.value)
-                   setState {
-                       this.roomName = target.value
-                   }
+        div {
+            textField {
+                attrs {
+                    select = true
+                    label { + "Who can show votes?" }
+                    // classes("$marginStyle $textFieldStyle")
+                    inputProps {
+                        attrs {
+                            //  startAdornment(startAdornment("Kg"))
+                        }
+                    }
+                    value(state.weightRange)
+                    onChangeFunction = handleOnChange("weightRange")
+                }
+                gameModeOptions.forEach {
+                    menuItem {
+                        attrs {
+                            key = it.first
+                            setProp("value", it.second)
+                        }
+                        +it.first
+                    }
                 }
             }
         }
-        button {
-            attrs {
-                variant = ButtonVariant.contained
-               color = ButtonColor.primary
-            }
 
-            +"Default"
+
+        p {
+            button {
+                attrs {
+                    variant = ButtonVariant.contained
+                    color = ButtonColor.primary
+                    text("New")
+                    onClickFunction = {
+                        presenter.createNewRoom(state.roomName,state.weightRange)
+                    }
+                }
+            }
         }
+
+        a {
+            +"linkItem.title"
+            attrs {
+                href = Navigation.navigateToGame(state.roomName)
+            }
+        }
+
 
     }
-
-
 
 
     private fun snackbarVisibility(): Boolean {

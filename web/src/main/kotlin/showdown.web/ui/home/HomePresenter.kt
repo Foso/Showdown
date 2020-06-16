@@ -2,41 +2,44 @@ package showdown.web.ui.home
 
 import Application
 import com.badoo.reaktive.observable.subscribe
+import de.jensklingenberg.showdown.model.GameConfig
+import de.jensklingenberg.showdown.model.GameMode
 import de.jensklingenberg.showdown.model.GameState
-import de.jensklingenberg.showdown.model.ClientVote
 import showdown.web.game.GameDataSource
 
 class HomePresenter(private val view: HomeContract.View) : HomeContract.Presenter {
 
-    private var playerId = -1
     private val gameDataSource: GameDataSource = Application.gameDataSource
-    private var clientVotes : List<ClientVote> = mutableListOf()
 
     override fun onCreate() {
         gameDataSource.prepareGame()
 
-        gameDataSource.observePlayer().subscribe {
-            playerId = it
-        }
-
         gameDataSource.observeGameState().subscribe(onNext = { state ->
             when (state) {
-
+                GameState.NotConnected -> {
+                }
+                GameState.Started -> {
+                    view.newState {
+                        this.results = emptyList()
+                    }
+                }
 
                 is GameState.VoteUpdate -> {
-                    clientVotes= state.clientVotes
-                    view.setPlayerId(state.clientVotes)
+                    view.newState {
+                        this.players = state.clientVotes
+                    }
                 }
-                GameState.NotConnected -> {}
-                GameState.Lobby -> {}
-                GameState.Started -> {}
 
-                is GameState.OptionsUpdate -> {
-                    view.setOptions(state.options)
+                is GameState.GameConfigUpdate -> {
+                    view.newState {
+                        this.options = state.gameConfig.gameMode.options
+                    }
                 }
                 is GameState.Showdown -> {
-                    view.setHidden(false)
-                    view.setResults(state.results)
+                    view.newState {
+                        this.hidden = false
+                        this.results = state.results
+                    }
                 }
             }
         })
@@ -48,17 +51,37 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
     }
 
     override fun joinGame() {
-        gameDataSource.join()
+        console.log("HALLLLOOOOO")
+        console.log("Player+" + view.getState().playerName)
+        gameDataSource.joinRoom(view.getState().playerName)
+    }
+
+    override fun createNewRoom(roomName: String, gameModeId: Int) {
+        gameDataSource.createNewRoom(roomName)
+    }
+
+    override fun changeConfig() {
+        val state = view.getState()
+        val mode: GameMode = when (state.gameModeId) {
+            0 -> {
+                GameMode.Fibo()
+            }
+            1 -> {
+                GameMode.TShirt()
+            }
+            2 -> {
+                val options = state.customOptions.split(";")
+                GameMode.Custom(options)
+            }
+            else -> GameMode.Fibo()
+        }
+       val config = GameConfig(gameMode = mode)
+        gameDataSource.changeConfig(config)
     }
 
 
-
-    override fun startGame() {
-       // gameDataSource.createNewRoom(roomName)
-    }
-
-    override fun revealCards() {
-        gameDataSource.revealCards()
+    override fun showVotes() {
+        gameDataSource.showVotes()
     }
 
     override fun onSelectedVote(voteId: Int) {

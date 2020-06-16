@@ -1,4 +1,4 @@
-package de.jensklingenberg.showdown.web.components
+package showdown.web.common
 
 import org.w3c.dom.events.Event
 

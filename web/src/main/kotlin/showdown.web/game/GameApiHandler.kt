@@ -1,8 +1,6 @@
 package showdown.web.game
 
-import de.jensklingenberg.showdown.model.ClientCommandParser
-import de.jensklingenberg.showdown.model.ClientCommands
-import de.jensklingenberg.showdown.model.getClientCommandType
+import de.jensklingenberg.showdown.model.*
 import org.w3c.dom.MessageEvent
 import org.w3c.dom.WebSocket
 import org.w3c.dom.events.Event
@@ -22,38 +20,21 @@ class GameApiHandler {
         }
     }
 
-
     private fun onMessage(messageEvent: MessageEvent) {
 
-        val type = getClientCommandType(messageEvent.data.toString())
-        console.log("TYPE:" + type.toString() + " onMessage                " + messageEvent.data.toString())
-
-        val json = messageEvent.data.toString()
+        val type = getServerResponse(messageEvent.data.toString())
 
         when (type) {
-
-            ClientCommands.STATE_CHANGED -> {
-                val gameState = ClientCommandParser.getGameStateChangedCommand(json).state
-                observer.onGameStateChanged(gameState)
+            is ServerResponse.PlayerEvent -> {
+                observer.onPlayerEventChanged(type.playerResponseEvent)
+            }
+            is ServerResponse.GameStateChanged -> {
+                observer.onGameStateChanged(type.state)
+            }
+            is ServerResponse.ErrorEvent -> {
+                observer.onError(type)
             }
 
-            ClientCommands.ERROR -> {
-                val gameJoined = ClientCommandParser.getErrorCommand(json)
-                observer.onError(gameJoined)
-            }
-
-            ClientCommands.PLAYER_EVENT -> {
-                val gameState = ClientCommandParser.getPlayerEvent(json).response
-                observer.onPlayerEventChanged(gameState)
-            }
-            ClientCommands.MESSAGE, null -> {
-
-            }
-            ClientCommands.CARDS -> {
-                val gameState = ClientCommandParser.getPlayerCards(json)
-                observer.onPlayerCardRevealed(gameState)
-
-            }
         }
 
 

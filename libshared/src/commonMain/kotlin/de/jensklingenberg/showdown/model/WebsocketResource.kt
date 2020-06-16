@@ -5,19 +5,29 @@ import kotlinx.serialization.json.JsonConfiguration
 
 
 
-fun ServerRequest.ResetRequest.toJson(): String {
-    return Json(JsonConfiguration.Stable).stringify(ServerRequest.ResetRequest.serializer(), this)
-}
 
 fun ServerRequest.PlayerRequest.toJson(): String {
     return Json(JsonConfiguration.Stable).stringify(ServerRequest.PlayerRequest.serializer(), this)
 }
 
-fun getServerCommandType(toString: String): ServerRequestTypes {
+fun getServerCommandType(json: String): ServerRequestTypes {
 
     return ServerRequestTypes.values().firstOrNull() {
-        toString.startsWith("{\"id\":${it.ordinal}")
-    }?: ServerRequestTypes.UNKNOWN
+        json.startsWith("{\"id\":${it.ordinal}")
+    } ?: ServerRequestTypes.UNKNOWN
+}
+
+fun getServerRequest(json: String): ServerRequest? {
+    val type = getServerCommandType(json)
+    return when (type) {
+        ServerRequestTypes.PLAYEREVENT -> {
+            ServerCommandParser.getPlayerRequest(json)
+        }
+
+        else -> {
+            null
+        }
+    }
 }
 
 
