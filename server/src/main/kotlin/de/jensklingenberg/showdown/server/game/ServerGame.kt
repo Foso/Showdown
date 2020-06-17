@@ -7,23 +7,27 @@ import de.jensklingenberg.showdown.server.model.TempVote
 
 fun getDefaultConfig() = GameConfig(GameMode.Fibo(), true)
 
-class GameSource(private val server: GameServer, var gameConfig: GameConfig) {
+class Game(private val server: GameServer, var gameConfig: GameConfig) {
 
     private val playerList = mutableListOf<Player>()
-    private val tempVotes = arrayListOf<TempVote>()
-    var ownerID = 0
-    var gameState: GameState = GameState.Started
-    fun onReset() {
-        gameState = GameState.Started
-        tempVotes.clear()
+    private val votes = arrayListOf<TempVote>()
 
+    private var gameState: GameState = GameState.Started
+
+    val inactive = mutableListOf<Player>()
+
+    fun onRestart() {
+        gameState = GameState.Started
+        inactive.forEach {inactivePlayer->
+            playerList.removeIf { it.sessionId==inactivePlayer.sessionId }
+        }
+        inactive.clear()
+        votes.clear()
         sendMembers()
         sendGameStateChanged(gameState)
     }
 
-    fun addPlayer(sessionId: String, name: String) {
-        val newPlayerID = playerList.size
-        val player = Player(newPlayerID, name)
+    fun addPlayer(sessionId: String, name: String,player:Player) {
         playerList.add(player)
         server.onPlayerAdded(sessionId, player)
 
@@ -36,42 +40,56 @@ class GameSource(private val server: GameServer, var gameConfig: GameConfig) {
     fun changeConfig(gameConfig: GameConfig) {
         this.gameConfig = gameConfig
         //sendOptions()
-        tempVotes.clear()
+        votes.clear()
         sendGameStateChanged(GameState.GameConfigUpdate(gameConfig))
 
     }
 
 
-    fun onPlayerVoted(playerId: Int, voteId: Int) {
+    fun onPlayerVoted(playerId: String, voteId: Int) {
         if (gameState is GameState.Showdown) {
             return
         }
         println("player: " + playerId + "VOted: " + voteId)
-        tempVotes.removeIf { it.playerId == playerId }
-        tempVotes.add(TempVote(voteId, playerId))
+        votes.removeIf { it.playerId == playerId }
+        votes.add(TempVote(voteId, playerId))
         sendMembers()
         if (gameConfig.autoReveal) {
-            if (tempVotes.size == playerList.size) {
+            if (votes.size == playerList.size) {
                 showVotes()
             }
         }
     }
 
     fun onPlayerRejoined(sessionId: String, name: String) {
+        inactive.removeIf { it.sessionId==sessionId }
         sendMembers()
         sendGameStateChanged(GameState.GameConfigUpdate(gameConfig))
+    }
 
+    fun onPlayerLeft(sessionId: String) {
+        val findPlayer = playerList.find { it.sessionId==sessionId }
+        findPlayer?.let {
+            inactive.add(it)
+        }
+
+        sendMembers()
+        sendGameStateChanged(GameState.GameConfigUpdate(gameConfig))
     }
 
     private fun sendMembers() {
         val votesList = playerList.map { player ->
-
-            val voted = tempVotes.any { it.playerId == player.id }
-
+            val isInActive = inactive.any { it.sessionId== player.sessionId }
+            val inActiveText = if(isInActive){
+                "(Inactie)"
+            }else{
+                ""
+            }
+            val voted = votes.any { it.playerId == player.sessionId }
             val symbol = if (voted) {
-                "Voted"
+                "Voted $inActiveText"
             } else {
-                "?"
+                "? $inActiveText"
             }
 
             ClientVote(player.name, symbol)
@@ -81,17 +99,17 @@ class GameSource(private val server: GameServer, var gameConfig: GameConfig) {
 
     }
 
-    fun showVotes(playerId: Int) {
+    fun showVotes(sessionId: String) {
         showVotes()
     }
 
     private fun showVotes() {
 
-        val results = tempVotes.groupBy { it.voteId }.map {
+        val results = votes.groupBy { it.voteId }.map {
             val (votedId, tempVotesList) = it
             val voteText = gameConfig.gameMode.options[votedId].text
             val voters = tempVotesList.joinToString(separator = ", ") { temp ->
-                playerList.find { it.id == temp.playerId }?.name ?: ""
+                playerList.find { it.sessionId == temp.playerId }?.name ?: ""
             } + " (${tempVotesList.size} Voters)"
             Result(voteText, voters)
         }

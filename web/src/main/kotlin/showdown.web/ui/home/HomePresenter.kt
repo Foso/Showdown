@@ -73,9 +73,7 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
         gameDataSource.joinRoom(playerName,password)
     }
 
-    override fun createNewRoom(roomName: String, gameModeId: Int) {
-        gameDataSource.createNewRoom(roomName)
-    }
+
 
     override fun changeConfig() {
         val state = view.getState()

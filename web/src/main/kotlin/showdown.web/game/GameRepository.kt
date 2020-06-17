@@ -17,18 +17,13 @@ class GameRepository(private val gameApiHandler: GameApiHandler) : GameDataSourc
         gameApiHandler.start(this)
     }
 
-    override fun createNewRoom(roomName: String) {
-       // val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.CreateRoom(GameConfig( GameMode.Fibo()))).toJson()
-        //gameApiHandler.sendMessage(jsonData)
-    }
-
     override fun showVotes() {
         val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.ShowVotes()).toJson()
         gameApiHandler.sendMessage(jsonData)
     }
 
-    override fun onSelectedVote(i: Int) {
-        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.Voted(i)).toJson()
+    override fun onSelectedVote(voteId: Int) {
+        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.Voted(voteId)).toJson()
         gameApiHandler.sendMessage(jsonData)
     }
 

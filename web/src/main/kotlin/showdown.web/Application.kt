@@ -11,11 +11,12 @@ import showdown.web.game.GameDataSource
 import showdown.web.game.GameRepository
 import showdown.web.model.Route
 import showdown.web.ui.home.HomeView
+import showdown.web.ui.home.home
 import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.reflect.KClass
 
-
+//http://localhost:23567/room/hans
 class Application {
 
     private val routeList = listOf(
@@ -34,10 +35,6 @@ class Application {
             requireAll(kotlinext.js.require.context("kotlin", true, js("/\\.css$/")))
             render(document.getElementById("root")) {
 
-                //home()
-                footer {
-                    //bottomBar()
-                }
                 hashRouter {
                     switch {
                         routeList.forEach {
@@ -45,6 +42,7 @@ class Application {
                         }
                     }
                 }
+               // home()
             }
         }
     }

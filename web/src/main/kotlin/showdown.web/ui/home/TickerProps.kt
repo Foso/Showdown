@@ -8,6 +8,13 @@ import kotlin.js.Math
 import kotlin.math.abs
 import kotlin.math.floor
 
+/*
+
+style = kotlinext.js.js {
+                        this.textAlign = "right"
+                    }
+ */
+
 interface TickerProps : RProps {
     var startFrom: Int
 }

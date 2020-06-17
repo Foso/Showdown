@@ -13,6 +13,7 @@ import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.close
 import io.ktor.http.cio.websocket.readText
 import io.ktor.response.respond
+import io.ktor.response.respondRedirect
 import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
@@ -65,7 +66,8 @@ class ShowdownApplication {
             routing {
                 get("") {
                     val roomName = call.parameters["room"] ?: ""
-                    call.respond("I'm alive! Roomname:"+roomName)
+                    //call.respond("I'm alive! Roomname:"+roomName)
+                    call.respondRedirect("http://localhost:3001/#/game?room=hans")
                 }
 
                 get("hello") {
@@ -74,17 +76,14 @@ class ShowdownApplication {
                 get("room/{roomName}") {
                     val roomName = call.parameters["roomName"] ?: ""
                     server.createNewRoom(roomName)
-                    call.respond("I'm alive! Roomname:"+roomName)
+                    call.respondRedirect("http://localhost:3001/#/game?room=hans")
+
                 }
 
 
                 webSocket("showdown") {
                     val roomName = call.parameters["room"] ?: ""
                     val password = call.parameters["pw"] ?: ""
-
-                    println(roomName)
-
-
                     val session = call.sessions.get<ChatSession>()
 
                     // We check that we actually have a session. We should always have one,

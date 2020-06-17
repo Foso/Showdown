@@ -1,15 +1,20 @@
 package showdown.web.ui.home
 
-import challenge.usecase.MessageUseCase
+
 import kotlinx.css.Color
+import kotlinx.css.TextAlign
 import kotlinx.css.backgroundColor
+import kotlinx.css.textAlign
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
+import kotlinx.html.style
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonColor
 import materialui.components.button.enums.ButtonVariant
 import materialui.components.dialog.dialog
 import materialui.components.formcontrol.enums.FormControlVariant
+import materialui.components.list.list
+import materialui.components.listitem.listItem
 import materialui.components.menuitem.menuItem
 import materialui.components.textfield.textField
 import org.w3c.dom.HTMLInputElement
@@ -46,7 +51,7 @@ val gameModeOptions: List<Pair<String, Int>>
 
 class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract.View {
 
-    private val messageUseCase = MessageUseCase()
+   // private val messageUseCase = MessageUseCase()
     val admin = true
     private val presenter: HomeContract.Presenter by lazy {
         HomePresenter(this)
@@ -83,11 +88,29 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
         entryDialog()
         shareDialog()
 
-        messageUseCase.showErrorSnackbar(this, state.errorMessage, snackbarVisibility())
+       // messageUseCase.showErrorSnackbar(this, state.errorMessage, snackbarVisibility())
 
         toolbar()
 
         optionsList()
+        styledDiv {
+
+            list{
+                attrs {
+                    style = kotlinext.js.js {
+                        this.textAlign = "right"
+                    }
+
+                }
+                listItem{
+
+                    +"Hallo"
+                }
+                listItem{
+                    +"Ciao"
+                }
+            }
+        }
         participants()
 
 

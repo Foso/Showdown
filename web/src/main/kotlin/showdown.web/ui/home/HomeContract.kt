@@ -19,7 +19,6 @@ interface HomeContract {
         fun joinGame()
         fun showVotes()
         fun onSelectedVote(voteId: Int)
-        fun createNewRoom(roomName: String, gameModeId: Int)
         fun changeConfig()
 
     }

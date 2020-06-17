@@ -9,10 +9,8 @@ interface GameDataSource {
     fun observeGameState(): Observable<GameState>
     fun requestReset()
     fun observeErrors(): Observable<ShowdownError?>
-
-    fun createNewRoom(roomName: String)
     fun showVotes()
-    fun onSelectedVote(i: Int)
+    fun onSelectedVote(voteId: Int)
     fun changeConfig(gameConfig: GameConfig)
 }
 

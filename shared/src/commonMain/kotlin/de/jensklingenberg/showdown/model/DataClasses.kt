@@ -12,7 +12,7 @@ data class ClientVote(val playerName: String, val voteValue:String)
 class Option(val id:Int,val text:String)
 
 @Serializable
-data class Player(val id: Int, val name: String = "Unnamed")
+data class Player(val sessionId: String, val name: String = "Unnamed")
 
 @Serializable
 data class Result(val name:String,val voters:String)

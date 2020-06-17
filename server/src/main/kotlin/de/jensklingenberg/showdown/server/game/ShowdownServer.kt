@@ -21,8 +21,8 @@ import java.util.concurrent.atomic.AtomicInteger
 class ShowdownServer : GameServer {
 
     // private val gameSource = GameSource(this)
-    private val gameMap = mutableMapOf<String, GameSource>()
-    private val gameList = arrayListOf<GameSource>()
+    private val gameMap = mutableMapOf<String, Game>()
+    private val gameList = arrayListOf<Game>()
 
     /**
      * Atomic counter used to get unique user-names based on the maxiumum users the server had.
@@ -80,39 +80,32 @@ class ShowdownServer : GameServer {
         }
     }
 
-    /**
-     * Handles a [member] idenitified by its session id renaming [to] a specific name.
-     */
-    suspend fun memberRenamed(member: String, to: String) {
-        // Re-sets the member name.
-        val oldName = memberNames.put(member, to) ?: member
-        // Notifies everyone in the server about this change.
-        broadcast("server", "Member renamed from $oldName to $to")
-    }
+
 
     /**
-     * Handles that a [member] with a specific [socket] left the server.
+     * Handles that a [sessionId] with a specific [socket] left the server.
      */
-    suspend fun memberLeft(member: String, socket: WebSocketSession) {
+    suspend fun memberLeft(sessionId: String, socket: WebSocketSession) {
         // Removes the socket connection for this member
-        val connections = members[member]
+        val connections = members[sessionId]
         connections?.remove(socket)
 
         // If no more sockets are connected for this member, let's remove it from the server
         // and notify the rest of the users about this event.
         if (connections != null && connections.isEmpty()) {
-            val name = memberNames.remove(member) ?: member
+            val playerId = playersSessions[sessionId]?.sessionId ?: -1
+
+            gameMap.forEach {
+                it.value.onPlayerLeft(sessionId)
+            }
+
+            val name = memberNames.remove(sessionId) ?: sessionId
+            println("Member left: $name.")
+
             broadcast("server", "Member left: $name.")
         }
     }
 
-
-    /**
-     * Handles the 'help' command by sending the member a list of available commands.
-     */
-    suspend fun help(sender: String) {
-        members[sender]?.send(Frame.Text("[server::help] Possible commands are: /user, /help and /who"))
-    }
 
     /**
      * Handles sending to a [recipient] from a [sender] a [message].
@@ -200,7 +193,7 @@ class ShowdownServer : GameServer {
         println("Receiver ROOM:" + roomName + " PW: " + password)
         val gameSource = gameMap[roomName]
         // val gameSource = gameList.getOrNull(0)
-        val playerId = playersSessions[sessionId]?.id ?: -1
+        val playerId = playersSessions[sessionId]?.sessionId ?: -1
         val type = getServerRequest(command)
 
         if (type !is ServerRequest.PlayerRequest) {
@@ -217,7 +210,7 @@ class ShowdownServer : GameServer {
                     is PlayerRequestEvent.JoinGameRequest -> {
                         if (event.password == "geheim") {
                             if (!playersSessions.containsKey(sessionId)) {
-                                gameSource?.addPlayer(sessionId, event.playerName)
+                                gameSource?.addPlayer(sessionId, event.playerName, Player(sessionId,event.playerName))
                             } else {
                                 gameSource?.onPlayerRejoined(sessionId, event.playerName)
                             }
@@ -230,13 +223,13 @@ class ShowdownServer : GameServer {
                         if (playerId == -1) {
                             return
                         }
-                        gameSource?.showVotes(playerId)
+                        gameSource?.showVotes(sessionId)
                     }
                     is PlayerRequestEvent.Voted -> {
-                        gameSource?.onPlayerVoted(playerId, event.voteId)
+                        gameSource?.onPlayerVoted(sessionId, event.voteId)
                     }
                     is PlayerRequestEvent.RestartRequest -> {
-                        gameSource?.onReset()
+                        gameSource?.onRestart()
                     }
                     is PlayerRequestEvent.ChangeConfig -> {
                         gameSource?.changeConfig(event.gameConfig)
@@ -249,40 +242,7 @@ class ShowdownServer : GameServer {
         }
         // game.makeMove(playerId,)
         // We are going to handle commands (text starting with '/') and normal messages
-        when {
-            command.startsWith("/newGame") -> {
 
-            }
-
-            // The command `user` allows the user to set its name.
-            command.startsWith("/user") -> {
-                // We strip the command part to get the rest of the parameters.
-                // In this case the only parameter is the user's newName.
-                val newName = command.removePrefix("/user").trim()
-                // We verify that it is a valid name (in terms of length) to prevent abusing
-                when {
-                    newName.isEmpty() -> sendTo(sessionId, "server::help", "/user [newName]")
-                    newName.length > 50 -> sendTo(
-                            sessionId,
-                            "server::help",
-                            "new name is too long: 50 characters limit"
-                    )
-                    else -> memberRenamed(sessionId, newName)
-                }
-            }
-            // The command 'help' allows users to get a list of available commands.
-            command.startsWith("/help") -> help(sessionId)
-            // If no commands matched at this point, we notify about it.
-            command.startsWith("/") -> sendTo(
-                    sessionId,
-                    "server::help",
-                    "Unknown command ${command.takeWhile { !it.isWhitespace() }}"
-            )
-            // Handle a normal message.
-            else -> {
-                //message(id, command)
-            }
-        }
     }
 
     override fun sendBroadcast(data: String) {
@@ -291,8 +251,8 @@ class ShowdownServer : GameServer {
         }
     }
 
-    override fun sendData(playerId: Int, data: String) {
-        val sessionId = playersSessions.filter { it.value.id == playerId }.keys.first()
+    override fun sendData(playerId: String, data: String) {
+        val sessionId = playersSessions.filter { it.value.sessionId == playerId }.keys.first()
 
         GlobalScope.launch {
             sendMessage(sessionId, data)
@@ -305,7 +265,7 @@ class ShowdownServer : GameServer {
     }
 
     override fun createNewRoom(roomName: String) {
-        val game = GameSource(this, getDefaultConfig())
+        val game = Game(this, getDefaultConfig())
 
         gameMap.putIfAbsent(roomName, game)
         gameList.add(game)

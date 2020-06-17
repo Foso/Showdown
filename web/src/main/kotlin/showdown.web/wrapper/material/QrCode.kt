@@ -1,7 +1,5 @@
 package showdown.web.wrapper.material
 
-
-import challenge.wrapper.material.AppBarProps
 import react.RClass
 import react.RProps
 

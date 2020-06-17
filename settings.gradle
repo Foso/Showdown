@@ -25,4 +25,4 @@ pluginManagement {
 
 rootProject.name = 'showdown'
 
-include ':server', ':web', ':libshared'
+include ':server', ':web', ':shared'
