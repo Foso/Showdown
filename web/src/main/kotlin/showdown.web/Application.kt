@@ -19,6 +19,8 @@ import kotlin.reflect.KClass
 //http://localhost:23567/room/hans
 class Application {
 
+    private val rootElement= "root"
+
     private val routeList = listOf(
             Route("/", HomeView::class, true),
             Route("/game", HomeView::class, true)
@@ -33,7 +35,7 @@ class Application {
     init {
         window.onload = {
             requireAll(kotlinext.js.require.context("kotlin", true, js("/\\.css$/")))
-            render(document.getElementById("root")) {
+            render(document.getElementById(rootElement)) {
 
                 hashRouter {
                     switch {
