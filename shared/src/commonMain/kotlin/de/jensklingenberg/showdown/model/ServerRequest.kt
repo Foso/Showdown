@@ -14,19 +14,19 @@ enum class ServerRequestTypes {
 val list3: List<String> = listOf("Hund", "Katze", "Maus", "Bär", "Tiger")
 
 @Serializable
-sealed class GameMode(open val options: List<Option>) {
+sealed class VoteOptions(open val options: List<Option>) {
     @Serializable
-    class Fibo : GameMode(listOf("0", "1", "2", "3", "5", "8", "13", "21", "34", "55", "89", "?").mapIndexed { index, s ->
+    class Fibo : VoteOptions(listOf("0", "1", "2", "3", "5", "8", "13", "21", "34", "55", "89", "?").mapIndexed { index, s ->
         Option(index, s)
     })
 
     @Serializable
-    class TShirt : GameMode(listOf("xxs", "xs", "s", "m", "l", "xl", "xxl", "?").mapIndexed { index, s ->
+    class TShirt : VoteOptions(listOf("xxs", "xs", "s", "m", "l", "xl", "xxl", "?").mapIndexed { index, s ->
         Option(index, s)
     })
 
     @Serializable
-    class Custom(val list2: List<String> = list3) : GameMode(list2.mapIndexed { index, s ->
+    class Custom(val list2: List<String> = list3) : VoteOptions(list2.mapIndexed { index, s ->
         Option(index, s)
     })
 }
@@ -35,7 +35,7 @@ sealed class GameMode(open val options: List<Option>) {
 sealed class PlayerRequestEvent {
 
     @Serializable
-    class JoinGameRequest(val playerName: String, val password: String) : PlayerRequestEvent()
+    class JoinGameRequest(val playerName: String, val password: String,val roomName: String) : PlayerRequestEvent()
 
     @Serializable
     class Voted(val voteId: Int) : PlayerRequestEvent()
@@ -47,7 +47,7 @@ sealed class PlayerRequestEvent {
     class RestartRequest : PlayerRequestEvent()
 
     @Serializable
-    class ChangeConfig(val gameConfig: GameConfig) : PlayerRequestEvent()
+    class ChangeConfig(val clientGameConfig: ClientGameConfig) : PlayerRequestEvent()
 }
 
 @Serializable

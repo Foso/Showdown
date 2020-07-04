@@ -30,11 +30,11 @@ repositories {
     jcenter()
 }
 
-mainClassName = 'ges.example.kotlinserver.AppKt'
+mainClassName = 'de.jensklingenberg.showdown.server.server.ShowdownApplicationKt'
 task stage {
     dependsOn installDist
 }
-
+def klockVersion = "1.10.3"
 dependencies {
     implementation project(":shared")
 
@@ -45,6 +45,7 @@ dependencies {
     implementation "io.ktor:ktor-websockets:$ktor_version"
     implementation "com.squareup.moshi:moshi-kotlin:${libs.moshikotlin}"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0"
+    implementation("com.soywiz.korlibs.klock:klock-jvm:$klockVersion")
 
 }
 

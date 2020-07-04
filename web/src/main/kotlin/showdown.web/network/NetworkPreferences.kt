@@ -31,10 +31,10 @@ class NetworkPreferences {
 
     fun websocketUrl(): String {
 
-            //http://localhost:3001/#/game?room=MyRoom&pw=Hallo
-            val socketPath =window.location.toString().substringAfter("game",missingDelimiterValue = "")
-            console.log( hostname+"showdown"+socketPath)
-          return   hostname+"showdown"+socketPath
+            //http://localhost:3001/#/room=MyRoom&pw=Hallo
+            val socketPath =window.location.toString().substringAfter("#/",missingDelimiterValue = "").replace("/","=")
+            console.log( hostname+"showdown?"+socketPath)
+          return   hostname+"showdown?"+socketPath
 
 
         }

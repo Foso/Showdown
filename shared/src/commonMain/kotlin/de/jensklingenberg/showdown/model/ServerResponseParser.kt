@@ -20,8 +20,6 @@ class ServerResponseParser {
             return json.parse(ServerResponse.ErrorEvent.serializer(), jsonStr)
         }
 
-
-
         fun toJson(cmd: ServerResponse.ErrorEvent): String {
             return json.stringify(ServerResponse.ErrorEvent.serializer(), cmd)
         }

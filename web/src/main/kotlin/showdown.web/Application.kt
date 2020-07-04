@@ -22,7 +22,7 @@ class Application {
     private val rootElement= "root"
 
     private val routeList = listOf(
-            Route("/", HomeView::class, true),
+            Route("*", HomeView::class, true),
             Route("/game", HomeView::class, true)
 
     )

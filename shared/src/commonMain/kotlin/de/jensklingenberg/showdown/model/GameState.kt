@@ -25,7 +25,7 @@ sealed class GameState {
 
 
     @Serializable
-    class GameConfigUpdate(val gameConfig: GameConfig) : GameState()
+    class GameConfigUpdate(val clientGameConfig: ClientGameConfig) : GameState()
 
 
 

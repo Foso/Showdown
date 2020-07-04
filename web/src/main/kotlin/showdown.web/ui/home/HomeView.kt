@@ -1,10 +1,9 @@
 package showdown.web.ui.home
 
 
+import com.soywiz.klock.DateTime
 import kotlinx.css.Color
-import kotlinx.css.TextAlign
 import kotlinx.css.backgroundColor
-import kotlinx.css.textAlign
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.style
@@ -15,22 +14,21 @@ import materialui.components.dialog.dialog
 import materialui.components.formcontrol.enums.FormControlVariant
 import materialui.components.list.list
 import materialui.components.listitem.listItem
-import materialui.components.menuitem.menuItem
 import materialui.components.textfield.textField
 import org.w3c.dom.HTMLInputElement
-import org.w3c.dom.events.Event
 import react.RBuilder
 import react.RComponent
 import react.RProps
 import react.dom.div
 import react.dom.h2
-import react.dom.key
+import react.dom.h3
 import react.dom.p
 import react.setState
-
 import showdown.web.wrapper.material.QrCode
 import styled.css
 import styled.styledDiv
+import kotlin.browser.window
+import kotlin.math.floor
 
 
 interface MyProps : RProps
@@ -42,16 +40,11 @@ class Navigation {
 
     }
 }
-val gameModeOptions: List<Pair<String, Int>>
-    get() = listOf(
-            "Fibonacci" to 0,
-            "T-Shirt" to 1,
-            "Custom" to 2
-    )
+
 
 class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract.View {
 
-   // private val messageUseCase = MessageUseCase()
+    // private val messageUseCase = MessageUseCase()
     val admin = true
     private val presenter: HomeContract.Presenter by lazy {
         HomePresenter(this)
@@ -68,18 +61,20 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
         showEntryPopup = true
         showShareDialog = false
         selectedOptionId = -1
-        timerStart = 0
-        roomPassword="geheim"
-
+        roomPassword = "geheim"
+        timerStart = DateTime.now()
+        diffSecs = 0.0
 
     }
 
-    private fun handleOnChange(prop: String): (Event) -> Unit = { event ->
-        val value = event.target.asDynamic().value
-        setState { asDynamic()[prop] = value }
-    }
 
     override fun componentDidMount() {
+        window.setInterval({
+            setState {
+                val nowDate = DateTime.now()
+                diffSecs = (nowDate - state.timerStart).seconds
+            }
+        }, 1000)
         presenter.onCreate()
     }
 
@@ -87,36 +82,34 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
 
         entryDialog()
         shareDialog()
-
-       // messageUseCase.showErrorSnackbar(this, state.errorMessage, snackbarVisibility())
-
         toolbar()
 
         optionsList()
         styledDiv {
 
-            list{
+            list {
                 attrs {
                     style = kotlinext.js.js {
                         this.textAlign = "right"
                     }
 
                 }
-                listItem{
-
-                    +"Hallo"
-                }
-                listItem{
-                    +"Ciao"
-                }
             }
         }
         participants()
-
+        results()
 
 
         if (admin) {
-            adminMenu()
+            adminMenu(state.gameModeId) { gameModeId, gameOptions ->
+                setState {
+                    this.gameModeId = gameModeId
+                    this.customOptions = gameOptions
+                }
+                log("GameMod" + gameModeId + " " + gameOptions)
+                presenter.changeConfig(gameModeId, gameOptions)
+            }
+            //adminMenu()
         }
     }
 
@@ -216,35 +209,44 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
         h2 {
             +"Members"
         }
+
         div {
             state.players.forEach {
-
-                p {
-                    attrs {
-                        text("Player: " + it.playerName + " Status:" + it.voteValue + "\n")
-                        onClickFunction = {
-
-                        }
-
-                    }
+                h3 {
+                    +("Player: " + it.playerName + " Status:" + it.voteValue + "\n")
                 }
-
             }
+        }
+    }
 
-            h2 {
-                +"Result:"
-            }
+    private fun RBuilder.results() {
 
-            state.results.forEachIndexed { index, result ->
-                p {
-                    +"${index + 1}) \"${result.name}\" ${result.voters}"
-                }
 
+        h2 {
+            +"Result:"
+        }
+
+        state.results.forEachIndexed { index, result ->
+            p {
+                +"${index + 1}) \"${result.name}\" ${result.voters}"
             }
 
         }
 
-
+        /**
+         *  ApexChart {
+        attrs {
+        width = "50%"
+        type = "bar"
+        series = arrayOf(Serie("series-1", arrayOf(3, 4)))
+        options = ChartOptions(
+        chart = Chart("basic-bar"),
+        plotOptions = PlotOptions(Bar(horizontal = true)),
+        xaxis = Xaxis(arrayOf("5", "8"))
+        )
+        }
+        }
+         */
     }
 
     private fun RBuilder.optionsList() {
@@ -276,75 +278,6 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
         }
     }
 
-    private fun RBuilder.adminMenu() {
-
-
-        div {
-            textField {
-                attrs {
-                    select = true
-                    label { +"GameMode" }
-                    // classes("$marginStyle $textFieldStyle")
-                    inputProps {
-                        attrs {
-                            //  startAdornment(startAdornment("Kg"))
-                        }
-                    }
-                    value(state.gameModeId)
-                    onChangeFunction = { event ->
-                        val value = event.target.asDynamic().value
-                        setState {
-                            this.gameModeId = value
-                        }
-                    }
-                }
-                gameModeOptions.forEach {
-                    menuItem {
-                        attrs {
-                            key = it.first
-                            setProp("value", it.second)
-                        }
-                        +it.first
-                    }
-                }
-            }
-        }
-
-        if (state.gameModeId == 2) {
-            div {
-                textField {
-                    attrs {
-                        variant = FormControlVariant.filled
-                        label {
-                            +"Insert Custom options"
-                        }
-                        value(state.customOptions)
-                        onChangeFunction = {
-                            val target = it.target as HTMLInputElement
-
-                            setState {
-                                this.customOptions = target.value
-                            }
-                        }
-                    }
-
-                }
-            }
-        }
-
-        p {
-            button {
-                attrs {
-                    variant = ButtonVariant.contained
-                    color = ButtonColor.primary
-                    text("Save")
-                    onClickFunction = {
-                        presenter.changeConfig()
-                    }
-                }
-            }
-        }
-    }
 
     private fun RBuilder.toolbar() {
 
@@ -364,7 +297,7 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
                         setState {
                             this.showShareDialog = true
                         }
-                        //presenter.createNewRoom("hans", 0)
+
                     }
                 }
             }
@@ -389,7 +322,9 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
                     }
                 }
             }
-            ticker(0)
+
+            +"Estimation time: ${floor(state.diffSecs)} seconds. "
+
         }
     }
 
@@ -402,9 +337,7 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
         }
     }
 
-    override fun getState(): HomeContract.HomeViewState {
-        return state
-    }
+    override fun getState(): HomeContract.HomeViewState = state
 }
 
 

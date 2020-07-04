@@ -24,9 +24,7 @@ class GameApiHandler {
 
     private fun onMessage(messageEvent: MessageEvent) {
 
-        val type = getServerResponse(messageEvent.data.toString())
-
-        when (type) {
+        when (val type = getServerResponse(messageEvent.data.toString())) {
             is ServerResponse.PlayerEvent -> {
                 observer.onPlayerEventChanged(type.playerResponseEvent)
             }

@@ -9,5 +9,5 @@ config.devServer = {
         "poll": 1000
     },
     open: true,
-    historyApiFallback: true
+    historyApiFallback: true, //publicPath: "/web"
 };

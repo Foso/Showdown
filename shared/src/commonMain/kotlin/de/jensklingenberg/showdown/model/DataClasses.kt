@@ -2,8 +2,11 @@ package de.jensklingenberg.showdown.model
 
 import kotlinx.serialization.Serializable
 
+
+class ServerConfig(var voteOptions: VoteOptions = VoteOptions.Fibo(), val autoReveal: Boolean = false, var createdAt:String)
+
 @Serializable
-data class GameConfig(var gameMode: GameMode = GameMode.Fibo(),  val autoReveal: Boolean = true)
+data class ClientGameConfig(var voteOptions: VoteOptions = VoteOptions.Fibo(), val autoReveal: Boolean = false, var createdAt:String)
 
 @Serializable
 data class ClientVote(val playerName: String, val voteValue:String)

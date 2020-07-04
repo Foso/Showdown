@@ -1,7 +1,7 @@
 package showdown.web.ui.home
 
+import com.soywiz.klock.DateTime
 import de.jensklingenberg.showdown.model.ClientVote
-import de.jensklingenberg.showdown.model.GameConfig
 import de.jensklingenberg.showdown.model.Option
 import de.jensklingenberg.showdown.model.Result
 
@@ -19,7 +19,7 @@ interface HomeContract {
         fun joinGame()
         fun showVotes()
         fun onSelectedVote(voteId: Int)
-        fun changeConfig()
+        fun changeConfig(gameModeId: Int, gameOptions: String)
 
     }
 
@@ -35,8 +35,10 @@ interface HomeContract {
         var showEntryPopup:Boolean
         var showShareDialog: Boolean
         var selectedOptionId: Int
-        var timerStart: Int
         var roomPassword: String
+        var timerStart : DateTime
+        var diffSecs : Double
+
 
     }
 }

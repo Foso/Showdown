@@ -52,8 +52,7 @@ fun getClientCommandType(toString: String): ServerResponseTypes {
 }
 
 fun getServerResponse(json:String): ServerResponse? {
-    val type = getClientCommandType(json)
-   return when(type){
+    return when(getClientCommandType(json)){
         ServerResponseTypes.STATE_CHANGED -> {
             ServerResponseParser.getGameStateChangedCommand(json)
         }

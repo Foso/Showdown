@@ -31,15 +31,16 @@ fun main() {
 
 class ShowdownApplication {
 
-    val server = ShowdownServer()
+    private val server = ShowdownServer()
 
     init {
         start()
     }
 
-    fun start() {
+    private fun start() {
         val port = System.getenv("PORT")?.toInt() ?: 23567
         println("SERVER STARTED on port: " + port)
+        println("http://localhost:23567/room/jens")
 
 
         embeddedServer(Netty, port) {
@@ -75,8 +76,8 @@ class ShowdownApplication {
                 }
                 get("room/{roomName}") {
                     val roomName = call.parameters["roomName"] ?: ""
-                    server.createNewRoom(roomName)
-                    call.respondRedirect("http://localhost:3001/#/game?room=hans")
+                   // server.createNewRoom(roomName)
+                    call.respondRedirect("http://localhost:3001/#/room=$roomName")
 
                 }
 

@@ -27,17 +27,17 @@ class GameRepository(private val gameApiHandler: GameApiHandler) : GameDataSourc
         gameApiHandler.sendMessage(jsonData)
     }
 
-    override fun changeConfig(gameConfig: GameConfig) {
-        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.ChangeConfig(gameConfig)).toJson()
+    override fun changeConfig(clientGameConfig: ClientGameConfig) {
+        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.ChangeConfig(clientGameConfig)).toJson()
         gameApiHandler.sendMessage(jsonData)
     }
 
     override fun observeGameState(): Observable<GameState> = gameStateSubject
 
-    override fun joinRoom(name:String,password:String) {
+    override fun joinRoom(name:String,password:String,roomName:String) {
         console.log("joinRoom+"+name)
 
-        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.JoinGameRequest(name,password)).toJson()
+        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.JoinGameRequest(name,"geheim",roomName)).toJson()
         gameApiHandler.sendMessage(jsonData)
     }
 
