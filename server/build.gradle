@@ -51,7 +51,7 @@ shadowJar {
     }
 }
 task stage {
-    dependsOn clean,war,installDist
+    dependsOn clean,war,installShadowDist
 }
 
 
