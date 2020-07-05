@@ -1,1 +1,1 @@
-web: server/build/install/server/bin/server
+web: server/build/libs/server-1.0-SNAPSHOT.jar
