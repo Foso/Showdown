@@ -26,7 +26,7 @@ class NetworkPreferences {
 
     else {
         console.log("HOST " + hostUri)
-        "wss://hidden-plateau-72953.herokuapp.com/"
+        "wss://shwdwn.herokuapp.com/"
     }
 
     fun websocketUrl(): String {
