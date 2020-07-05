@@ -24,7 +24,6 @@ apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'java'
 apply plugin: 'kotlin'
 apply plugin: 'application'
-apply plugin: 'war'
 
 sourceCompatibility = 1.8
 
@@ -33,17 +32,6 @@ repositories {
     jcenter()
 }
 
-mainClassName = 'io.ktor.server.netty.EngineMain'
-
-jar {
-    manifest {
-        attributes "Main-Class": "$mainClassName"
-    }
-    zip64 = true
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-}
 
 shadowJar {
     manifest {
@@ -51,7 +39,7 @@ shadowJar {
     }
 }
 task stage {
-    dependsOn clean,war,installShadowDist
+    dependsOn clean,installShadowDist
 }
 
 
@@ -77,9 +65,5 @@ compileTestKotlin {
 }
 
 build{
-
-
     dependsOn(shadowJar)
-
-
 }
