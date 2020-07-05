@@ -29,6 +29,9 @@ sourceCompatibility = 1.8
 jar {
     baseName = 'showdownktor'
     version = '1.0'
+    manifest {
+        attributes 'Main-Class': 'de.jensklingenberg.showdown.server.server.ShowdownApplicationKt'
+    }
 }
 
 repositories {
