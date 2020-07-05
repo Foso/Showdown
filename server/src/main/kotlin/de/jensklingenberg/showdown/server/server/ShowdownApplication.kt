@@ -72,7 +72,7 @@ class ShowdownApplication {
                 get("") {
                     val roomName = call.parameters["room"] ?: ""
                     //call.respond("I'm alive! Roomname:"+roomName)
-                    call.respondRedirect("http://localhost:3001/#/game?room=hans")
+                    call.respond(HttpStatusCode.Accepted, "Its working ")
                 }
 
                 get("hello") {
