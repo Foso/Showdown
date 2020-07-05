@@ -38,8 +38,7 @@ class ShowdownApplication {
     init {
         start()
     }
-    fun readFileUsingGetResource(fileName: String)
-            = this::class.java.getResource(fileName).readText(Charsets.UTF_8)
+
 
     private fun start() {
         val port = System.getenv("PORT")?.toInt() ?: 23567

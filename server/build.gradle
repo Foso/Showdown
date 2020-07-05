@@ -9,6 +9,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:5.0.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -19,37 +20,49 @@ plugins {
 version '1.0-SNAPSHOT'
 group 'ges.example'
 
-
+apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'java'
 apply plugin: 'kotlin'
 apply plugin: 'application'
+apply plugin: 'war'
 
 sourceCompatibility = 1.8
 
-jar {
-    baseName = 'showdownktor'
-    version = '1.0'
-    manifest {
-        attributes 'Main-Class': 'de.jensklingenberg.showdown.server.server.ShowdownApplicationKt'
-    }
-}
 
 repositories {
     jcenter()
 }
 
-mainClassName = 'de.jensklingenberg.showdown.server.server.ShowdownApplicationKt'
-task stage {
-    dependsOn installDist
+mainClassName = 'io.ktor.server.netty.EngineMain'
+
+jar {
+    manifest {
+        attributes "Main-Class": "$mainClassName"
+    }
+    zip64 = true
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
+
+shadowJar {
+    manifest {
+        attributes 'Main-Class': 'de.jensklingenberg.showdown.server.server.ShowdownApplicationKt'
+    }
+}
+task stage {
+    dependsOn clean,war,installDist
+}
+
+
 def klockVersion = "1.10.3"
 dependencies {
     implementation project(":shared")
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile "io.ktor:ktor-server-netty:$ktor_version"
-    compile "io.ktor:ktor-gson:$ktor_version"
+    implementation "io.ktor:ktor-server-netty:$ktor_version"
+    implementation "io.ktor:ktor-gson:$ktor_version"
     implementation "io.ktor:ktor-websockets:$ktor_version"
     implementation "com.squareup.moshi:moshi-kotlin:${libs.moshikotlin}"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0"
