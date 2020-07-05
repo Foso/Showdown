@@ -2,6 +2,7 @@ package de.jensklingenberg.showdown.server.server
 
 import de.jensklingenberg.showdown.server.model.ChatSession
 import de.jensklingenberg.showdown.server.game.ShowdownServer
+import de.jensklingenberg.showdown.server.model.Room
 import io.ktor.application.ApplicationCallPipeline
 import io.ktor.application.call
 import io.ktor.application.install
@@ -12,8 +13,8 @@ import io.ktor.http.cio.websocket.CloseReason
 import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.close
 import io.ktor.http.cio.websocket.readText
-import io.ktor.response.respond
-import io.ktor.response.respondRedirect
+import io.ktor.http.content.*
+import io.ktor.response.*
 import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
@@ -23,6 +24,7 @@ import io.ktor.util.generateNonce
 import io.ktor.websocket.WebSockets
 import io.ktor.websocket.webSocket
 import kotlinx.coroutines.channels.consumeEach
+import java.io.File
 
 fun main() {
     ShowdownApplication()
@@ -36,11 +38,13 @@ class ShowdownApplication {
     init {
         start()
     }
+    fun readFileUsingGetResource(fileName: String)
+            = this::class.java.getResource(fileName).readText(Charsets.UTF_8)
 
     private fun start() {
         val port = System.getenv("PORT")?.toInt() ?: 23567
         println("SERVER STARTED on port: " + port)
-        println("http://localhost:23567/room/jens")
+        println("http://localhost:$port/room/jens/")
 
 
         embeddedServer(Netty, port) {
@@ -74,10 +78,17 @@ class ShowdownApplication {
                 get("hello") {
                     call.respond(HttpStatusCode.Accepted, "Hello ")
                 }
-                get("room/{roomName}") {
+                get("room/{roomName}/{param...}") {
                     val roomName = call.parameters["roomName"] ?: ""
-                   // server.createNewRoom(roomName)
-                    call.respondRedirect("http://localhost:3001/#/room=$roomName")
+                    val roomNamepar = call.parameters["param"] ?: "index.html"
+                    val res=   this.javaClass.getResource("/web/$roomNamepar").file
+                   call.respondFile( File(res))
+                }
+
+                static("game") {
+
+                 //   staticRootFolder = File("/web")
+                    resources("web")
 
                 }
 
@@ -110,7 +121,7 @@ class ShowdownApplication {
                                 // At this point we have context about this connection, the session, the text and the server.
                                 // So we have everything we need.
 
-                                server.receivedMessage(session.id, frame.readText(),roomName,password)
+                                server.receivedMessage(session.id, frame.readText(), Room(roomName,password))
                             }
                         }
                     } finally {

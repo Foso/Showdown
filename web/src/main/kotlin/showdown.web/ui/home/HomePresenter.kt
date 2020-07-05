@@ -50,10 +50,6 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
                         this.results = emptyList()
                         this.selectedOptionId=-1
                         this.options = gameState.clientGameConfig.voteOptions.options
-                        gameState.clientGameConfig.voteOptions.options.forEach {
-                            console.log("HIIII "+it.text)
-                        }
-
                         this.timerStart= DateTime.fromString(gameState.clientGameConfig.createdAt).utc
                     }
                 }
@@ -77,8 +73,6 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
        val playerName=  view.getState().playerName
         val password=  view.getState().roomPassword
 
-        console.log("HALLLLOOOOO")
-        console.log("Player+" +password )
         gameDataSource.joinRoom(playerName,password,"jens")
     }
 

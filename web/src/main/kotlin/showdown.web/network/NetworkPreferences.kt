@@ -19,9 +19,9 @@ class NetworkPreferences {
     val hostname = if (hostUri.contains("localhost")) {
 
         console.log("HOST " + window.location.toString().substringAfter("game?",missingDelimiterValue = ""))
-        "ws://localhost:23567/"
+        "ws://192.168.178.56:23567/"
     } else if(hostUri.startsWith("http://192.")) {
-        "ws://192.168.178.58:23567/"
+        "ws://192.168.178.56:23567/"
     }
 
     else {

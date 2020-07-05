@@ -6,16 +6,17 @@ import de.jensklingenberg.showdown.model.*
 
 import de.jensklingenberg.showdown.server.model.TempVote
 
-fun getDefaultConfig() = ClientGameConfig(VoteOptions.Fibo(), false,createdAt = DateTime.now().utc.toString())
+fun getDefaultConfig(roomName: String) = ServerConfig(VoteOptions.Fibo(), false,createdAt = DateTime.now().utc.toString(),
+    roomName = roomName
+)
 //http://localhost:23567/room/hans
-class Game(private val server: GameServer, var clientGameConfig: ClientGameConfig) {
+class Game(private val server: GameServer, var gameConfig: ServerConfig) {
 
     private val playerList = mutableListOf<Player>()
     private val votes = arrayListOf<TempVote>()
     private var gameState: GameState = GameState.Started
     private val inactive = mutableListOf<Player>()
-    val loggit = true
- val players : ArrayList<String> = arrayListOf()
+    private val loggit = true
 
     fun restart() {
         logm("restart")
@@ -35,24 +36,35 @@ class Game(private val server: GameServer, var clientGameConfig: ClientGameConfi
         }
     }
 
-    fun addPlayer( player: Player) {
+    fun playerJoined(player: Player) {
 
-        logm("addPlayer "+player.name)
-        playerList.add(player)
-        server.onPlayerAdded(player.sessionId, player)
+        if(playerList.any{it.sessionId==player.sessionId}){
+            onPlayerRejoined(player.sessionId,player.name)
+        }else{
+            logm("addPlayer "+player.name +"To Room"+gameConfig.roomName)
+            playerList.add(player)
+            server.onPlayerAdded(player.sessionId, player)
 
-        sendPlayerEvent(PlayerResponseEvent.JOINED(player))
+            sendPlayerEvent(PlayerResponseEvent.JOINED(player))
+            sendMembers()
+            sendGameStateChanged(GameState.GameConfigUpdate(gameConfig.toClient()))
+        }
+
+
+    }
+
+    fun onPlayerRejoined(sessionId: String, name: String) {
+        logm("onPlayerRejoined "+name)
+        inactive.removeIf { it.sessionId == sessionId }
         sendMembers()
-        sendGameStateChanged(GameState.GameConfigUpdate(clientGameConfig))
-
+        sendGameStateChanged(GameState.GameConfigUpdate(gameConfig.toClient()))
     }
 
     fun changeConfig(clientGameConfig: ClientGameConfig) {
         logm("changeConfig ")
-        this.clientGameConfig = clientGameConfig.copy(createdAt =  DateTime.now().utc.toString())
-        //sendOptions()
+        this.gameConfig = gameConfig.copy(createdAt =  DateTime.now().utc.toString(),autoReveal = clientGameConfig.autoReveal,voteOptions = clientGameConfig.voteOptions)
         votes.clear()
-        gameState = GameState.GameConfigUpdate( this.clientGameConfig)
+        gameState = GameState.GameConfigUpdate( this.gameConfig.toClient())
         sendGameStateChanged(gameState)
         sendMembers()
     }
@@ -68,19 +80,14 @@ class Game(private val server: GameServer, var clientGameConfig: ClientGameConfi
         votes.removeIf { it.playerId == playerId }
         votes.add(TempVote(voteId, playerId))
         sendMembers()
-        if (clientGameConfig.autoReveal) {
+        if (gameConfig.autoReveal) {
             if (votes.size == playerList.size) {
                 showVotes()
             }
         }
     }
 
-    fun onPlayerRejoined(sessionId: String, name: String) {
-        logm("onPlayerVoted "+name)
-        inactive.removeIf { it.sessionId == sessionId }
-        sendMembers()
-        sendGameStateChanged(GameState.GameConfigUpdate(clientGameConfig))
-    }
+
 
     fun onPlayerLeft(sessionId: String) {
         val findPlayer = playerList.find { it.sessionId == sessionId }
@@ -89,7 +96,13 @@ class Game(private val server: GameServer, var clientGameConfig: ClientGameConfi
         }
 
         sendMembers()
-        sendGameStateChanged(GameState.GameConfigUpdate(clientGameConfig))
+        sendGameStateChanged(GameState.GameConfigUpdate(gameConfig.toClient()))
+        if(playerList.size==inactive.size){
+            playerList.forEach {
+                server.removeMember(it.sessionId)
+            }
+            server.closeRoom(gameConfig.roomName)
+        }
     }
 
     private fun sendMembers() {
@@ -122,7 +135,7 @@ class Game(private val server: GameServer, var clientGameConfig: ClientGameConfi
 
         val results = votes.groupBy { it.voteId }.map {
             val (votedId, tempVotesList) = it
-            val voteText = clientGameConfig.voteOptions.options[votedId].text
+            val voteText = gameConfig.voteOptions.options[votedId].text
             val voters = tempVotesList.joinToString(separator = ", ") { temp ->
                 playerList.find { it.sessionId == temp.playerId }?.name ?: ""
             } + " (${tempVotesList.size} Voters)"
@@ -135,12 +148,18 @@ class Game(private val server: GameServer, var clientGameConfig: ClientGameConfi
 
     private fun sendGameStateChanged(gameState: GameState) {
         val json2 = ServerResponse.GameStateChanged(gameState).toJson()
-        server.sendBroadcast(json2)
+        sendBroadcast(json2)
+    }
+
+    private fun sendBroadcast(json2: String) {
+        playerList.forEach {
+            server.sendData(it.sessionId,json2)
+        }
     }
 
     private fun sendPlayerEvent(playerResponseEvent: PlayerResponseEvent) {
-        val json2 = ServerResponse.PlayerEvent(playerResponseEvent).toJson()
-        server.sendBroadcast(json2)
+        val json = ServerResponse.PlayerEvent(playerResponseEvent).toJson()
+        sendBroadcast(json)
     }
 
 

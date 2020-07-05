@@ -1,6 +1,7 @@
 package de.jensklingenberg.showdown.server.game
 
 import de.jensklingenberg.showdown.model.*
+import de.jensklingenberg.showdown.server.model.Room
 import io.ktor.http.cio.websocket.CloseReason
 import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.WebSocketSession
@@ -72,12 +73,11 @@ class ShowdownServer : GameServer {
     suspend fun receivedMessage(
         sessionId: String,
         command: String,
-        roomName: String,
-        password: String
+        room: Room
     ) {
 
-        println("Receiver ROOM:" + roomName + " PW: " + password)
-        var gameSource = gameMap[roomName]
+        println("Receiver ROOM:" + room.name + " PW: " + room.password)
+        var gameSource = gameMap[room.name]
         val playerExist = playersSessions.containsKey(sessionId)
 
         when (val type = getServerRequest(command)) {
@@ -90,16 +90,12 @@ class ShowdownServer : GameServer {
                 when (val event = type.playerRequestEvent) {
 
                     is PlayerRequestEvent.JoinGameRequest -> {
-                        if (gameMap.none { it.key == roomName }) {
-                            gameSource = createNewRoom(roomName)
+                        if (gameMap.none { it.key == room.name }) {
+                            gameSource = createNewRoom(room.name)
                         }
 
                         if (event.password == "geheim") {
-                            if (!playersSessions.containsKey(sessionId)) {
-                                gameSource?.addPlayer( Player(sessionId, event.playerName))
-                            } else {
-                                gameSource?.onPlayerRejoined(sessionId, event.playerName)
-                            }
+                                gameSource?.playerJoined( Player(sessionId, event.playerName))
                         } else {
                             sendTo(sessionId, ServerResponse.ErrorEvent(ShowdownError.NotAuthorizedError()).toJson())
                         }
@@ -125,7 +121,7 @@ class ShowdownServer : GameServer {
         }
     }
 
-    override fun sendBroadcast(data: String) {
+    fun sendBroadcast(data: String) {
         GlobalScope.launch {
             broadcast(data)
         }
@@ -144,7 +140,7 @@ class ShowdownServer : GameServer {
     }
 
     override fun createNewRoom(roomName: String): Game {
-        val game = Game(this, getDefaultConfig())
+        val game = Game(this, getDefaultConfig(roomName))
 
         gameMap.putIfAbsent(roomName, game)
 
@@ -152,8 +148,14 @@ class ShowdownServer : GameServer {
         return game
     }
 
-    override fun closeRoom() {
+    override fun closeRoom(roomName: String) {
+        println("CloseRoom"+roomName)
+            gameMap.remove(roomName)
+    }
 
+    override fun removeMember(sessionId: String) {
+        playersSessions.remove(sessionId)
+        members.remove(sessionId)
     }
 
     private suspend fun sendTo(recipient: String, message: String) {

@@ -165,7 +165,6 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
                     variant = ButtonVariant.contained
                     color = ButtonColor.primary
                     onClickFunction = {
-                        console.log("HALLLLOOOOO")
                         setState {
                             this.showEntryPopup = false
                         }

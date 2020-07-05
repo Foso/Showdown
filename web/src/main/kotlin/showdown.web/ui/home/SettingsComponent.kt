@@ -1,8 +1,5 @@
 package showdown.web.ui.home
 
-import com.soywiz.klock.DateTime
-import de.jensklingenberg.showdown.model.VoteOptions
-import kotlinext.js.getOwnPropertyNames
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import materialui.components.button.button
@@ -16,9 +13,6 @@ import react.*
 import react.dom.div
 import react.dom.key
 import react.dom.p
-import kotlin.browser.*
-import kotlin.js.Console
-import kotlin.reflect.KClass
 
 /*
 
@@ -32,52 +26,23 @@ val gameModeOptions: List<Pair<String, Int>>
         "T-Shirt" to 1,
         "Custom" to 2
     )
+
 interface SettingsProps : RProps {
-    var startFrom: (Int,String)->Unit
+    var startFrom: (Int, String) -> Unit
 }
 
 interface TTickerState : RState {
-    var timerStarted: (Int,String)->Unit
-    var nowDate : DateTime
-    var diffSecs : Double
+    var onClick: (Int, String) -> Unit
     var gameModeId: Int
-    var customOptions : String
+    var customOptions: String
 }
 
 class SettingsComponent(prps: SettingsProps) : RComponent<SettingsProps, TTickerState>(prps) {
 
-    init {
-        console.log("HERHEIKRHEIR INIT")
-
-    }
     override fun TTickerState.init(props: SettingsProps) {
-        console.log("HERHEIKRHEIR")
-        timerStarted = props.startFrom
-        val tt = DateTime.fromString(DateTime.now().toString()).utc
-        console.log("TIME: "+tt)
-        nowDate = DateTime.now()
-        diffSecs = 0.0
-        gameModeId =0
-        customOptions=""
-    }
-
-    var timerID: Int? = null
-    var timerRunnung : Boolean = false
-    override fun componentDidUpdate(prevProps: SettingsProps, prevState: TTickerState, snapshot: Any) {
-        console.log("componentDidUpdate")
-        timerRunnung=true
-
-
-    }
-
-    override fun componentDidMount() {
-
-
-    }
-
-    override fun componentWillUnmount() {
-
-
+        onClick = props.startFrom
+        gameModeId = 0
+        customOptions = ""
     }
 
 
@@ -142,7 +107,7 @@ class SettingsComponent(prps: SettingsProps) : RComponent<SettingsProps, TTicker
                     color = ButtonColor.primary
                     text("Save")
                     onClickFunction = {
-                        state.timerStarted(state.gameModeId,state.customOptions)
+                        state.onClick(state.gameModeId, state.customOptions)
                     }
                 }
             }
@@ -152,7 +117,7 @@ class SettingsComponent(prps: SettingsProps) : RComponent<SettingsProps, TTicker
     }
 }
 
-fun RBuilder.adminMenu(gameModeId: Int,onSave:  (Int,String)->Unit ) = child(SettingsComponent::class) {
-   attrs.startFrom=onSave
+fun RBuilder.adminMenu(gameModeId: Int, onSave: (Int, String) -> Unit) = child(SettingsComponent::class) {
+    attrs.startFrom = onSave
 
 }
