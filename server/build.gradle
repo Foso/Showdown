@@ -47,7 +47,7 @@ jar {
 
 shadowJar {
     manifest {
-        attributes 'Main-Class': mainClassName
+        attributes 'Main-Class': 'de.jensklingenberg.showdown.server.server.ShowdownApplicationKt'
     }
 }
 task stage {
