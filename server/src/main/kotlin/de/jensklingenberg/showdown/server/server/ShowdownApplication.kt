@@ -86,12 +86,13 @@ class ShowdownApplication {
                     call.respond(HttpStatusCode.Accepted, "Hello ")
                 }
                 get("room/{roomName}/{param...}") {
+                    println("MY:room/{roomName}/{param...}")
                     val roomName = call.parameters["roomName"] ?: ""
                     val roomNamepar = call.parameters["param"] ?: "index.html"
                     val res=   this.javaClass.getResourceAsStream("/web/$roomNamepar")
                     println("FILEPATH"+res)
 
-                   call.respondBytes { res.readAllBytes() }
+                   call.respondBytes { res.readBytes() }
                 }
 
                 static("game") {
