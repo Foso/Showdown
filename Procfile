@@ -1,1 +1,1 @@
-web: java -jar server/build/libs/server-1.0-SNAPSHOT.jar
+web: java -jar server/build/libs/showdownktor-1.0.jar
