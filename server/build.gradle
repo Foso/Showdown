@@ -58,6 +58,12 @@ dependencies {
     implementation("com.soywiz.korlibs.klock:klock-jvm:$klockVersion")
 
 }
+
+sourceSets {
+    main.kotlin.srcDirs += "src/main/kotlin"
+   // main.resources.srcDirs = ['resources']
+}
+
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }

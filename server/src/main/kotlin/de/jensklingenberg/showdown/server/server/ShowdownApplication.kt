@@ -25,11 +25,19 @@ import io.ktor.websocket.WebSockets
 import io.ktor.websocket.webSocket
 import kotlinx.coroutines.channels.consumeEach
 import java.io.File
+import java.io.InputStream
+import java.io.OutputStream
 
 fun main() {
     ShowdownApplication()
 }
+fun InputStream.toFile(path: String): File {
+  val file = File(path)
 
+      file.outputStream().use { this.copyTo(it) }
+
+    return file
+}
 
 class ShowdownApplication {
 
@@ -80,8 +88,10 @@ class ShowdownApplication {
                 get("room/{roomName}/{param...}") {
                     val roomName = call.parameters["roomName"] ?: ""
                     val roomNamepar = call.parameters["param"] ?: "index.html"
-                    val res=   this.javaClass.getResource("/web/$roomNamepar").file
-                   call.respondFile( File(res))
+                    val res=   this.javaClass.getResourceAsStream("/web/$roomNamepar")
+                    println("FILEPATH"+res)
+
+                   call.respondBytes { res.readAllBytes() }
                 }
 
                 static("game") {
