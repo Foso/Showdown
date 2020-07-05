@@ -26,6 +26,11 @@ apply plugin: 'application'
 
 sourceCompatibility = 1.8
 
+jar {
+    baseName = 'showdownktor'
+    version = '1.0'
+}
+
 repositories {
     jcenter()
 }
