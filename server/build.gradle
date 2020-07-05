@@ -32,6 +32,7 @@ repositories {
     jcenter()
 }
 
+mainClassName = 'de.jensklingenberg.showdown.server.server.ShowdownApplicationKt'
 
 shadowJar {
     manifest {
@@ -65,5 +66,9 @@ compileTestKotlin {
 }
 
 build{
+
+
     dependsOn(shadowJar)
+
+
 }
