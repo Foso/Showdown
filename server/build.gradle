@@ -79,7 +79,7 @@ compileTestKotlin {
 build{
 
 
-    dependsOn(installDist)
+    dependsOn(shadowJar)
 
 
 }
