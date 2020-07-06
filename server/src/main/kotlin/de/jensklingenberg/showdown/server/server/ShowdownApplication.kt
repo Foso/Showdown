@@ -6,7 +6,9 @@ import de.jensklingenberg.showdown.server.model.Room
 import io.ktor.application.ApplicationCallPipeline
 import io.ktor.application.call
 import io.ktor.application.install
+import io.ktor.features.Compression
 import io.ktor.features.ContentNegotiation
+import io.ktor.features.gzip
 import io.ktor.gson.gson
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.cio.websocket.CloseReason
@@ -14,6 +16,7 @@ import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.close
 import io.ktor.http.cio.websocket.readText
 import io.ktor.http.content.*
+import io.ktor.request.uri
 import io.ktor.response.*
 import io.ktor.routing.get
 import io.ktor.routing.routing
@@ -55,6 +58,10 @@ class ShowdownApplication {
 
 
         embeddedServer(Netty, port) {
+            install(Compression) {
+                gzip()
+            }
+
             install(ContentNegotiation) {
                 gson {
                     setPrettyPrinting()
@@ -85,17 +92,27 @@ class ShowdownApplication {
                 get("hello") {
                     call.respond(HttpStatusCode.Accepted, "Hello ")
                 }
+
+
+
                 get("room/{roomName}/{param...}") {
                     println("MY:room/{roomName}/{param...}")
                     val roomName = call.parameters["roomName"] ?: ""
                     val roomNamepar = call.parameters["param"] ?: "index.html"
+
+                    if(!call.request.uri.endsWith("/")){
+                        call.respondRedirect("/room/$roomName/")
+                    }
+
                     val res=   this.javaClass.getResourceAsStream("/web/$roomNamepar")
                     println("FILEPATH"+res)
+
+                   // if(call.request.uri.endsWith("/"))
 
                    call.respondBytes { res.readBytes() }
                 }
 
-                static("game") {
+                static("web") {
 
                  //   staticRootFolder = File("/web")
                     resources("web")

@@ -38,6 +38,7 @@ interface HomeContract {
         var roomPassword: String
         var timerStart : DateTime
         var diffSecs : Double
+        var showSettings : Boolean
 
 
     }

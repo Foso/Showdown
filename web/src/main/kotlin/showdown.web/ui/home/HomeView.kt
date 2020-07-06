@@ -19,10 +19,7 @@ import org.w3c.dom.HTMLInputElement
 import react.RBuilder
 import react.RComponent
 import react.RProps
-import react.dom.div
-import react.dom.h2
-import react.dom.h3
-import react.dom.p
+import react.dom.*
 import react.setState
 import showdown.web.wrapper.material.QrCode
 import styled.css
@@ -64,6 +61,7 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
         roomPassword = "geheim"
         timerStart = DateTime.now()
         diffSecs = 0.0
+        showSettings=false
 
     }
 
@@ -99,16 +97,32 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
         participants()
         results()
 
-
-        if (admin) {
-            adminMenu(state.gameModeId) { gameModeId, gameOptions ->
-                setState {
-                    this.gameModeId = gameModeId
-                    this.customOptions = gameOptions
+        button {
+            attrs {
+                variant = ButtonVariant.contained
+                color = ButtonColor.primary
+                text("Show Settings")
+                onClickFunction = {
+                    setState {
+                        this.showSettings=true
+                    }
+                   // state.onClick(state.gameModeId, state.customOptions)
                 }
-                log("GameMod" + gameModeId + " " + gameOptions)
-                presenter.changeConfig(gameModeId, gameOptions)
             }
+        }
+
+        if (state.showSettings) {
+
+                adminMenu(state.gameModeId) { gameModeId, gameOptions ->
+                    setState {
+                        this.gameModeId = gameModeId
+                        this.customOptions = gameOptions
+                    }
+                    log("GameMod" + gameModeId + " " + gameOptions)
+                    presenter.changeConfig(gameModeId, gameOptions)
+                }
+
+
             //adminMenu()
         }
     }
@@ -145,7 +159,7 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
                         variant = FormControlVariant.filled
                         value(state.roomPassword)
                         label {
-                            +"Insert a Password ☕"
+                            +"Insert a Password "
                         }
                         onChangeFunction = {
                             val target = it.target as HTMLInputElement
