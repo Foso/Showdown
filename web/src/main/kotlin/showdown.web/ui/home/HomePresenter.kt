@@ -24,6 +24,9 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
                 null-> {
                     //Do nothing
                 }
+                is ShowdownError.NoConnectionError -> {
+                    console.log("NOCONNECTION")
+                }
             }
         })
 
@@ -73,7 +76,7 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
        val playerName=  view.getState().playerName
         val password=  view.getState().roomPassword
 
-        gameDataSource.joinRoom(playerName,password,"jens")
+        gameDataSource.joinRoom(playerName,password)
     }
 
 

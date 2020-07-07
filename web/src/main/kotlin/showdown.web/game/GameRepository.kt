@@ -3,15 +3,13 @@ package showdown.web.game
 import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.subject.behavior.BehaviorSubject
 import de.jensklingenberg.showdown.model.*
+import showdown.web.network.GameApiHandler
 import showdown.web.network.NetworkApiObserver
-
-class ErrorContainer(showdownError: ShowdownError?=null)
 
 class GameRepository(private val gameApiHandler: GameApiHandler) : GameDataSource, NetworkApiObserver {
 
     private val gameStateSubject: BehaviorSubject<GameState> = BehaviorSubject(GameState.NotConnected)
     private val errorSubject: BehaviorSubject<ShowdownError?> = BehaviorSubject(null)
-
 
     override fun prepareGame() {
         gameApiHandler.start(this)
@@ -34,10 +32,8 @@ class GameRepository(private val gameApiHandler: GameApiHandler) : GameDataSourc
 
     override fun observeGameState(): Observable<GameState> = gameStateSubject
 
-    override fun joinRoom(name:String,password:String,roomName:String) {
-        console.log("joinRoom+"+name)
-
-        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.JoinGameRequest(name,"geheim",roomName)).toJson()
+    override fun joinRoom(name:String,password:String) {
+        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.JoinGameRequest(name, "")).toJson()
         gameApiHandler.sendMessage(jsonData)
     }
 

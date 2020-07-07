@@ -9,14 +9,6 @@ enum class ServerResponseTypes {
      ERROR,  STATE_CHANGED, MESSAGE, PLAYER_EVENT,UNKNOWN
 }
 
-@Serializable
-sealed class ShowdownError(var message: String)  {
-
-    @Serializable
-    class NotAuthorizedError : ShowdownError("NotAuthorizedError")
-
-}
-
 
 @Serializable
 sealed class ServerResponse(val id: Int) {

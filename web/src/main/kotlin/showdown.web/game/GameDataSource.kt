@@ -5,7 +5,7 @@ import de.jensklingenberg.showdown.model.*
 
 interface GameDataSource {
     fun prepareGame()
-    fun joinRoom(name:String,password:String,roomName:String)
+    fun joinRoom(name:String,password:String)
     fun observeGameState(): Observable<GameState>
     fun requestReset()
     fun observeErrors(): Observable<ShowdownError?>

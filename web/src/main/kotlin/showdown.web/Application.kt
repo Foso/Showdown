@@ -1,17 +1,16 @@
 import kotlinext.js.requireAll
 import react.Component
 import react.RProps
-import react.dom.footer
 import react.dom.render
 import react.router.dom.hashRouter
 import react.router.dom.route
 import react.router.dom.switch
-import showdown.web.game.GameApiHandler
+import showdown.web.network.GameApiHandler
 import showdown.web.game.GameDataSource
 import showdown.web.game.GameRepository
 import showdown.web.model.Route
 import showdown.web.ui.home.HomeView
-import showdown.web.ui.home.home
+import showdown.web.ui.start.StartPage
 import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.reflect.KClass
@@ -22,8 +21,8 @@ class Application {
     private val rootElement= "root"
 
     private val routeList = listOf(
-            Route("*", HomeView::class, true),
-            Route("/game", HomeView::class, true)
+            Route("/", StartPage::class, true),
+            Route("/room", HomeView::class, false)
 
     )
 

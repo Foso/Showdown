@@ -35,7 +35,7 @@ sealed class VoteOptions(open val options: List<Option>) {
 sealed class PlayerRequestEvent {
 
     @Serializable
-    class JoinGameRequest(val playerName: String, val password: String,val roomName: String) : PlayerRequestEvent()
+    class JoinGameRequest(val playerName: String, val roomPassword: String) : PlayerRequestEvent()
 
     @Serializable
     class Voted(val voteId: Int) : PlayerRequestEvent()

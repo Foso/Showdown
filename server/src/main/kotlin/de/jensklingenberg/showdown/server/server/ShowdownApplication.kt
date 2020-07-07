@@ -1,6 +1,6 @@
 package de.jensklingenberg.showdown.server.server
 
-import de.jensklingenberg.showdown.server.model.ChatSession
+import de.jensklingenberg.showdown.server.model.Session
 import de.jensklingenberg.showdown.server.game.ShowdownServer
 import de.jensklingenberg.showdown.server.model.Room
 import io.ktor.application.ApplicationCallPipeline
@@ -29,7 +29,6 @@ import io.ktor.websocket.webSocket
 import kotlinx.coroutines.channels.consumeEach
 import java.io.File
 import java.io.InputStream
-import java.io.OutputStream
 
 fun main() {
     ShowdownApplication()
@@ -72,13 +71,13 @@ class ShowdownApplication {
             // This enables the use of sessions to keep information between requests/refreshes of the browser.
 
             install(Sessions) {
-                cookie<ChatSession>("SESSION")
+                cookie<Session>("SESSION")
             }
 
             // This adds an interceptor that will create a specific session in each request if no session is available already.
             intercept(ApplicationCallPipeline.Features) {
-                if (call.sessions.get<ChatSession>() == null) {
-                    call.sessions.set(ChatSession(generateNonce()))
+                if (call.sessions.get<Session>() == null) {
+                    call.sessions.set(Session(generateNonce()))
                 }
             }
 
@@ -86,13 +85,25 @@ class ShowdownApplication {
                 get("") {
                     val roomName = call.parameters["room"] ?: ""
                     //call.respond("I'm alive! Roomname:"+roomName)
-                    call.respond(HttpStatusCode.Accepted, "Its working ")
+                    val res=   this.javaClass.getResourceAsStream("/web/index.html")
+                    println("FILEPATH"+res)
+
+                    // if(call.request.uri.endsWith("/"))
+
+                    call.respondBytes { res.readBytes() }
+
+                    //call.respond(HttpStatusCode.Accepted, "Its working ")
                 }
 
                 get("hello") {
                     call.respond(HttpStatusCode.Accepted, "Hello ")
                 }
 
+                get("#/{param...}") {
+                    val roomNamepar = call.parameters["param"] ?: "index.html"
+
+                    call.respond(HttpStatusCode.Accepted, "Hello ")
+                }
 
 
                 get("room/{roomName}/{param...}") {
@@ -108,8 +119,8 @@ class ShowdownApplication {
                     println("FILEPATH"+res)
 
                    // if(call.request.uri.endsWith("/"))
-
-                   call.respondBytes { res.readBytes() }
+                    call.respondRedirect("/#/room/$roomName")
+                 //  call.respondBytes { res.readBytes() }
                 }
 
                 static("web") {
@@ -123,7 +134,7 @@ class ShowdownApplication {
                 webSocket("showdown") {
                     val roomName = call.parameters["room"] ?: ""
                     val password = call.parameters["pw"] ?: ""
-                    val session = call.sessions.get<ChatSession>()
+                    val session = call.sessions.get<Session>()
 
                     // We check that we actually have a session. We should always have one,
                     // since we have defined an interceptor before to set one.

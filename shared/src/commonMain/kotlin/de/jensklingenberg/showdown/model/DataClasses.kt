@@ -2,11 +2,6 @@ package de.jensklingenberg.showdown.model
 
 import kotlinx.serialization.Serializable
 
-fun ServerConfig.toClient(): ClientGameConfig {
-    return ClientGameConfig(this.voteOptions,this.autoReveal,this.createdAt)
-}
-
-data class ServerConfig(override var voteOptions: VoteOptions = VoteOptions.Fibo(), override val autoReveal: Boolean = false, override var createdAt:String, var roomName:String):Config
 
 interface Config{
     var voteOptions: VoteOptions

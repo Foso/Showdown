@@ -13,7 +13,6 @@ import materialui.components.button.enums.ButtonVariant
 import materialui.components.dialog.dialog
 import materialui.components.formcontrol.enums.FormControlVariant
 import materialui.components.list.list
-import materialui.components.listitem.listItem
 import materialui.components.textfield.textField
 import org.w3c.dom.HTMLInputElement
 import react.RBuilder
@@ -22,6 +21,8 @@ import react.RProps
 import react.dom.*
 import react.setState
 import showdown.web.wrapper.material.QrCode
+import showdown.web.wrapper.material.SettingsIcon
+import showdown.web.wrapper.material.ShareIcon
 import styled.css
 import styled.styledDiv
 import kotlin.browser.window
@@ -29,14 +30,6 @@ import kotlin.math.floor
 
 
 interface MyProps : RProps
-
-
-class Navigation {
-    companion object {
-        fun navigateToGame(roomName: String) = "/#/game?room=${roomName}&pw=Hallo"
-
-    }
-}
 
 
 class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract.View {
@@ -58,7 +51,7 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
         showEntryPopup = true
         showShareDialog = false
         selectedOptionId = -1
-        roomPassword = "geheim"
+        roomPassword = ""
         timerStart = DateTime.now()
         diffSecs = 0.0
         showSettings=false
@@ -94,22 +87,11 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
                 }
             }
         }
-        participants()
+        members()
         results()
 
-        button {
-            attrs {
-                variant = ButtonVariant.contained
-                color = ButtonColor.primary
-                text("Show Settings")
-                onClickFunction = {
-                    setState {
-                        this.showSettings=true
-                    }
-                   // state.onClick(state.gameModeId, state.customOptions)
-                }
-            }
-        }
+
+
 
         if (state.showSettings) {
 
@@ -127,7 +109,7 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
         }
     }
 
-    private fun RBuilder.entryDialog() {
+    private fun RBuilder.insertPasswordDialog() {
         dialog {
             attrs {
                 this.open = state.showEntryPopup
@@ -137,29 +119,9 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
                 textField {
                     attrs {
                         variant = FormControlVariant.filled
-                        label {
-                            +"Insert a Name"
-                        }
-                        value(state.playerName)
-                        onChangeFunction = {
-                            val target = it.target as HTMLInputElement
-
-                            setState {
-                                this.playerName = target.value
-                            }
-                        }
-                    }
-
-                }
-
-            }
-            div {
-                textField {
-                    attrs {
-                        variant = FormControlVariant.filled
                         value(state.roomPassword)
                         label {
-                            +"Insert a Password "
+                            +"A room password is required"
                         }
                         onChangeFunction = {
                             val target = it.target as HTMLInputElement
@@ -190,14 +152,59 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
         }
     }
 
+    private fun RBuilder.entryDialog() {
+        dialog {
+            attrs {
+                this.open = state.showEntryPopup
+            }
+
+            div {
+                textField {
+                    attrs {
+                        variant = FormControlVariant.filled
+                        label {
+                            +"Insert a Name"
+                        }
+                        value(state.playerName)
+                        onChangeFunction = {
+                            val target = it.target as HTMLInputElement
+
+                            setState {
+                                this.playerName = target.value
+                            }
+                        }
+                    }
+
+                }
+
+            }
+
+            button {
+                attrs {
+                    text("Join Game")
+                    variant = ButtonVariant.contained
+                    color = ButtonColor.primary
+                    onClickFunction = {
+                        setState {
+                            this.showEntryPopup = false
+                        }
+                        presenter.joinGame()
+                    }
+                }
+            }
+
+        }
+    }
+
     private fun RBuilder.shareDialog() {
+
         dialog {
             attrs {
                 this.open = state.showShareDialog
             }
             QrCode {
                 attrs {
-                    value = "http://localhost:3001/#/game?room=hans"
+                    value = window.location.toString()
                 }
             }
 
@@ -218,29 +225,37 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
         }
     }
 
-    private fun RBuilder.participants() {
+    private fun RBuilder.members() {
         h2 {
-            +"Members"
+            +"Members (${state.players.size})"
         }
 
         div {
-            state.players.forEach {
+            if( state.players.isEmpty()){
                 h3 {
-                    +("Player: " + it.playerName + " Status:" + it.voteValue + "\n")
+                    +"Nobody here, share the link!"
+                }
+            }else{
+                state.players.forEach {
+                    h3 {
+                        +("Player: " + it.playerName + " Status:" + it.voteValue + "\n")
+                    }
                 }
             }
+
         }
     }
 
     private fun RBuilder.results() {
 
-
-        h2 {
-            +"Result:"
+        if(state.results.isNotEmpty()){
+            h2 {
+                +"Result:"
+            }
         }
 
         state.results.forEachIndexed { index, result ->
-            p {
+            h3 {
                 +"${index + 1}) \"${result.name}\" ${result.voters}"
             }
 
@@ -264,7 +279,7 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
 
     private fun RBuilder.optionsList() {
         h2 {
-            +"Options"
+            +"Select an Option:"
         }
         state.options.forEachIndexed { index, option ->
 
@@ -300,20 +315,17 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
                 backgroundColor = Color.tomato
             }
 
-
-            button {
+            ShareIcon{
                 attrs {
-                    variant = ButtonVariant.contained
-                    color = ButtonColor.primary
-                    text("Share")
-                    onClickFunction = {
+                    onClick = {
                         setState {
                             this.showShareDialog = true
                         }
-
                     }
                 }
             }
+
+
 
             button {
                 attrs {
@@ -332,6 +344,16 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
                     text("Show Votes")
                     onClickFunction = {
                         presenter.showVotes()
+                    }
+                }
+            }
+
+            SettingsIcon{
+                attrs {
+                    onClick = {
+                        setState {
+                            this.showSettings=!this.showSettings
+                        }
                     }
                 }
             }

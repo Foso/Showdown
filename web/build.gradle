@@ -66,8 +66,8 @@ dependencies {
     implementation(npm('@material-ui/core', libs.material_ui_core))
     implementation(npm('core-js', ''))
 
-    implementation(npm('apexcharts', ''))
-    implementation(npm('react-apexcharts', ''))
+  //  implementation(npm('apexcharts', ''))
+   // implementation(npm('react-apexcharts', ''))
 
     implementation(npm('react-qr-code', ''))
 

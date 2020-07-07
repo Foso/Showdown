@@ -43,6 +43,9 @@ class ShowdownServer : GameServer {
         // But since this is a sample we are not doing it.
         val socketList = members.computeIfAbsent(memberId) { CopyOnWriteArrayList<WebSocketSession>() }
         socketList.add(socket)
+        GlobalScope.launch {
+            sendMessage(memberId, "HALLO")
+        }
     }
 
 
@@ -87,15 +90,15 @@ class ShowdownServer : GameServer {
                 }
             }
             else -> {
-                when (val event = type.playerRequestEvent) {
+                when (val incomingEvent = type.playerRequestEvent) {
 
                     is PlayerRequestEvent.JoinGameRequest -> {
                         if (gameMap.none { it.key == room.name }) {
                             gameSource = createNewRoom(room.name)
                         }
 
-                        if (event.password == "geheim") {
-                                gameSource?.playerJoined( Player(sessionId, event.playerName))
+                        if (incomingEvent.roomPassword == gameSource?.gameConfig?.roomName?.password) {
+                                gameSource.playerJoined( Player(sessionId, incomingEvent.playerName))
                         } else {
                             sendTo(sessionId, ServerResponse.ErrorEvent(ShowdownError.NotAuthorizedError()).toJson())
                         }
@@ -108,13 +111,13 @@ class ShowdownServer : GameServer {
                         gameSource?.showVotes(sessionId)
                     }
                     is PlayerRequestEvent.Voted -> {
-                        gameSource?.onPlayerVoted(sessionId, event.voteId)
+                        gameSource?.onPlayerVoted(sessionId, incomingEvent.voteId)
                     }
                     is PlayerRequestEvent.RestartRequest -> {
                         gameSource?.restart()
                     }
                     is PlayerRequestEvent.ChangeConfig -> {
-                        gameSource?.changeConfig(event.clientGameConfig)
+                        gameSource?.changeConfig(incomingEvent.clientGameConfig)
                     }
                 }
             }

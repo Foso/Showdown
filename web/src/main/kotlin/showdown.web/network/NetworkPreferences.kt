@@ -33,7 +33,7 @@ class NetworkPreferences {
     fun websocketUrl(): String {
 
         val roomName =
-            window.location.toString().substringAfter("/room/", missingDelimiterValue = "").substringBefore("/", "")
+            window.location.toString().substringAfter("/room/").substringBefore("/")
        val url = hostname + "showdown?room=" + roomName
 
         console.log("URL $url")

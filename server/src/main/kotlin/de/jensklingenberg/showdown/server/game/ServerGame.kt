@@ -3,11 +3,14 @@ package de.jensklingenberg.showdown.server.game
 
 import com.soywiz.klock.DateTime
 import de.jensklingenberg.showdown.model.*
+import de.jensklingenberg.showdown.server.model.Room
+import de.jensklingenberg.showdown.server.model.ServerConfig
 
 import de.jensklingenberg.showdown.server.model.TempVote
+import de.jensklingenberg.showdown.server.model.toClient
 
 fun getDefaultConfig(roomName: String) = ServerConfig(VoteOptions.Fibo(), false,createdAt = DateTime.now().utc.toString(),
-    roomName = roomName
+    roomName = Room(roomName)
 )
 //http://localhost:23567/room/hans
 class Game(private val server: GameServer, var gameConfig: ServerConfig) {
@@ -87,8 +90,6 @@ class Game(private val server: GameServer, var gameConfig: ServerConfig) {
         }
     }
 
-
-
     fun onPlayerLeft(sessionId: String) {
         val findPlayer = playerList.find { it.sessionId == sessionId }
         findPlayer?.let {
@@ -97,11 +98,15 @@ class Game(private val server: GameServer, var gameConfig: ServerConfig) {
 
         sendMembers()
         sendGameStateChanged(GameState.GameConfigUpdate(gameConfig.toClient()))
-        if(playerList.size==inactive.size){
+        checkIfRoomEmpty()
+    }
+
+    private fun checkIfRoomEmpty() {
+        if (playerList.size == inactive.size) {
             playerList.forEach {
                 server.removeMember(it.sessionId)
             }
-            server.closeRoom(gameConfig.roomName)
+            server.closeRoom(gameConfig.roomName.name)
         }
     }
 
