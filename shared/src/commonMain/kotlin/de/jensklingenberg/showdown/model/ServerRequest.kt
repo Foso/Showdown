@@ -5,11 +5,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 
 
-@Serializable
-enum class ServerRequestTypes {
-    PLAYEREVENT,
-    UNKNOWN
-}
+
 
 val list3: List<String> = listOf("Hund", "Katze", "Maus", "Bär", "Tiger")
 
@@ -32,61 +28,66 @@ sealed class VoteOptions(open val options: List<Option>) {
 }
 
 @Serializable
-sealed class PlayerRequestEvent {
-
-    @Serializable
-    class JoinGameRequest(val playerName: String, val roomPassword: String) : PlayerRequestEvent()
-
-    @Serializable
-    class Voted(val voteId: Int) : PlayerRequestEvent()
-
-    @Serializable
-    class ShowVotes : PlayerRequestEvent()
-
-    @Serializable
-    class RestartRequest : PlayerRequestEvent()
-
-    @Serializable
-    class ChangeConfig(val clientGameConfig: ClientGameConfig) : PlayerRequestEvent()
+enum class ServerRequestTypes {
+    PLAYEREVENT,
+    JoinGameRequest,
+    Voted,
+    RestartRequest,
+    ChangeConfig,
+    ShowVotes,
+    UNKNOWN
 }
 
 @Serializable
 sealed class ServerRequest(val id: Int) {
 
     @Serializable
-    class PlayerRequest(val playerRequestEvent: PlayerRequestEvent) : ServerRequest(ServerRequestTypes.PLAYEREVENT.ordinal)
+    class JoinGameRequest(val playerName: String, val roomPassword: String) : ServerRequest(ServerRequestTypes.JoinGameRequest.ordinal)
 
+    @Serializable
+    class Voted(val voteId: Int) : ServerRequest(ServerRequestTypes.Voted.ordinal)
+
+    /**
+     * A request to restart the game
+     */
+    @Serializable
+    object RestartRequest : ServerRequest(ServerRequestTypes.RestartRequest.ordinal)
+
+    /**
+     * Send a new [ClientGameConfig] to the server
+     */
+    @Serializable
+    class ChangeConfig(val clientGameConfig: ClientGameConfig) : ServerRequest(ServerRequestTypes.ChangeConfig.ordinal)
+
+    /**
+     * Request to view the Votes
+     */
+    @Serializable
+    object ShowVotes : ServerRequest(ServerRequestTypes.ShowVotes.ordinal)
 }
+
 
 
 
 fun getServerCommandType(json: String): ServerRequestTypes {
     return ServerRequestTypes.values().firstOrNull() {
-        json.startsWith("{\"id\":${it.ordinal}")
+        json.contains("\"id\":${it.ordinal}")
     } ?: ServerRequestTypes.UNKNOWN
 }
 
 fun getServerRequest(json: String): ServerRequest? {
     val type = getServerCommandType(json)
-    return when (type) {
-        ServerRequestTypes.PLAYEREVENT -> {
-            getPlayerRequest(json)
-        }
-
-        else -> {
-            null
-        }
-    }
+    return getPlayerRequest(json)
 }
 
 
-fun ServerRequest.PlayerRequest.toJson(): String {
-    return Json(JsonConfiguration.Stable).stringify(ServerRequest.PlayerRequest.serializer(), this)
+fun ServerRequest.toJson(): String {
+    return Json(JsonConfiguration.Stable).stringify(ServerRequest.serializer(), this)
 }
-fun getPlayerRequest(jsonStr: String): ServerRequest.PlayerRequest {
+fun getPlayerRequest(jsonStr: String): ServerRequest {
     val json =
             Json(JsonConfiguration.Stable)
-    return json.parse(ServerRequest.PlayerRequest.serializer(), jsonStr)
+    return json.parse(ServerRequest.serializer(), jsonStr)
 
 }
 

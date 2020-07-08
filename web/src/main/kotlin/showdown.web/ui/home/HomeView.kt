@@ -18,7 +18,9 @@ import org.w3c.dom.HTMLInputElement
 import react.RBuilder
 import react.RComponent
 import react.RProps
-import react.dom.*
+import react.dom.div
+import react.dom.h2
+import react.dom.h3
 import react.setState
 import showdown.web.wrapper.material.QrCode
 import showdown.web.wrapper.material.SettingsIcon
@@ -42,7 +44,7 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
 
     override fun HomeContract.HomeViewState.init() {
         showSnackbar = false
-        players = emptyList()
+        members = emptyList()
         options = listOf()
         results = emptyList()
         gameModeId = 0
@@ -54,8 +56,9 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
         roomPassword = ""
         timerStart = DateTime.now()
         diffSecs = 0.0
-        showSettings=false
-
+        showSettings = false
+        startTimer=false
+        requestRoomPassword=false
     }
 
 
@@ -72,6 +75,9 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
     override fun RBuilder.render() {
 
         entryDialog()
+
+            insertPasswordDialog()
+
         shareDialog()
         toolbar()
 
@@ -95,14 +101,14 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
 
         if (state.showSettings) {
 
-                adminMenu(state.gameModeId) { gameModeId, gameOptions ->
-                    setState {
-                        this.gameModeId = gameModeId
-                        this.customOptions = gameOptions
-                    }
-                    log("GameMod" + gameModeId + " " + gameOptions)
-                    presenter.changeConfig(gameModeId, gameOptions)
+            adminMenu(state.gameModeId) { gameModeId, gameOptions ->
+                setState {
+                    this.gameModeId = gameModeId
+                    this.customOptions = gameOptions
                 }
+                log("GameMod" + gameModeId + " " + gameOptions)
+                presenter.changeConfig(gameModeId, gameOptions)
+            }
 
 
             //adminMenu()
@@ -112,7 +118,7 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
     private fun RBuilder.insertPasswordDialog() {
         dialog {
             attrs {
-                this.open = state.showEntryPopup
+                this.open = state.requestRoomPassword
             }
 
             div {
@@ -142,7 +148,7 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
                     color = ButtonColor.primary
                     onClickFunction = {
                         setState {
-                            this.showEntryPopup = false
+                            this.requestRoomPassword=false
                         }
                         presenter.joinGame()
                     }
@@ -227,18 +233,18 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
 
     private fun RBuilder.members() {
         h2 {
-            +"Members (${state.players.size})"
+            +"Members (${state.members.size})"
         }
 
         div {
-            if( state.players.isEmpty()){
+            if (state.members.isEmpty()) {
                 h3 {
                     +"Nobody here, share the link!"
                 }
-            }else{
-                state.players.forEach {
+            } else {
+                state.members.forEach {
                     h3 {
-                        +("Player: " + it.playerName + " Status:" + it.voteValue + "\n")
+                        +("Player: " + it.playerName + " Status:" + it.voteStatus + "\n")
                     }
                 }
             }
@@ -248,7 +254,7 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
 
     private fun RBuilder.results() {
 
-        if(state.results.isNotEmpty()){
+        if (state.results.isNotEmpty()) {
             h2 {
                 +"Result:"
             }
@@ -315,7 +321,7 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
                 backgroundColor = Color.tomato
             }
 
-            ShareIcon{
+            ShareIcon {
                 attrs {
                     onClick = {
                         setState {
@@ -348,11 +354,11 @@ class HomeView : RComponent<MyProps, HomeContract.HomeViewState>(), HomeContract
                 }
             }
 
-            SettingsIcon{
+            SettingsIcon {
                 attrs {
                     onClick = {
                         setState {
-                            this.showSettings=!this.showSettings
+                            this.showSettings = !this.showSettings
                         }
                     }
                 }

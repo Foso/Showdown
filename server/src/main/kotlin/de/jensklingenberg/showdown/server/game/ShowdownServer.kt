@@ -84,15 +84,15 @@ class ShowdownServer : GameServer {
         val playerExist = playersSessions.containsKey(sessionId)
 
         when (val type = getServerRequest(command)) {
-            !is ServerRequest.PlayerRequest -> {
+            !is ServerRequest -> {
                 if (!playerExist) {
                     return
                 }
             }
             else -> {
-                when (val incomingEvent = type.playerRequestEvent) {
+                when (val incomingEvent = type) {
 
-                    is PlayerRequestEvent.JoinGameRequest -> {
+                    is ServerRequest.JoinGameRequest -> {
                         if (gameMap.none { it.key == room.name }) {
                             gameSource = createNewRoom(room.name)
                         }
@@ -104,19 +104,19 @@ class ShowdownServer : GameServer {
                         }
                     }
 
-                    is PlayerRequestEvent.ShowVotes -> {
+                    is ServerRequest.ShowVotes -> {
                         if (!playerExist) {
                             return
                         }
                         gameSource?.showVotes(sessionId)
                     }
-                    is PlayerRequestEvent.Voted -> {
+                    is ServerRequest.Voted -> {
                         gameSource?.onPlayerVoted(sessionId, incomingEvent.voteId)
                     }
-                    is PlayerRequestEvent.RestartRequest -> {
+                    is ServerRequest.RestartRequest -> {
                         gameSource?.restart()
                     }
-                    is PlayerRequestEvent.ChangeConfig -> {
+                    is ServerRequest.ChangeConfig -> {
                         gameSource?.changeConfig(incomingEvent.clientGameConfig)
                     }
                 }

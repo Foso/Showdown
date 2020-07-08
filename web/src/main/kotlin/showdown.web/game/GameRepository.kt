@@ -16,29 +16,29 @@ class GameRepository(private val gameApiHandler: GameApiHandler) : GameDataSourc
     }
 
     override fun showVotes() {
-        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.ShowVotes()).toJson()
+        val jsonData = ServerRequest.ShowVotes.toJson()
         gameApiHandler.sendMessage(jsonData)
     }
 
     override fun onSelectedVote(voteId: Int) {
-        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.Voted(voteId)).toJson()
+        val jsonData = ServerRequest.Voted(voteId).toJson()
         gameApiHandler.sendMessage(jsonData)
     }
 
     override fun changeConfig(clientGameConfig: ClientGameConfig) {
-        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.ChangeConfig(clientGameConfig)).toJson()
+        val jsonData = ServerRequest.ChangeConfig(clientGameConfig).toJson()
         gameApiHandler.sendMessage(jsonData)
     }
 
     override fun observeGameState(): Observable<GameState> = gameStateSubject
 
     override fun joinRoom(name:String,password:String) {
-        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.JoinGameRequest(name, "")).toJson()
+        val jsonData = ServerRequest.JoinGameRequest(name, password).toJson()
         gameApiHandler.sendMessage(jsonData)
     }
 
     override fun requestReset() {
-        val jsonData = ServerRequest.PlayerRequest(PlayerRequestEvent.RestartRequest()).toJson()
+        val jsonData = ServerRequest.RestartRequest.toJson()
         gameApiHandler.sendMessage(jsonData)
     }
 

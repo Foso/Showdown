@@ -19,7 +19,9 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
         gameDataSource.observeErrors().subscribe(onNext = {error->
             when(error){
                 is ShowdownError.NotAuthorizedError -> {
-
+                    view.newState {
+                        this.requestRoomPassword=true
+                    }
                 }
                 null-> {
                     //Do nothing
@@ -39,12 +41,14 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
                         this.timerStart = DateTime.now()
                         this.results = emptyList()
                         this.selectedOptionId=-1
+                        this.startTimer=true
+                        this.requestRoomPassword=false
                     }
                 }
 
-                is GameState.VoteUpdate -> {
+                is GameState.MembersUpdate -> {
                     view.newState {
-                        this.players = gameState.clientVotes
+                        this.members = gameState.members
                     }
                 }
 
@@ -56,7 +60,7 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
                         this.timerStart= DateTime.fromString(gameState.clientGameConfig.createdAt).utc
                     }
                 }
-                is GameState.Showdown -> {
+                is GameState.ShowVotes -> {
                     view.newState {
                         this.results = gameState.results
                     }

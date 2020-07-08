@@ -6,28 +6,28 @@ import de.jensklingenberg.showdown.model.*
 import de.jensklingenberg.showdown.server.model.Room
 import de.jensklingenberg.showdown.server.model.ServerConfig
 
-import de.jensklingenberg.showdown.server.model.TempVote
+import de.jensklingenberg.showdown.server.model.Vote
 import de.jensklingenberg.showdown.server.model.toClient
 
 fun getDefaultConfig(roomName: String) = ServerConfig(VoteOptions.Fibo(), false,createdAt = DateTime.now().utc.toString(),
-    roomName = Room(roomName)
+    roomName = Room(roomName,"")
 )
 //http://localhost:23567/room/hans
 class Game(private val server: GameServer, var gameConfig: ServerConfig) {
 
     private val playerList = mutableListOf<Player>()
-    private val votes = arrayListOf<TempVote>()
+    private val votes = arrayListOf<Vote>()
     private var gameState: GameState = GameState.Started
-    private val inactive = mutableListOf<Player>()
+    private val inactivePlayers = mutableListOf<Player>()
     private val loggit = true
 
     fun restart() {
         logm("restart")
         gameState = GameState.Started
-        inactive.forEach { inactivePlayer ->
+        inactivePlayers.forEach { inactivePlayer ->
             playerList.removeIf { it.sessionId == inactivePlayer.sessionId }
         }
-        inactive.clear()
+        inactivePlayers.clear()
         votes.clear()
         sendMembers()
         sendGameStateChanged(gameState)
@@ -58,14 +58,14 @@ class Game(private val server: GameServer, var gameConfig: ServerConfig) {
 
     fun onPlayerRejoined(sessionId: String, name: String) {
         logm("onPlayerRejoined "+name)
-        inactive.removeIf { it.sessionId == sessionId }
+        inactivePlayers.removeIf { it.sessionId == sessionId }
         sendMembers()
         sendGameStateChanged(GameState.GameConfigUpdate(gameConfig.toClient()))
     }
 
     fun changeConfig(clientGameConfig: ClientGameConfig) {
         logm("changeConfig ")
-        this.gameConfig = gameConfig.copy(createdAt =  DateTime.now().utc.toString(),autoReveal = clientGameConfig.autoReveal,voteOptions = clientGameConfig.voteOptions)
+        this.gameConfig = gameConfig.copy(roomName = Room(gameConfig.roomName.name,"HEY"),createdAt =  DateTime.now().utc.toString(),autoReveal = clientGameConfig.autoReveal,voteOptions = clientGameConfig.voteOptions)
         votes.clear()
         gameState = GameState.GameConfigUpdate( this.gameConfig.toClient())
         sendGameStateChanged(gameState)
@@ -76,12 +76,12 @@ class Game(private val server: GameServer, var gameConfig: ServerConfig) {
     fun onPlayerVoted(playerId: String, voteId: Int) {
         logm("onPlayerVoted "+playerId)
 
-        if (gameState is GameState.Showdown) {
+        if (gameState is GameState.ShowVotes) {
             return
         }
         println("player: " + playerId + "VOted: " + voteId)
         votes.removeIf { it.playerId == playerId }
-        votes.add(TempVote(voteId, playerId))
+        votes.add(Vote(voteId, playerId))
         sendMembers()
         if (gameConfig.autoReveal) {
             if (votes.size == playerList.size) {
@@ -93,7 +93,7 @@ class Game(private val server: GameServer, var gameConfig: ServerConfig) {
     fun onPlayerLeft(sessionId: String) {
         val findPlayer = playerList.find { it.sessionId == sessionId }
         findPlayer?.let {
-            inactive.add(it)
+            inactivePlayers.add(it)
         }
 
         sendMembers()
@@ -102,7 +102,7 @@ class Game(private val server: GameServer, var gameConfig: ServerConfig) {
     }
 
     private fun checkIfRoomEmpty() {
-        if (playerList.size == inactive.size) {
+        if (playerList.size == inactivePlayers.size) {
             playerList.forEach {
                 server.removeMember(it.sessionId)
             }
@@ -112,23 +112,23 @@ class Game(private val server: GameServer, var gameConfig: ServerConfig) {
 
     private fun sendMembers() {
         val votesList = playerList.map { player ->
-            val isInActive = inactive.any { it.sessionId == player.sessionId }
+            val isInActive = inactivePlayers.any { it.sessionId == player.sessionId }
             val inActiveText = if (isInActive) {
                 "(Left)"
             } else {
                 ""
             }
             val voted = votes.any { it.playerId == player.sessionId }
-            val symbol = if (voted) {
+            val playerStatusText = if (voted) {
                 "Voted $inActiveText"
             } else {
                 "? $inActiveText"
             }
 
-            ClientVote(player.name, symbol)
+            Member(player.name, playerStatusText)
         }
 
-        sendGameStateChanged(GameState.VoteUpdate(votesList))
+        sendGameStateChanged(GameState.MembersUpdate(votesList))
 
     }
 
@@ -146,7 +146,7 @@ class Game(private val server: GameServer, var gameConfig: ServerConfig) {
             } + " (${tempVotesList.size} Voters)"
             Result(voteText, voters)
         }
-        gameState = GameState.Showdown(results)
+        gameState = GameState.ShowVotes(results)
         sendGameStateChanged(gameState)
     }
 

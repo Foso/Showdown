@@ -13,7 +13,7 @@ interface Config{
 data class ClientGameConfig(override var voteOptions: VoteOptions = VoteOptions.Fibo(), override val autoReveal: Boolean = false, override var createdAt:String) :Config
 
 @Serializable
-data class ClientVote(val playerName: String, val voteValue:String)
+data class Member(val playerName: String, val voteStatus:String)
 
 @Serializable
 class Option(val id:Int,val text:String)

@@ -1,10 +1,9 @@
 package showdown.web.ui.home
 
 import com.soywiz.klock.DateTime
-import de.jensklingenberg.showdown.model.ClientVote
+import de.jensklingenberg.showdown.model.Member
 import de.jensklingenberg.showdown.model.Option
 import de.jensklingenberg.showdown.model.Result
-
 import react.RState
 
 interface HomeContract {
@@ -27,7 +26,7 @@ interface HomeContract {
         var playerName: String
         var errorMessage: String
         var showSnackbar: Boolean
-        var players: List<ClientVote>
+        var members: List<Member>
         var options: List<Option>
         var results : List<Result>
         var gameModeId: Int
@@ -37,9 +36,11 @@ interface HomeContract {
         var selectedOptionId: Int
         var roomPassword: String
         var timerStart : DateTime
+        var startTimer : Boolean
+
         var diffSecs : Double
         var showSettings : Boolean
-
+        var requestRoomPassword:Boolean
 
     }
 }
