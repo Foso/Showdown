@@ -5,7 +5,7 @@ interface GameServer {
 
     fun sendData(sessionId: String, data: String)
     fun onPlayerAdded(sessionId: String, player: Player)
-    fun createNewRoom(roomName: String) :Game
+    fun createNewRoom(roomName: String) :ServerGame
     fun closeRoom(roomName: String)
     fun removeMember(sessionId: String)
 }

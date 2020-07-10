@@ -10,10 +10,13 @@ sealed class GameState {
      * Initial State for clients
      */
     @Serializable
-    object NotConnected : GameState()
+    object NotStarted : GameState()
 
     @Serializable
     object Started : GameState()
+
+    @Serializable
+    class NewStarted(val clientGameConfig: ClientGameConfig) : GameState()
 
     @Serializable
     class MembersUpdate(val members: List<Member>) : GameState()

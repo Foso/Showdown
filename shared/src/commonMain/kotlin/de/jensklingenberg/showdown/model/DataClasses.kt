@@ -3,6 +3,10 @@ package de.jensklingenberg.showdown.model
 import kotlinx.serialization.Serializable
 
 
+val SETROOMPASSSWORDPATH= "/room/setpassword"
+val JOINROOMPATH= "/room/join"
+
+
 interface Config{
     var voteOptions: VoteOptions
      val autoReveal: Boolean
@@ -22,4 +26,16 @@ class Option(val id:Int,val text:String)
 data class Player(val sessionId: String, val name: String = "Unnamed")
 
 @Serializable
-data class Result(val name:String,val voters:String)
+data class Result(val optionName:String, val voterName:String)
+
+data class WebsocketResource<T>(val type: WebSocketType, val data: T?, val message: String = "") {
+
+}
+
+enum class WebSocketType {
+    Notification,
+
+    MESSAGE,
+    EVENT,
+    UNKNOWN
+}

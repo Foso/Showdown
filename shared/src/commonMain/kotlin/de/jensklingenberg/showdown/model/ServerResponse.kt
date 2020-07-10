@@ -8,8 +8,15 @@ import kotlinx.serialization.json.JsonConfiguration
 enum class ServerResponseTypes {
      ERROR,  STATE_CHANGED, MESSAGE, PLAYER_EVENT,UNKNOWN
 }
+@Serializable
+data class Request(val path: String,val body:String)
 
 
+fun Request.toJson(): String {
+    return Json(JsonConfiguration.Stable).stringify(Request.serializer(), this)
+}
+
+data class Hallo(val name:String)
 @Serializable
 sealed class ServerResponse(val id: Int) {
 

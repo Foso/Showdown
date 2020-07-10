@@ -77,7 +77,11 @@ fun getServerCommandType(json: String): ServerRequestTypes {
 
 fun getServerRequest(json: String): ServerRequest? {
     val type = getServerCommandType(json)
-    return getPlayerRequest(json)
+    return if(type==ServerRequestTypes.UNKNOWN){
+        null
+    }else{
+        getPlayerRequest(json)
+    }
 }
 
 

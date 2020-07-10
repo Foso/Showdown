@@ -4,10 +4,12 @@ import com.soywiz.klock.DateTime
 import de.jensklingenberg.showdown.model.Member
 import de.jensklingenberg.showdown.model.Option
 import de.jensklingenberg.showdown.model.Result
+import org.w3c.dom.events.EventTarget
 import react.RState
 
 interface HomeContract {
     interface View {
+
         fun newState(buildState: HomeViewState.(HomeViewState) -> Unit)
         fun getState(): HomeViewState
     }
@@ -19,6 +21,7 @@ interface HomeContract {
         fun showVotes()
         fun onSelectedVote(voteId: Int)
         fun changeConfig(gameModeId: Int, gameOptions: String)
+        fun changeRoomPassword(password:String)
 
     }
 
@@ -37,10 +40,16 @@ interface HomeContract {
         var roomPassword: String
         var timerStart : DateTime
         var startTimer : Boolean
+        var anchor: EventTarget?
+        var requestRoomPassword:Boolean
 
+        var showConnectionError: Boolean
+
+        //TOOLBAR
         var diffSecs : Double
         var showSettings : Boolean
-        var requestRoomPassword:Boolean
+        var openMenu: Boolean
+        var showChangePassword:Boolean
 
     }
 }

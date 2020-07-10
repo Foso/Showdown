@@ -1,6 +1,7 @@
 package showdown.web.ui.home
 
 import Application
+import com.badoo.reaktive.completable.subscribe
 import com.badoo.reaktive.observable.subscribe
 import com.soywiz.klock.DateTime
 import de.jensklingenberg.showdown.model.ClientGameConfig
@@ -13,8 +14,23 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
 
     private val gameDataSource: GameDataSource = Application.gameDataSource
 
+    init {
+
+    }
+
     override fun onCreate() {
-        gameDataSource.prepareGame()
+        gameDataSource.connectToServer().subscribe (
+            onComplete = {
+                view.newState {
+                    this.showEntryPopup=true
+                }
+            },
+            onError = {
+                view.newState {
+                    this.showConnectionError=true
+                }
+            }
+        )
 
         gameDataSource.observeErrors().subscribe(onNext = {error->
             when(error){
@@ -27,16 +43,19 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
                     //Do nothing
                 }
                 is ShowdownError.NoConnectionError -> {
-                    console.log("NOCONNECTION")
+                    view.newState {
+                        this.showConnectionError=true
+                    }
                 }
             }
         })
 
         gameDataSource.observeGameState().subscribe(onNext = { gameState ->
             when (gameState) {
-                GameState.NotConnected -> {
+                GameState.NotStarted -> {
                 }
                 GameState.Started -> {
+                    console.log("GameState.Started")
                     view.newState {
                         this.timerStart = DateTime.now()
                         this.results = emptyList()
@@ -53,7 +72,9 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
                 }
 
                 is GameState.GameConfigUpdate -> {
+                    console.log("GameConfigUpdate")
                     view.newState {
+                        this.startTimer=true
                         this.results = emptyList()
                         this.selectedOptionId=-1
                         this.options = gameState.clientGameConfig.voteOptions.options
@@ -64,6 +85,17 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
                     view.newState {
                         this.results = gameState.results
                     }
+                }
+                is GameState.NewStarted -> {
+                    console.log("GameState.Started")
+                    view.newState {
+                        this.timerStart = DateTime.now()
+                        this.results = emptyList()
+                        this.selectedOptionId=-1
+                        this.startTimer=true
+                        this.requestRoomPassword=false
+                    }
+
                 }
             }
         })
@@ -102,6 +134,10 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
         }
        val config = ClientGameConfig(voteOptions = mode,createdAt = DateTime.now().utc.toString())
         gameDataSource.changeConfig(config)
+    }
+
+    override fun changeRoomPassword(password: String) {
+            gameDataSource.changeRoomPassword(password)
     }
 
 
