@@ -4,7 +4,11 @@ import kotlinx.serialization.Serializable
 
 
 val SETROOMPASSSWORDPATH= "/room/setpassword"
+val SHOWVOTESPATH= "/room/showvotes"
+val RESTARTPATH= "/room/restart"
 val JOINROOMPATH= "/room/join"
+val VOTEPATH= "/vote"
+val CHNAGECONFIGPATH = "/change"
 
 
 interface Config{
@@ -14,13 +18,14 @@ interface Config{
 }
 
 @Serializable
-data class ClientGameConfig(override var voteOptions: VoteOptions = VoteOptions.Fibo(), override val autoReveal: Boolean = false, override var createdAt:String) :Config
+data class ClientGameConfig(override var voteOptions: VoteOptions = Fibo(), override val autoReveal: Boolean = false, override var createdAt:String) :Config
+
+
+data class ClientGameConfig2(override var voteOptions: VoteOptions = Fibo(), override val autoReveal: Boolean = false, override var createdAt:String) :Config
 
 @Serializable
 data class Member(val playerName: String, val voteStatus:String)
 
-@Serializable
-class Option(val id:Int,val text:String)
 
 @Serializable
 data class Player(val sessionId: String, val name: String = "Unnamed")

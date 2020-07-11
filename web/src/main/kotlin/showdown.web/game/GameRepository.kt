@@ -4,59 +4,61 @@ import com.badoo.reaktive.completable.Completable
 import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.subject.behavior.BehaviorSubject
 import de.jensklingenberg.showdown.model.*
-import showdown.web.network.GameApiHandler
+import showdown.web.network.GameApiClient
 import showdown.web.network.NetworkApiObserver
 
 enum class WebSocketConnectionType{
     INIT,OPEN,CLOSED
 }
 
-class GameRepository(private val gameApiHandler: GameApiHandler) : GameDataSource, NetworkApiObserver {
+
+
+fun Any.stringify():String{
+    return JSON.stringify(this)
+}
+class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource, NetworkApiObserver {
 
     private val gameStateSubject: BehaviorSubject<GameState> = BehaviorSubject(GameState.NotStarted)
     private val errorSubject: BehaviorSubject<ShowdownError?> = BehaviorSubject(null)
 
     override fun connectToServer(): Completable {
-       return gameApiHandler.start(this)
+       return gameApiClient.start(this)
     }
 
     override fun showVotes() {
-        val jsonData = ServerRequest.ShowVotes.toJson()
-        gameApiHandler.sendMessage(jsonData)
+        val req = Request(SHOWVOTESPATH).stringify()
+        gameApiClient.sendMessage(req)
     }
 
     override fun onSelectedVote(voteId: Int) {
-        val jsonData = ServerRequest.Voted(voteId).toJson()
-        gameApiHandler.sendMessage(jsonData)
+        val req = Request(VOTEPATH,voteId.toString()).stringify()
+        gameApiClient.sendMessage(req)
     }
 
     override fun changeConfig(clientGameConfig: ClientGameConfig) {
 
-        //val jsonData = ServerRequest.ChangeConfig(clientGameConfig).toJson()
-        val hallo= Hallo("Jens")
-     val json=   JSON.stringify(hallo)
+     val json=   clientGameConfig.toJson()
 
-        val req = Request("/hallo",json).toJson()
+        val req = Request(CHNAGECONFIGPATH,json).stringify()
 
-        gameApiHandler.sendMessage(req)
+        gameApiClient.sendMessage(req)
     }
 
     override fun changeRoomPassword(password: String) {
-
-        val req = Request(SETROOMPASSSWORDPATH,password).toJson()
-        gameApiHandler.sendMessage(req)
+        val req = Request(SETROOMPASSSWORDPATH,password).stringify()
+        gameApiClient.sendMessage(req)
     }
 
     override fun observeGameState(): Observable<GameState> = gameStateSubject
 
     override fun joinRoom(name:String,password:String) {
-        val jsonData = ServerRequest.JoinGameRequest(name, password).toJson()
-        gameApiHandler.sendMessage(jsonData)
+        val req = Request(JOINROOMPATH, JoinGame(name, password).stringify())
+        gameApiClient.sendMessage( JSON.stringify(req))
     }
 
     override fun requestReset() {
-        val jsonData = ServerRequest.RestartRequest.toJson()
-        gameApiHandler.sendMessage(jsonData)
+        val req = Request(RESTARTPATH).stringify()
+        gameApiClient.sendMessage(req)
     }
 
     override fun observeErrors(): Observable<ShowdownError?> = errorSubject

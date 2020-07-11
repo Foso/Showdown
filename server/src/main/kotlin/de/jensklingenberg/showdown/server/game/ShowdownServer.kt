@@ -1,8 +1,5 @@
 package de.jensklingenberg.showdown.server.game
 
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.JsonDataException
-import com.squareup.moshi.Moshi
 import de.jensklingenberg.showdown.model.*
 import de.jensklingenberg.showdown.server.model.Room
 import io.ktor.http.cio.websocket.CloseReason
@@ -12,7 +9,6 @@ import io.ktor.http.cio.websocket.close
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.ClosedSendChannelException
 import kotlinx.coroutines.launch
-import java.io.IOException
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -74,18 +70,6 @@ class ShowdownServer : GameServer {
         }
     }
 
-    inline fun <reified T> fromJson(json:String) : T?{
-        val moshi = Moshi.Builder().build()
-        val jsonAdapter: JsonAdapter<T> = moshi.adapter(T::class.java)
-
-        return try {
-            jsonAdapter.failOnUnknown().fromJson(json)
-        } catch (io: IOException) {
-           null
-        }catch (jsonDataException: JsonDataException){
-            null
-        }
-    }
 
     /**
      * We received a message. Let's process it.
@@ -98,59 +82,47 @@ class ShowdownServer : GameServer {
         println("Receiver ROOM:" + room.name + " PW: " + room.password)
         var gameSource = gameMap[room.name]
         val playerExist = playersSessions.containsKey(sessionId)
-        val request: Request = fromJson<Request>(command) ?: Request("","")
+        val request: Request = fromJson<Request>(command) ?: Request("", "")
 
-        when(request.path){
-            "/hallo"->{
-                val hallo = fromJson<Hallo>(request.body)
-
-            }
-            SETROOMPASSSWORDPATH->{
+        when (request.path) {
+            SETROOMPASSSWORDPATH -> {
                 gameSource?.changePassword(request.body)
             }
+            SHOWVOTESPATH -> {
+                gameSource?.showVotes(sessionId)
+            }
+            RESTARTPATH -> {
+                gameSource?.restart()
+            }
+            VOTEPATH -> {
+                val id = request.body.toInt()
+                gameSource?.onPlayerVoted(sessionId, id)
+
+            }
+            CHNAGECONFIGPATH -> {
+                fromJson<ClientGameConfig>(request.body)?.let {config->
+                    gameSource?.changeConfig(config)
+                }
+
+            }
+            JOINROOMPATH -> {
+                fromJson<JoinGame>(request.body)?.let {joinGame->
+                    if (gameMap.none { it.key == room.name }) {
+                        gameSource = createNewRoom(room.name)
+                    }
+
+                    if (joinGame.roomPassword == gameSource?.gameConfig?.room?.password) {
+                        gameSource?.playerJoined(Player(sessionId, joinGame.playerName))
+                    } else {
+                        sendTo(sessionId, ServerResponse.ErrorEvent(ShowdownError.NotAuthorizedError()).toJson())
+                    }
+                }
+
+            }
 
         }
 
 
-        when (val type = getServerRequest(command)) {
-            !is ServerRequest -> {
-                if (!playerExist) {
-                    return
-                }
-            }
-            else -> {
-                when (val incomingEvent = type) {
-
-                    is ServerRequest.JoinGameRequest -> {
-                        if (gameMap.none { it.key == room.name }) {
-                            gameSource = createNewRoom(room.name)
-                        }
-
-                        if (incomingEvent.roomPassword == gameSource?.gameConfig?.room?.password) {
-                            gameSource.playerJoined(Player(sessionId, incomingEvent.playerName))
-                        } else {
-                            sendTo(sessionId, ServerResponse.ErrorEvent(ShowdownError.NotAuthorizedError()).toJson())
-                        }
-                    }
-
-                    is ServerRequest.ShowVotes -> {
-                        if (!playerExist) {
-                            return
-                        }
-                        gameSource?.showVotes(sessionId)
-                    }
-                    is ServerRequest.Voted -> {
-                        gameSource?.onPlayerVoted(sessionId, incomingEvent.voteId)
-                    }
-                    is ServerRequest.RestartRequest -> {
-                        gameSource?.restart()
-                    }
-                    is ServerRequest.ChangeConfig -> {
-                        gameSource?.changeConfig(incomingEvent.clientGameConfig)
-                    }
-                }
-            }
-        }
     }
 
     fun sendBroadcast(data: String) {

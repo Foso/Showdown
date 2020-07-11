@@ -5,7 +5,7 @@ import react.dom.render
 import react.router.dom.hashRouter
 import react.router.dom.route
 import react.router.dom.switch
-import showdown.web.network.GameApiHandler
+import showdown.web.network.GameApiClient
 import showdown.web.game.GameDataSource
 import showdown.web.game.GameRepository
 import showdown.web.model.Route
@@ -27,7 +27,7 @@ class Application {
     )
 
     companion object{
-        private val gameApiHandler = GameApiHandler()
+        private val gameApiHandler = GameApiClient()
         val gameDataSource: GameDataSource = GameRepository(gameApiHandler)
 
     }

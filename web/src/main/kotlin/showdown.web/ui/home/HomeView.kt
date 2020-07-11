@@ -228,7 +228,10 @@ class HomeView : RComponent<RProps, HomeContract.HomeViewState>(), HomeContract.
         }
     }
 
+    
+
     private fun RBuilder.entryDialog() {
+
         dialog {
             attrs {
                 this.open = state.showEntryPopup
@@ -381,11 +384,11 @@ class HomeView : RComponent<RProps, HomeContract.HomeViewState>(), HomeContract.
                         setState {
                             this.selectedOptionId = index
                         }
-                        presenter.onSelectedVote(option.id)
+                        presenter.onSelectedVote(index)
                     }
 
                 }
-                +option.text
+                +option
 
             }
 
@@ -471,9 +474,7 @@ class HomeView : RComponent<RProps, HomeContract.HomeViewState>(), HomeContract.
                     }
                     menuItem {
                         attrs {
-                            this.value = "HEEEE"
-
-                            this.onClickFunction = {
+                            onClickFunction = {
                                 setState {
                                     this.showSettings = !this.showSettings
                                     openMenu = false
@@ -487,8 +488,7 @@ class HomeView : RComponent<RProps, HomeContract.HomeViewState>(), HomeContract.
 
                     menuItem {
                         attrs {
-                            this.value = "HEEEE"
-                            this.onClickFunction = {
+                            onClickFunction = {
                                 setState {
                                     showChangePassword=true
                                     openMenu = false
@@ -498,6 +498,16 @@ class HomeView : RComponent<RProps, HomeContract.HomeViewState>(), HomeContract.
                        label {
                            +"Room password is: ${state.roomPassword}"
                        }
+                    }
+                    menuItem {
+                        attrs {
+                            onClickFunction = {
+                                window.location.href = "https://github.com/Foso/Showdown";
+                            }
+                        }
+                        label {
+                            +"About"
+                        }
                     }
 
                 }

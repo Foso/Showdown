@@ -10,7 +10,7 @@ import de.jensklingenberg.showdown.server.model.Vote
 import de.jensklingenberg.showdown.server.model.toClient
 
 fun getDefaultConfig(roomName: String) = ServerConfig(
-    VoteOptions.Fibo(), false, createdAt = DateTime.now().utc.toString(),
+    Fibo(), false, createdAt = DateTime.now().utc.toString(),
     room = Room(roomName, "")
 )
 
@@ -24,7 +24,8 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
     private val loggit = true
 
     fun changePassword(password: String) {
-        gameConfig = gameConfig.copy(room = gameConfig.room.copy(password = password))
+        val newRoomData =gameConfig.room.copy(password = password)
+        gameConfig = gameConfig.copy(room = newRoomData)
     }
 
     fun restart() {
@@ -65,7 +66,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
 
     }
 
-    fun onPlayerRejoined(sessionId: String, name: String) {
+    private fun onPlayerRejoined(sessionId: String, name: String) {
         logm("onPlayerRejoined " + name)
         inactivePlayers.removeIf { it.sessionId == sessionId }
         sendMembers()
@@ -152,11 +153,10 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
     }
 
     private fun showVotes() {
-
+        logm("SHOWVOTES")
         val newresults = votes.map {
-            val voteId = it.voteId
             val voterId = it.playerId
-            val voteText = gameConfig.voteOptions.options[voteId].text
+            val voteText = gameConfig.voteOptions.options[it.voteId]
             val voterName = playerList.find { it.sessionId == voterId }?.name ?: ""
             Result(voteText, voterName)
         }.sortedBy { it.optionName }
@@ -167,8 +167,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
 
 
     private fun sendGameStateChanged(gameState: GameState) {
-        val json2 = ServerResponse.GameStateChanged(gameState).toJson()
-        sendBroadcast(json2)
+        sendBroadcast(ServerResponse.GameStateChanged(gameState).toJson())
     }
 
     private fun sendBroadcast(json2: String) {

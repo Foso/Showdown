@@ -2,7 +2,6 @@ package showdown.web.ui.home
 
 import com.soywiz.klock.DateTime
 import de.jensklingenberg.showdown.model.Member
-import de.jensklingenberg.showdown.model.Option
 import de.jensklingenberg.showdown.model.Result
 import org.w3c.dom.events.EventTarget
 import react.RState
@@ -30,7 +29,7 @@ interface HomeContract {
         var errorMessage: String
         var showSnackbar: Boolean
         var members: List<Member>
-        var options: List<Option>
+        var options: List<String>
         var results : List<Result>
         var gameModeId: Int
         var customOptions : String

@@ -4,10 +4,7 @@ import Application
 import com.badoo.reaktive.completable.subscribe
 import com.badoo.reaktive.observable.subscribe
 import com.soywiz.klock.DateTime
-import de.jensklingenberg.showdown.model.ClientGameConfig
-import de.jensklingenberg.showdown.model.VoteOptions
-import de.jensklingenberg.showdown.model.GameState
-import de.jensklingenberg.showdown.model.ShowdownError
+import de.jensklingenberg.showdown.model.*
 import showdown.web.game.GameDataSource
 
 class HomePresenter(private val view: HomeContract.View) : HomeContract.Presenter {
@@ -121,16 +118,16 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
         console.log("CHANGE"+gameModeId)
         val mode: VoteOptions = when (gameModeId) {
             0 -> {
-                VoteOptions.Fibo()
+                Fibo()
             }
             1 -> {
-                VoteOptions.TShirt()
+                TShirt()
             }
             2 -> {
                 val options = gameOptions.split(";")
-                VoteOptions.Custom(options)
+                Custom(options)
             }
-            else -> VoteOptions.Fibo()
+            else -> Fibo()
         }
        val config = ClientGameConfig(voteOptions = mode,createdAt = DateTime.now().utc.toString())
         gameDataSource.changeConfig(config)
