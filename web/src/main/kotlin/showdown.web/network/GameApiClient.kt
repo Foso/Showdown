@@ -38,6 +38,7 @@ class GameApiClient {
      }
 
     private fun onMessage(messageEvent: MessageEvent) {
+        console.log("ONMESSAGE: "+messageEvent.data.toString())
         when (val type = getServerResponse(messageEvent.data.toString())) {
             is ServerResponse.PlayerEvent -> {
                 observer.onPlayerEventChanged(type.playerResponseEvent)

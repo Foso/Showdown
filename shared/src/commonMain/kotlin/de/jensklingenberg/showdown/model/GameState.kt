@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-open class GameState {
+sealed class GameState {
 
     /**
      * Initial State for clients

@@ -8,6 +8,7 @@ import org.w3c.dom.HTMLInputElement
 import react.*
 import react.dom.button
 import react.dom.div
+import react.dom.h1
 import showdown.web.ui.home.SettingsProps
 import showdown.web.ui.home.TTickerState
 import kotlin.browser.window
@@ -23,6 +24,9 @@ class StartPage : RComponent<SettingsProps, StartPageState>() {
 
     override fun RBuilder.render() {
 
+        h1 {
+            +"Showdown - Online Scrum Poker Tool"
+        }
         textField {
             attrs {
                 variant = FormControlVariant.filled

@@ -1,4 +1,4 @@
-package de.jensklingenberg.showdown.server.game
+package de.jensklingenberg.showdown.server.common
 
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonDataException

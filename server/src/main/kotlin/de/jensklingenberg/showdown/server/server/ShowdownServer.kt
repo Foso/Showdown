@@ -1,6 +1,10 @@
-package de.jensklingenberg.showdown.server.game
+package de.jensklingenberg.showdown.server.server
 
 import de.jensklingenberg.showdown.model.*
+import de.jensklingenberg.showdown.server.game.GameServer
+import de.jensklingenberg.showdown.server.game.ServerGame
+import de.jensklingenberg.showdown.server.common.fromJson
+import de.jensklingenberg.showdown.server.game.getDefaultConfig
 import de.jensklingenberg.showdown.server.model.Room
 import io.ktor.http.cio.websocket.CloseReason
 import io.ktor.http.cio.websocket.Frame
@@ -82,7 +86,8 @@ class ShowdownServer : GameServer {
         println("Receiver ROOM:" + room.name + " PW: " + room.password)
         var gameSource = gameMap[room.name]
         val playerExist = playersSessions.containsKey(sessionId)
-        val request: Request = fromJson<Request>(command) ?: Request("", "")
+        val request: Request = fromJson<Request>(command)
+            ?: Request("", "")
 
         when (request.path) {
             SETROOMPASSSWORDPATH -> {
@@ -100,13 +105,15 @@ class ShowdownServer : GameServer {
 
             }
             CHNAGECONFIGPATH -> {
-                fromJson<ClientGameConfig>(request.body)?.let {config->
+                fromJson<ClientGameConfig>(request.body)
+                    ?.let { config->
                     gameSource?.changeConfig(config)
                 }
 
             }
             JOINROOMPATH -> {
-                fromJson<JoinGame>(request.body)?.let {joinGame->
+                fromJson<JoinGame>(request.body)
+                    ?.let { joinGame->
                     if (gameMap.none { it.key == room.name }) {
                         gameSource = createNewRoom(room.name)
                     }
@@ -144,7 +151,10 @@ class ShowdownServer : GameServer {
     }
 
     override fun createNewRoom(roomName: String): ServerGame {
-        val game = ServerGame(this, getDefaultConfig(roomName))
+        val game = ServerGame(
+            this,
+            getDefaultConfig(roomName)
+        )
 
         gameMap.putIfAbsent(roomName, game)
 

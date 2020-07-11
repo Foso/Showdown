@@ -1,7 +1,6 @@
 package de.jensklingenberg.showdown.server.server
 
 import de.jensklingenberg.showdown.server.model.Session
-import de.jensklingenberg.showdown.server.game.ShowdownServer
 import de.jensklingenberg.showdown.server.model.Room
 import io.ktor.application.ApplicationCallPipeline
 import io.ktor.application.call
