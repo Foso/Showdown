@@ -69,11 +69,7 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
     }
 
     override fun onPlayerEventChanged(gameResponse: PlayerResponseEvent) {
-        when (gameResponse) {
-            is PlayerResponseEvent.JOINED -> {
 
-            }
-        }
     }
 
     override fun onError(errorEvent: ServerResponse.ErrorEvent) {

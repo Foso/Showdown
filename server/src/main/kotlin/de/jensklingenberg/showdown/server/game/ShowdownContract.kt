@@ -1,6 +1,8 @@
 package de.jensklingenberg.showdown.server.game
 
-import de.jensklingenberg.showdown.model.Player
+import de.jensklingenberg.showdown.server.model.Player
+
+
 interface GameServer {
 
     fun sendData(sessionId: String, data: String)

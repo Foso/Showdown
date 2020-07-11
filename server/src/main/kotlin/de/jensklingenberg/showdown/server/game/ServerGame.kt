@@ -3,11 +3,7 @@ package de.jensklingenberg.showdown.server.game
 
 import com.soywiz.klock.DateTime
 import de.jensklingenberg.showdown.model.*
-import de.jensklingenberg.showdown.server.model.Room
-import de.jensklingenberg.showdown.server.model.ServerConfig
-
-import de.jensklingenberg.showdown.server.model.Vote
-import de.jensklingenberg.showdown.server.model.toClient
+import de.jensklingenberg.showdown.server.model.*
 
 fun getDefaultConfig(roomName: String) = ServerConfig(
     Fibo(), false, createdAt = DateTime.now().utc.toString(),
@@ -36,7 +32,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
         }
         inactivePlayers.clear()
         votes.clear()
-        sendMembers()
+        sendPlayers()
         sendGameStateChanged(gameState)
     }
 
@@ -58,8 +54,8 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
             playerList.add(player)
             server.onPlayerAdded(player.sessionId, player)
 
-            sendPlayerEvent(PlayerResponseEvent.JOINED(player))
-            sendMembers()
+           // sendPlayerEvent(PlayerResponseEvent.JOINED(player))
+            sendPlayers()
             sendGameStateChanged(GameState.GameConfigUpdate(gameConfig.toClient()))
         }
 
@@ -68,8 +64,15 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
 
     private fun onPlayerRejoined(sessionId: String, name: String) {
         logm("onPlayerRejoined " + name)
+        playerList.replaceAll {
+            if(it.sessionId==sessionId){
+                it.copy(name=name)
+            }else{
+                it
+            }
+        }
         inactivePlayers.removeIf { it.sessionId == sessionId }
-        sendMembers()
+        sendPlayers()
         sendGameStateChanged(GameState.GameConfigUpdate(gameConfig.toClient()))
     }
 
@@ -84,7 +87,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
         votes.clear()
         gameState = GameState.GameConfigUpdate(this.gameConfig.toClient())
         sendGameStateChanged(gameState)
-        sendMembers()
+        sendPlayers()
     }
 
 
@@ -97,7 +100,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
         println("player: " + playerId + "VOted: " + voteId)
         votes.removeIf { it.playerId == playerId }
         votes.add(Vote(voteId, playerId))
-        sendMembers()
+        sendPlayers()
         if (gameConfig.autoReveal) {
             if (votes.size == playerList.size) {
                 showVotes()
@@ -111,7 +114,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
             inactivePlayers.add(it)
         }
 
-        sendMembers()
+        sendPlayers()
         sendGameStateChanged(GameState.GameConfigUpdate(gameConfig.toClient()))
         closeRoomIfEmpty()
     }
@@ -126,7 +129,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
         }
     }
 
-    private fun sendMembers() {
+    private fun sendPlayers() {
         val votesList = playerList.map { player ->
             val isInActive = inactivePlayers.any { it.sessionId == player.sessionId }
             val inActiveText = if (isInActive) {

@@ -5,21 +5,22 @@ import kotlinx.html.js.onClickFunction
 import materialui.components.formcontrol.enums.FormControlVariant
 import materialui.components.textfield.textField
 import org.w3c.dom.HTMLInputElement
-import react.*
-import react.dom.button
-import react.dom.div
-import react.dom.h1
+import react.RBuilder
+import react.RComponent
+import react.RState
+import react.dom.*
+import react.setState
 import showdown.web.ui.home.SettingsProps
-import showdown.web.ui.home.TTickerState
 import kotlin.browser.window
- interface StartPageState : RState{
-     var roomName : String
- }
+
+interface StartPageState : RState {
+    var roomName: String
+}
 
 class StartPage : RComponent<SettingsProps, StartPageState>() {
 
     override fun StartPageState.init() {
-        this.roomName=""
+        this.roomName = ""
     }
 
     override fun RBuilder.render() {
@@ -27,12 +28,82 @@ class StartPage : RComponent<SettingsProps, StartPageState>() {
         h1 {
             +"Showdown - Online Scrum Poker Tool"
         }
+        h2 { +"How to:" }
+        div {
+            p {
+                +"1) Choose a room name and go to the room"
+            }
+            textField {
+                attrs {
+                    variant = FormControlVariant.filled
+                    value(state.roomName)
+                    label {
+                        +"Choose new room name:"
+                    }
+                    onChangeFunction = {
+                        val target = it.target as HTMLInputElement
+
+                        setState {
+                            this.roomName = target.value
+                        }
+                    }
+                }
+            }
+
+            div {
+                button {
+                    +"Go to room"
+                    attrs {
+                        onClickFunction = {
+                            window.location.href = "/#/room/${state.roomName}";
+                        }
+                    }
+                }
+            }
+
+        }
+        div {
+            p {
+                +"2) Choose a player name\n"
+            }
+            img {
+                attrs {
+                    src = "/web/img/joingame.png"
+                }
+            }
+        }
+        div {
+            p {
+                +"3) Select an Option"
+            }
+            img {
+                attrs {
+                    src = "/web/img/option.png"
+                }
+            }
+        }
+        div {
+
+            p {
+                +"4) When you are ready click Show Votes"
+            }
+            img {
+                attrs {
+                    src = "/web/img/showvotes.png"
+                }
+            }
+
+
+        }
+        br { }
+        hr { }
+        div { +"\uD83D\uDC47" }//Finger down
         textField {
             attrs {
                 variant = FormControlVariant.filled
                 value(state.roomName)
                 label {
-                    +"Set a new room name:"
+                    +"Choose new room name:"
                 }
                 onChangeFunction = {
                     val target = it.target as HTMLInputElement
@@ -42,20 +113,18 @@ class StartPage : RComponent<SettingsProps, StartPageState>() {
                     }
                 }
             }
-            +"HHHHHER"
         }
 
         div {
-          button {
-              +"GO"
-              attrs {
-                  onClickFunction={
-                      window.location.href = "/#/room/${state.roomName}";
-                  }
-              }
-          }
-       }
-
+            button {
+                +"Go to room"
+                attrs {
+                    onClickFunction = {
+                        window.location.href = "/#/room/${state.roomName}";
+                    }
+                }
+            }
+        }
 
     }
 }

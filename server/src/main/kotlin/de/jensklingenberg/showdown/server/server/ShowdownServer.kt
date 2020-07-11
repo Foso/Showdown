@@ -5,6 +5,7 @@ import de.jensklingenberg.showdown.server.game.GameServer
 import de.jensklingenberg.showdown.server.game.ServerGame
 import de.jensklingenberg.showdown.server.common.fromJson
 import de.jensklingenberg.showdown.server.game.getDefaultConfig
+import de.jensklingenberg.showdown.server.model.Player
 import de.jensklingenberg.showdown.server.model.Room
 import io.ktor.http.cio.websocket.CloseReason
 import io.ktor.http.cio.websocket.Frame

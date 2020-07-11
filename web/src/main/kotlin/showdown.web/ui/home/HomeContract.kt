@@ -28,7 +28,7 @@ interface HomeContract {
         var playerName: String
         var errorMessage: String
         var showSnackbar: Boolean
-        var members: List<Member>
+        var players: List<Member>
         var options: List<String>
         var results : List<Result>
         var gameModeId: Int

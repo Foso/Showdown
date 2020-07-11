@@ -8,13 +8,7 @@ class NetworkPreferences {
     Change the testingAddress to the IP of your server
      */
 
-    val herokuWsUrl = "wss://shwdwn.herokuapp.com/"
-
-
-    val port = window.location.port
-
-
-    var hostUri: String = "${window.location}+${window.location.hostname}"
+    var hostUri: String = "${window.location}"
 
     val hostname = when {
         hostUri.contains("localhost") -> {
@@ -26,7 +20,7 @@ class NetworkPreferences {
         }
         else -> {
             console.log("HOST " + hostUri)
-            herokuWsUrl
+            "wss://${window.location.hostname}/"
         }
     }
 

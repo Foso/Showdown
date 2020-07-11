@@ -64,7 +64,7 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
 
                 is GameState.MembersUpdate -> {
                     view.newState {
-                        this.members = gameState.members
+                        this.players = gameState.members
                     }
                 }
 
