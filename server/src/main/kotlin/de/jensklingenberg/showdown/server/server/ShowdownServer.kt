@@ -1,9 +1,9 @@
 package de.jensklingenberg.showdown.server.server
 
 import de.jensklingenberg.showdown.model.*
+import de.jensklingenberg.showdown.server.common.fromJson
 import de.jensklingenberg.showdown.server.game.GameServer
 import de.jensklingenberg.showdown.server.game.ServerGame
-import de.jensklingenberg.showdown.server.common.fromJson
 import de.jensklingenberg.showdown.server.game.getDefaultConfig
 import de.jensklingenberg.showdown.server.model.Player
 import de.jensklingenberg.showdown.server.model.Room
@@ -103,10 +103,9 @@ class ShowdownServer : GameServer {
             VOTEPATH -> {
                 val id = request.body.toInt()
                 gameSource?.onPlayerVoted(sessionId, id)
-
             }
             CHNAGECONFIGPATH -> {
-                fromJson<ClientGameConfig>(request.body)
+                fromJson<NewGameConfig>(request.body)
                     ?.let { config->
                     gameSource?.changeConfig(config)
                 }
@@ -158,13 +157,10 @@ class ShowdownServer : GameServer {
         )
 
         gameMap.putIfAbsent(roomName, game)
-
-        println("CREATE ROOM " + roomName)
         return game
     }
 
     override fun closeRoom(roomName: String) {
-        println("CloseRoom" + roomName)
         gameMap.remove(roomName)
     }
 

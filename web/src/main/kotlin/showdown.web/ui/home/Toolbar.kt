@@ -25,8 +25,9 @@ import kotlin.math.floor
 interface ToolbarState : RState {
     var onNewGameClicked: () -> Unit
     var onShowVotesClicked: () -> Unit
+    var onGameModeClicked: () -> Unit
+
     var diffSecs: Double
-    var showSettings: Boolean
     var openMenu: Boolean
     var showChangePassword: Boolean
     var anchor: EventTarget?
@@ -41,6 +42,7 @@ interface ToolbarProps : RProps {
     var onShowVotesClicked: () -> Unit
     var startTimer: Boolean
     var diffSecs: Double
+    var onGameModeClicked: () -> Unit
 
 }
 
@@ -52,6 +54,7 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
         this.startTimer = props.startTimer
         this.showShareDialog=false
         this.diffSecs=props.diffSecs
+        this.onGameModeClicked=props.onGameModeClicked
     }
 
     override fun componentWillReceiveProps(nextProps: ToolbarProps) {
@@ -183,9 +186,10 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
                 attrs {
                     onClickFunction = {
                         setState {
-                            this.showSettings = !this.showSettings
                             openMenu = false
                         }
+                        state.onGameModeClicked()
+
                     }
                 }
                 label {
@@ -229,7 +233,8 @@ fun RBuilder.myToolbar(
     startTimer: Boolean,
     onNewGameClicked: () -> Unit,
     onShowVotesClicked: () -> Unit,
-    diffSecs: Double
+    diffSecs: Double,
+    onGameModeClicked: () -> Unit
 ): ReactElement {
     return child(Toolbar::class) {
         attrs {
@@ -237,6 +242,7 @@ fun RBuilder.myToolbar(
             this.onShowVotesClicked = onShowVotesClicked
             this.startTimer = startTimer
             this.diffSecs=diffSecs
+            this.onGameModeClicked=onGameModeClicked
         }
     }
 }

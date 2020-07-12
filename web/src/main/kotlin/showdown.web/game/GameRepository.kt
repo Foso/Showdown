@@ -35,11 +35,9 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
         gameApiClient.sendMessage(req)
     }
 
-    override fun changeConfig(clientGameConfig: ClientGameConfig) {
+    override fun changeConfig(newGameConfig: NewGameConfig) {
 
-     val json=   clientGameConfig.toJson()
-
-        val req = Request(CHNAGECONFIGPATH,json).stringify()
+        val req = Request(CHNAGECONFIGPATH, newGameConfig.stringify()).stringify()
 
         gameApiClient.sendMessage(req)
     }
@@ -68,9 +66,6 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
         gameStateSubject.onNext(gameState)
     }
 
-    override fun onPlayerEventChanged(gameResponse: PlayerResponseEvent) {
-
-    }
 
     override fun onError(errorEvent: ServerResponse.ErrorEvent) {
         errorSubject.onNext(errorEvent.error)

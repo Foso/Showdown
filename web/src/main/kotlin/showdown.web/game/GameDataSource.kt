@@ -12,7 +12,7 @@ interface GameDataSource {
     fun observeErrors(): Observable<ShowdownError?>
     fun showVotes()
     fun onSelectedVote(voteId: Int)
-    fun changeConfig(clientGameConfig: ClientGameConfig)
+    fun changeConfig(newGameConfig: NewGameConfig)
     fun changeRoomPassword(password: String)
 }
 

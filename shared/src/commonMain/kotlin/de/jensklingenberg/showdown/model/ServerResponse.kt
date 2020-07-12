@@ -12,10 +12,6 @@ enum class ServerResponseTypes {
 data class Request(val path: String,val body:String="")
 
 
-fun Request.toJson(): String {
-    return Json(JsonConfiguration.Stable).stringify(Request.serializer(), this)
-}
-
 @Serializable
 sealed class ServerResponse(val id: Int) {
 
@@ -33,20 +29,11 @@ fun ServerResponse.ErrorEvent.toJson(): String {
     return Json(JsonConfiguration.Stable).stringify(ServerResponse.ErrorEvent.serializer(), this)
 }
 
-fun ServerResponse.PlayerEvent.toJson(): String {
-    return Json(JsonConfiguration.Stable).stringify(ServerResponse.PlayerEvent.serializer(), this)
-}
-
 fun ServerResponse.GameStateChanged.toJson(): String {
     return Json(JsonConfiguration.Stable).stringify(ServerResponse.GameStateChanged.serializer(), this)
 }
 
-fun ClientGameConfig.toJson():String{
-    return Json(JsonConfiguration.Stable).stringify(ClientGameConfig.serializer(), this)
-
-}
-
-fun getClientCommandType(toString: String): ServerResponseTypes {
+fun getServerResponseType(toString: String): ServerResponseTypes {
 
     return ServerResponseTypes.values().firstOrNull() {
         toString.startsWith("{\"id\":${it.ordinal}")
@@ -54,7 +41,7 @@ fun getClientCommandType(toString: String): ServerResponseTypes {
 }
 
 fun getServerResponse(json:String): ServerResponse? {
-    return when(getClientCommandType(json)){
+    return when(getServerResponseType(json)){
         ServerResponseTypes.STATE_CHANGED -> {
             ServerResponseParser.getGameStateChangedCommand(json)
         }

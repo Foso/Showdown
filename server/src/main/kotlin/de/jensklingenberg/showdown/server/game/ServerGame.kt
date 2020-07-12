@@ -2,31 +2,31 @@ package de.jensklingenberg.showdown.server.game
 
 
 import com.soywiz.klock.DateTime
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import de.jensklingenberg.showdown.model.*
 import de.jensklingenberg.showdown.server.model.*
 
 fun getDefaultConfig(roomName: String) = ServerConfig(
-    Fibo(), false, createdAt = DateTime.now().unixMillisDouble.toString(),
+    fibo, false, createdAt = DateTime.now().unixMillisDouble.toString(),
     room = Room(roomName, "")
 )
 
-//http://localhost:23567/room/hans
 class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
 
     private val playerList = mutableListOf<Player>()
     private val votes = arrayListOf<Vote>()
     private var gameState: GameState = GameState.NotStarted
     private val inactivePlayers = mutableListOf<Player>()
-    private val loggit = true
 
     fun changePassword(password: String) {
-        val newRoomData =gameConfig.room.copy(password = password)
+        val newRoomData = gameConfig.room.copy(password = password)
         gameConfig = gameConfig.copy(room = newRoomData)
     }
 
     fun restart() {
-        logm("restart")
-        gameState = GameState.NewStarted(gameConfig.toClient().copy(createdAt = DateTime.now().unixMillisDouble.toString()))
+        gameState =
+            GameState.Started(gameConfig.toClient().copy(createdAt = DateTime.now().unixMillisDouble.toString()))
         inactivePlayers.forEach { inactivePlayer ->
             playerList.removeIf { it.sessionId == inactivePlayer.sessionId }
         }
@@ -36,69 +36,63 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
         sendGameStateChanged(gameState)
     }
 
-    private fun logm(message: String) {
-        if (loggit) {
-            println(message)
-        }
-    }
-
     fun playerJoined(player: Player) {
 
         if (playerList.any { it.sessionId == player.sessionId }) {
             onPlayerRejoined(player.sessionId, player.name)
         } else {
             if (gameState == GameState.NotStarted) {
-                gameState = GameState.NewStarted(gameConfig.toClient())
+                gameState = GameState.Started(gameConfig.toClient())
             }
-            logm("addPlayer " + player.name + "To Room" + gameConfig.room)
             playerList.add(player)
             server.onPlayerAdded(player.sessionId, player)
 
-           // sendPlayerEvent(PlayerResponseEvent.JOINED(player))
             sendPlayers()
-            sendGameStateChanged(GameState.NewStarted(gameConfig.toClient()))
-        }
-       val mili= DateTime.now().unixMillisLong
+            sendGameStateChanged(GameState.Started(gameConfig.toClient()))
+            val moshi = Moshi.Builder().build()
+            val tt = MyGameState(EnGameState.MEMBERSUDPATE, MyMembersUpdate("HUHU"))
 
-        1594560642307
+            val test = WebsocketResource(WebSocketResourceType.GameState,tt)
+            val parameterizedType =
+                Types.newParameterizedType(WebsocketResource::class.java, MyGameState::class.java)
+            val adapter = moshi.adapter<WebsocketResource<MyGameState>>(parameterizedType)
+
+            sendBroadcast( adapter.toJson(test))
+
+        }
+
     }
 
     private fun onPlayerRejoined(sessionId: String, name: String) {
-        logm("onPlayerRejoined " + name)
-        playerList.replaceAll {
-            if(it.sessionId==sessionId){
-                it.copy(name=name)
-            }else{
-                it
+        playerList.replaceAll {player->
+            if (player.sessionId == sessionId) {
+                player.copy(name = name)
+            } else {
+                player
             }
         }
         inactivePlayers.removeIf { it.sessionId == sessionId }
         sendPlayers()
-        sendGameStateChanged(GameState.NewStarted(gameConfig.toClient()))
+        sendGameStateChanged(GameState.Started(gameConfig.toClient()))
     }
 
-    fun changeConfig(clientGameConfig: ClientGameConfig) {
-        logm("changeConfig ")
+    fun changeConfig(clientGameConfig: NewGameConfig) {
         this.gameConfig = gameConfig.copy(
-            room = Room(gameConfig.room.name, "HEY"),
             createdAt = DateTime.now().unixMillisLong.toString(),
             autoReveal = clientGameConfig.autoReveal,
             voteOptions = clientGameConfig.voteOptions
         )
         votes.clear()
-        gameState = GameState.NewStarted(this.gameConfig.toClient())
+        gameState = GameState.Started(this.gameConfig.toClient())
         sendGameStateChanged(gameState)
         sendPlayers()
     }
 
 
     fun onPlayerVoted(playerId: String, voteId: Int) {
-        logm("onPlayerVoted " + playerId)
-
         if (gameState is GameState.ShowVotes) {
             return
         }
-        println("player: " + playerId + "VOted: " + voteId)
         votes.removeIf { it.playerId == playerId }
         votes.add(Vote(voteId, playerId))
         sendPlayers()
@@ -116,7 +110,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
         }
 
         sendPlayers()
-        sendGameStateChanged(GameState.NewStarted(gameConfig.toClient()))
+        sendGameStateChanged(GameState.Started(gameConfig.toClient()))
         closeRoomIfEmpty()
     }
 
@@ -157,10 +151,9 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
     }
 
     private fun showVotes() {
-        logm("SHOWVOTES")
         val newresults = votes.map {
             val voterId = it.playerId
-            val voteText = gameConfig.voteOptions.options[it.voteId]
+            val voteText = gameConfig.voteOptions[it.voteId]
             val voterName = playerList.find { it.sessionId == voterId }?.name ?: ""
             Result(voteText, voterName)
         }.sortedBy { it.optionName }
@@ -170,21 +163,16 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
     }
 
 
+
     private fun sendGameStateChanged(gameState: GameState) {
         sendBroadcast(ServerResponse.GameStateChanged(gameState).toJson())
     }
 
-    private fun sendBroadcast(json2: String) {
+    private fun sendBroadcast(json: String) {
         playerList.forEach {
-            server.sendData(it.sessionId, json2)
+            server.sendData(it.sessionId, json)
         }
     }
-
-    private fun sendPlayerEvent(playerResponseEvent: PlayerResponseEvent) {
-        val json = ServerResponse.PlayerEvent(playerResponseEvent).toJson()
-        sendBroadcast(json)
-    }
-
 
 }
 

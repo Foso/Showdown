@@ -12,31 +12,38 @@ val CHNAGECONFIGPATH = "/change"
 
 
 interface Config{
-    var voteOptions: VoteOptions
+    var voteOptions: List<String>
      val autoReveal: Boolean
     var createdAt:String
 }
 
 @Serializable
-data class ClientGameConfig(override var voteOptions: VoteOptions = Fibo(), override val autoReveal: Boolean = false, override var createdAt:String) :Config
+data class ClientGameConfig(override var voteOptions: List<String> = fibo, override val autoReveal: Boolean = false, override var createdAt:String) :Config
 
+
+data class NewGameConfig(var voteOptions: List<String> = fibo, val autoReveal: Boolean = false)
 
 @Serializable
 data class Member(val playerName: String, val voteStatus:String)
 
-
-
 @Serializable
 data class Result(val optionName:String, val voterName:String)
 
-data class WebsocketResource<T>(val type: WebSocketType, val data: T?, val message: String = "") {
+data class WebsocketResource<T>(val resourceType: WebSocketResourceType, val data: T?, val message: String = "")
 
-}
-
-enum class WebSocketType {
+enum class WebSocketResourceType {
     Notification,
 
     MESSAGE,
-    EVENT,
+    GameState,
     UNKNOWN
+}
+
+fun getWebsocketType(toString: String): WebSocketResourceType {
+    //TODO:Find better way to get type
+
+   return WebSocketResourceType.values().firstOrNull {
+        toString.contains("\"type\":\"${it.ordinal}\"")
+    }?:WebSocketResourceType.UNKNOWN
+
 }

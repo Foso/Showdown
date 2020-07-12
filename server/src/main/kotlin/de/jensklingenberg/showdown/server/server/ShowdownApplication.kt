@@ -30,13 +30,6 @@ import java.time.Duration
 fun main() {
     ShowdownApplication()
 }
-fun InputStream.toFile(path: String): File {
-  val file = File(path)
-
-      file.outputStream().use { this.copyTo(it) }
-
-    return file
-}
 
 class ShowdownApplication {
 
@@ -46,12 +39,10 @@ class ShowdownApplication {
         start()
     }
 
-
     private fun start() {
         val port = System.getenv("PORT")?.toInt() ?: 23567
         println("SERVER STARTED on port: " + port)
         println("http://localhost:$port/room/jens/")
-
 
         embeddedServer(Netty, port) {
             install(Compression) {
@@ -62,7 +53,6 @@ class ShowdownApplication {
                 gson {
                     setPrettyPrinting()
                 }
-
             }
             install(WebSockets)
             {
@@ -83,51 +73,22 @@ class ShowdownApplication {
 
             routing {
                 get("") {
-                    val roomName = call.parameters["room"] ?: ""
-                    //call.respond("I'm alive! Roomname:"+roomName)
                     val res=   this.javaClass.getResourceAsStream("/web/index.html")
-                    println("FILEPATH"+res)
-
-                    // if(call.request.uri.endsWith("/"))
-
                     call.respondBytes { res.readBytes() }
-
-                    //call.respond(HttpStatusCode.Accepted, "Its working ")
                 }
-
-                get("hello") {
-                    call.respond(HttpStatusCode.Accepted, "Hello ")
-                }
-
-                get("#/{param...}") {
-                    val roomNamepar = call.parameters["param"] ?: "index.html"
-
-                    call.respond(HttpStatusCode.Accepted, "Hello ")
-                }
-
 
                 get("room/{roomName}/{param...}") {
-                    println("MY:room/{roomName}/{param...}")
                     val roomName = call.parameters["roomName"] ?: ""
-                    val roomNamepar = call.parameters["param"] ?: "index.html"
 
                     if(!call.request.uri.endsWith("/")){
                         call.respondRedirect("/room/$roomName/")
                     }
 
-                    val res=   this.javaClass.getResourceAsStream("/web/$roomNamepar")
-                    println("FILEPATH"+res)
-
-                   // if(call.request.uri.endsWith("/"))
                     call.respondRedirect("/#/room/$roomName")
-                 //  call.respondBytes { res.readBytes() }
                 }
 
                 static("web") {
-
-                 //   staticRootFolder = File("/web")
                     resources("web")
-
                 }
 
 
@@ -167,17 +128,12 @@ class ShowdownApplication {
                         // We notify the server that the member left.
                         server.memberLeft(session.id, this)
                     }
-
                 }
-
-
             }
-
-
         }.start(wait = true)
     }
 
 
 }
 
-//
+

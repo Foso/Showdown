@@ -24,7 +24,10 @@ val gameModeOptions: List<Pair<String, Int>>
     get() = listOf(
         "Fibonacci" to 0,
         "T-Shirt" to 1,
-        "Custom" to 2
+        "Modified Fibonacci" to 2,
+        "Power of 2" to 3,
+
+        "Custom" to 4
     )
 
 interface SettingsProps : RProps {
@@ -78,7 +81,7 @@ class SettingsComponent(prps: SettingsProps) : RComponent<SettingsProps, TTicker
             }
         }
 
-        if (state.gameModeId == 2) {
+        if (state.gameModeId == 4) {
             div {
                 textField {
                     attrs {
@@ -117,7 +120,7 @@ class SettingsComponent(prps: SettingsProps) : RComponent<SettingsProps, TTicker
     }
 }
 
-fun RBuilder.adminMenu(gameModeId: Int, onSave: (Int, String) -> Unit): ReactElement {
+fun RBuilder.gameModeSettings(gameModeId: Int, onSave: (Int, String) -> Unit): ReactElement {
     return child(SettingsComponent::class) {
         attrs.startFrom = onSave
 

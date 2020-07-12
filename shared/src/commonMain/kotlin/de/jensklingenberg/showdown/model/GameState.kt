@@ -13,15 +13,19 @@ sealed class GameState {
     object NotStarted : GameState()
 
     @Serializable
-    class NewStarted(val clientGameConfig: ClientGameConfig) : GameState()
+    class Started(val clientGameConfig: ClientGameConfig) : GameState()
 
     @Serializable
     class MembersUpdate(val members: List<Member>) : GameState()
 
     @Serializable
-    class GameConfigUpdate(val clientGameConfig: ClientGameConfig) : GameState()
-
-    @Serializable
     class ShowVotes(val results:List<Result>) : GameState()
 
 }
+
+enum class EnGameState{
+    NOTSTARTED,STARTED,MEMBERSUDPATE,SHOWVOTES
+}
+
+class MyGameState(val enGameState: EnGameState,val body:Any)
+class MyMembersUpdate(val members: String)

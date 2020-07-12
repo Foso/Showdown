@@ -84,7 +84,12 @@ class HomeView : RComponent<RProps, HomeContract.HomeViewState>(), HomeContract.
         },
         onShowVotesClicked = {
             presenter.showVotes()
-        },diffSecs = state.diffSecs
+        },diffSecs = state.diffSecs,
+            onGameModeClicked = {
+                setState {
+                    this.showSettings=!this.showSettings
+                }
+            }
     )
 
         optionsList(state.options, state.selectedOptionId, onOptionClicked = { index: Int ->
@@ -98,7 +103,7 @@ class HomeView : RComponent<RProps, HomeContract.HomeViewState>(), HomeContract.
 
         if (state.showSettings) {
 
-            adminMenu(state.gameModeId) { gameModeId, gameOptions ->
+            gameModeSettings(state.gameModeId) { gameModeId, gameOptions ->
                 setState {
                     this.gameModeId = gameModeId
                     this.customOptions = gameOptions

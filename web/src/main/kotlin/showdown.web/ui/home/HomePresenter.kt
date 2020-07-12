@@ -16,32 +16,32 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
     }
 
     override fun onCreate() {
-        gameDataSource.connectToServer().subscribe (
+        gameDataSource.connectToServer().subscribe(
             onComplete = {
                 view.newState {
-                    this.showEntryPopup=true
+                    this.showEntryPopup = true
                 }
             },
             onError = {
                 view.newState {
-                    this.showConnectionError=true
+                    this.showConnectionError = true
                 }
             }
         )
 
-        gameDataSource.observeErrors().subscribe(onNext = {error->
-            when(error){
+        gameDataSource.observeErrors().subscribe(onNext = { error ->
+            when (error) {
                 is ShowdownError.NotAuthorizedError -> {
                     view.newState {
-                        this.requestRoomPassword=true
+                        this.requestRoomPassword = true
                     }
                 }
-                null-> {
+                null -> {
                     //Do nothing
                 }
                 is ShowdownError.NoConnectionError -> {
                     view.newState {
-                        this.showConnectionError=true
+                        this.showConnectionError = true
                     }
                 }
             }
@@ -51,16 +51,16 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
             when (gameState) {
                 GameState.NotStarted -> {
                 }
-                is GameState.NewStarted -> {
+                is GameState.Started -> {
                     console.log("GameState.Started")
                     view.newState {
-                        console.log("STARTED"+gameState.clientGameConfig.createdAt)
+                        console.log("STARTED" + gameState.clientGameConfig.createdAt)
                         this.gameStartTime = Date(gameState.clientGameConfig.createdAt.toDouble())
                         this.results = emptyList()
-                        this.selectedOptionId=-1
-                        this.startEstimationTimer=true
-                        this.requestRoomPassword=false
-                        this.options = gameState.clientGameConfig.voteOptions.options
+                        this.selectedOptionId = -1
+                        this.startEstimationTimer = true
+                        this.requestRoomPassword = false
+                        this.options = gameState.clientGameConfig.voteOptions
 
                     }
 
@@ -71,20 +71,9 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
                     }
                 }
 
-                is GameState.GameConfigUpdate -> {
-                    console.log("GameConfigUpdate")
-                    view.newState {
-
-                        this.results = emptyList()
-                        this.selectedOptionId=-1
-                        this.options = gameState.clientGameConfig.voteOptions.options
-                        this.gameStartTime= Date(gameState.clientGameConfig.createdAt)
-                        this.startEstimationTimer=true
-                    }
-                }
                 is GameState.ShowVotes -> {
                     view.newState {
-                        this.startEstimationTimer=false
+                        this.startEstimationTimer = false
                         this.results = gameState.results
                     }
                 }
@@ -101,34 +90,38 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
     }
 
     override fun joinGame(playerName: String) {
-        val password=  view.getState().roomPassword
-console.log("Player "+playerName)
-        gameDataSource.joinRoom(playerName,password)
+        val password = view.getState().roomPassword
+        console.log("Player " + playerName)
+        gameDataSource.joinRoom(playerName, password)
     }
 
 
-
     override fun changeConfig(gameModeId: Int, gameOptions: String) {
-        console.log("CHANGE"+gameModeId)
-        val mode: VoteOptions = when (gameModeId) {
+        console.log("CHANGE" + gameModeId)
+        val mode = when (gameModeId) {
             0 -> {
-                Fibo()
+                fibo
             }
             1 -> {
-                TShirt()
+                tshirtList
             }
-            2 -> {
-                val options = gameOptions.split(";")
-                Custom(options)
+            2->{
+                modFibo
             }
-            else -> Fibo()
+            3->{
+                powerOf2
+            }
+            4 -> {
+                gameOptions.split(";")
+            }
+            else -> fibo
         }
-       val config = ClientGameConfig(voteOptions = mode,createdAt = Date().toString())
+        val config = NewGameConfig(voteOptions = mode)
         gameDataSource.changeConfig(config)
     }
 
     override fun changeRoomPassword(password: String) {
-            gameDataSource.changeRoomPassword(password)
+        gameDataSource.changeRoomPassword(password)
     }
 
 

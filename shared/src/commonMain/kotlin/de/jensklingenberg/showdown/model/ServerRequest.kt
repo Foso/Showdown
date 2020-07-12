@@ -1,25 +1,11 @@
 package de.jensklingenberg.showdown.model
 
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 
+val fibo = (listOf("0", "1", "2", "3", "5", "8", "13", "21", "34", "55", "89", "?"))
+val modFibo = (listOf("0", "1/2", "1", "2", "3", "5", "8", "13", "20", "40", "100", "?"))
+val powerOf2 = (listOf("0", "1", "2", "4", "8", "16", "32", "64", "?"))
 
-
-
-val list3: List<String> = listOf("Hund", "Katze", "Maus", "Bär", "Tiger")
-@Serializable
-open class VoteOptions(open val options: List<String>)
-class Fibo : VoteOptions(listOf("0", "1", "2", "3", "5", "8", "13", "21", "34", "55", "89", "?"))
-
-class TShirt : VoteOptions(listOf("xxs", "xs", "s", "m", "l", "xl", "xxl", "?"))
-
-class Custom(override val options: List<String> = list3) : VoteOptions(options)
-
+val tshirtList = (listOf("xxs", "xs", "s", "m", "l", "xl", "xxl", "?"))
 
 data class JoinGame(val playerName: String, val roomPassword: String)
-
-
-
-class ChangeConfig(val clientGameConfig: ClientGameConfig)
 

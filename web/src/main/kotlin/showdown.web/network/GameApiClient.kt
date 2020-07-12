@@ -1,9 +1,7 @@
 package showdown.web.network
 
 import com.badoo.reaktive.completable.completable
-import de.jensklingenberg.showdown.model.ServerResponse
-import de.jensklingenberg.showdown.model.ShowdownError
-import de.jensklingenberg.showdown.model.getServerResponse
+import de.jensklingenberg.showdown.model.*
 import org.w3c.dom.CloseEvent
 import org.w3c.dom.MessageEvent
 import org.w3c.dom.WebSocket
@@ -39,9 +37,46 @@ class GameApiClient {
 
     private fun onMessage(messageEvent: MessageEvent) {
         console.log("ONMESSAGE: "+messageEvent.data.toString())
+
+        when(getWebsocketType(messageEvent.data.toString())){
+            WebSocketResourceType.GameState -> {
+                val resource = JSON.parse<WebsocketResource<MyGameState>>(messageEvent.data.toString())
+                val my = resource.data
+                when (my?.enGameState) {
+                    EnGameState.NOTSTARTED -> {
+
+                    }
+                    EnGameState.STARTED -> {
+
+                    }
+                    EnGameState.MEMBERSUDPATE -> {
+
+
+                    }
+                    EnGameState.SHOWVOTES -> {
+
+                    }
+                    null -> {
+
+                    }
+                }
+                console.log("EVENT: " + resource.data)
+
+            }
+            WebSocketResourceType.Notification -> {
+
+            }
+            WebSocketResourceType.MESSAGE -> {
+
+            }
+            WebSocketResourceType.UNKNOWN -> {
+
+            }
+        }
+
         when (val type = getServerResponse(messageEvent.data.toString())) {
             is ServerResponse.PlayerEvent -> {
-                observer.onPlayerEventChanged(type.playerResponseEvent)
+
             }
             is ServerResponse.GameStateChanged -> {
                 observer.onGameStateChanged(type.state)
