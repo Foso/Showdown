@@ -6,7 +6,7 @@ import de.jensklingenberg.showdown.model.*
 import de.jensklingenberg.showdown.server.model.*
 
 fun getDefaultConfig(roomName: String) = ServerConfig(
-    Fibo(), false, createdAt = DateTime.now().utc.toString(),
+    Fibo(), false, createdAt = DateTime.now().unixMillisDouble.toString(),
     room = Room(roomName, "")
 )
 
@@ -26,7 +26,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
 
     fun restart() {
         logm("restart")
-        gameState = GameState.Started
+        gameState = GameState.NewStarted(gameConfig.toClient().copy(createdAt = DateTime.now().unixMillisDouble.toString()))
         inactivePlayers.forEach { inactivePlayer ->
             playerList.removeIf { it.sessionId == inactivePlayer.sessionId }
         }
@@ -48,7 +48,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
             onPlayerRejoined(player.sessionId, player.name)
         } else {
             if (gameState == GameState.NotStarted) {
-                gameState = GameState.Started
+                gameState = GameState.NewStarted(gameConfig.toClient())
             }
             logm("addPlayer " + player.name + "To Room" + gameConfig.room)
             playerList.add(player)
@@ -56,10 +56,11 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
 
            // sendPlayerEvent(PlayerResponseEvent.JOINED(player))
             sendPlayers()
-            sendGameStateChanged(GameState.GameConfigUpdate(gameConfig.toClient()))
+            sendGameStateChanged(GameState.NewStarted(gameConfig.toClient()))
         }
+       val mili= DateTime.now().unixMillisLong
 
-
+        1594560642307
     }
 
     private fun onPlayerRejoined(sessionId: String, name: String) {
@@ -73,19 +74,19 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
         }
         inactivePlayers.removeIf { it.sessionId == sessionId }
         sendPlayers()
-        sendGameStateChanged(GameState.GameConfigUpdate(gameConfig.toClient()))
+        sendGameStateChanged(GameState.NewStarted(gameConfig.toClient()))
     }
 
     fun changeConfig(clientGameConfig: ClientGameConfig) {
         logm("changeConfig ")
         this.gameConfig = gameConfig.copy(
             room = Room(gameConfig.room.name, "HEY"),
-            createdAt = DateTime.now().utc.toString(),
+            createdAt = DateTime.now().unixMillisLong.toString(),
             autoReveal = clientGameConfig.autoReveal,
             voteOptions = clientGameConfig.voteOptions
         )
         votes.clear()
-        gameState = GameState.GameConfigUpdate(this.gameConfig.toClient())
+        gameState = GameState.NewStarted(this.gameConfig.toClient())
         sendGameStateChanged(gameState)
         sendPlayers()
     }
@@ -115,7 +116,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
         }
 
         sendPlayers()
-        sendGameStateChanged(GameState.GameConfigUpdate(gameConfig.toClient()))
+        sendGameStateChanged(GameState.NewStarted(gameConfig.toClient()))
         closeRoomIfEmpty()
     }
 

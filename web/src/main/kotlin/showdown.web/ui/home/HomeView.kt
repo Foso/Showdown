@@ -1,40 +1,22 @@
 package showdown.web.ui.home
 
 
-import com.soywiz.klock.DateTime
-import kotlinx.css.Color
-import kotlinx.css.backgroundColor
-import kotlinx.html.DIV
-import kotlinx.html.id
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
-import materialui.components.appbar.appBar
-import materialui.components.appbar.enums.AppBarColor
-import materialui.components.appbar.enums.AppBarPosition
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonColor
 import materialui.components.button.enums.ButtonVariant
 import materialui.components.dialog.dialog
 import materialui.components.formcontrol.enums.FormControlVariant
-import materialui.components.menu.menu
-import materialui.components.menuitem.menuItem
 import materialui.components.textfield.textField
 import org.w3c.dom.HTMLInputElement
 import react.RBuilder
 import react.RComponent
 import react.RProps
-import react.dom.RDOMBuilder
 import react.dom.div
-import react.dom.label
 import react.setState
-import showdown.web.wrapper.material.AddCircleIcon
-import showdown.web.wrapper.material.SettingsIcon
-import showdown.web.wrapper.material.ShareIcon
-import showdown.web.wrapper.material.VisibilityIcon
-import styled.css
-import styled.styledDiv
 import kotlin.browser.window
-import kotlin.math.floor
+import kotlin.js.Date
 
 
 class HomeView : RComponent<RProps, HomeContract.HomeViewState>(), HomeContract.View {
@@ -58,14 +40,11 @@ class HomeView : RComponent<RProps, HomeContract.HomeViewState>(), HomeContract.
         roomPassword = ""
 
         showSettings = false
-        startTimer = false
+        startEstimationTimer = false
         requestRoomPassword = false
 
         //TOOLBAR
-        anchor = null
-        openMenu = false
-        showShareDialog = false
-        timerStart = DateTime.now()
+        gameStartTime = Date()
         diffSecs = 0.0
 
         //MESSAGE
@@ -78,8 +57,10 @@ class HomeView : RComponent<RProps, HomeContract.HomeViewState>(), HomeContract.
     override fun componentDidMount() {
         window.setInterval({
             setState {
-                val nowDate = DateTime.now()
-                diffSecs = (nowDate - state.timerStart).seconds
+                val startDate = state.gameStartTime
+                val endDate = Date()
+
+                diffSecs = (endDate.getTime() - startDate.getTime()) / 1000
             }
         }, 1000)
         presenter.onCreate()
@@ -96,17 +77,17 @@ class HomeView : RComponent<RProps, HomeContract.HomeViewState>(), HomeContract.
         }
         setupDialogs()
 
-        toolbar2(onNewGameClicked = {
+        myToolbar(
+        startTimer = state.startEstimationTimer,
+        onNewGameClicked = {
             presenter.reset()
-        }, onShowVotesClicked = {
+        },
+        onShowVotesClicked = {
             presenter.showVotes()
-        }, onShareClicked = {
-            setState {
-                this.showShareDialog = true
-            }
-        }, state = state)
+        },diffSecs = state.diffSecs
+    )
 
-        optionsList(state.options,state.selectedOptionId,onOptionClicked = { index: Int ->
+        optionsList(state.options, state.selectedOptionId, onOptionClicked = { index: Int ->
             setState {
                 this.selectedOptionId = index
             }
@@ -129,14 +110,17 @@ class HomeView : RComponent<RProps, HomeContract.HomeViewState>(), HomeContract.
     }
 
     private fun RBuilder.setupDialogs() {
-        insertNameDialog()
-        insertPasswordDialog()
-        setRoomPasswordDialog()
-        shareDialog(state.showShareDialog) {
+        playerNameDialog(state.showEntryPopup, onJoinClicked = { playerName ->
             setState {
-                this.showShareDialog = false
+                console.log("STATE" + playerName)
+                this.playerName = playerName
+                this.showEntryPopup = false
             }
-        }
+            presenter.joinGame(playerName)
+        })
+        insertPasswordDialog(state)
+        setRoomPasswordDialog()
+
     }
 
 
@@ -196,17 +180,17 @@ class HomeView : RComponent<RProps, HomeContract.HomeViewState>(), HomeContract.
         }
     }
 
-    private fun RBuilder.insertPasswordDialog() {
+    private fun RBuilder.insertPasswordDialog(dialogState: HomeContract.HomeViewState) {
         dialog {
             attrs {
-                this.open = state.requestRoomPassword
+                this.open = dialogState.requestRoomPassword
             }
 
             div {
                 textField {
                     attrs {
                         variant = FormControlVariant.filled
-                        value(state.roomPassword)
+                        value(dialogState.roomPassword)
                         label {
                             +"A room password is required"
                         }
@@ -222,64 +206,11 @@ class HomeView : RComponent<RProps, HomeContract.HomeViewState>(), HomeContract.
                 }
             }
 
-            button {
-                attrs {
-                    text("Join Game")
-                    variant = ButtonVariant.contained
-                    color = ButtonColor.primary
-                    onClickFunction = {
-                        setState {
-                            this.requestRoomPassword = false
-                        }
-                        presenter.joinGame()
-                    }
+            joinGameButton {
+                setState {
+                    this.requestRoomPassword = false
                 }
-            }
-
-        }
-    }
-
-
-    private fun RBuilder.insertNameDialog() {
-
-        dialog {
-            attrs {
-                this.open = state.showEntryPopup
-            }
-
-            div {
-                textField {
-                    attrs {
-                        variant = FormControlVariant.filled
-                        label {
-                            +"Insert a Name"
-                        }
-                        value(state.playerName)
-                        onChangeFunction = {
-                            val target = it.target as HTMLInputElement
-
-                            setState {
-                                this.playerName = target.value
-                            }
-                        }
-                    }
-
-                }
-
-            }
-
-            button {
-                attrs {
-                    text("Join Game")
-                    variant = ButtonVariant.contained
-                    color = ButtonColor.primary
-                    onClickFunction = {
-                        setState {
-                            this.showEntryPopup = false
-                        }
-                        presenter.joinGame()
-                    }
-                }
+                presenter.joinGame(state.playerName)
             }
 
         }
@@ -288,179 +219,13 @@ class HomeView : RComponent<RProps, HomeContract.HomeViewState>(), HomeContract.
 
 
 
-
-    fun RBuilder.toolbar2(
-        onNewGameClicked: () -> Unit,
-        onShowVotesClicked: () -> Unit,
-        onShareClicked: () -> Unit,
-        state: HomeContract.HomeViewState
-    ) {
-
-        appBar {
-            attrs {
-                position = AppBarPosition.static
-                color = AppBarColor.primary
-            }
-            div {
-
-                button {
-                    attrs {
-                        variant = ButtonVariant.contained
-                        color = ButtonColor.primary
-                        text("New Game")
-                        onClickFunction = {
-                            onNewGameClicked()
-                        }
-                        startIcon {
-                            AddCircleIcon {}
-                        }
-                    }
-                }
-                button {
-                    attrs {
-                        variant = ButtonVariant.contained
-                        color = ButtonColor.primary
-                        text("Show Votes")
-                        onClickFunction = {
-                            onShowVotesClicked()
-                        }
-                        startIcon {
-                            VisibilityIcon {}
-                        }
-                    }
-                }
-
-                settingsPopupMenu(state, onShareClicked)
-
-                +"Estimation time: ${getTimerText()} seconds.   PlayerName:${state.playerName}"
-
-            }
-
-
-        }
-
-
-        styledDiv {
-            css {
-                backgroundColor = Color.tomato
-            }
-
-
-        }
+override fun newState(buildState: HomeContract.HomeViewState.(HomeContract.HomeViewState) -> Unit) {
+    setState {
+        buildState(this)
     }
+}
 
-    private fun RDOMBuilder<DIV>.settingsPopupMenu(
-        state: HomeContract.HomeViewState,
-        onShareClicked: () -> Unit
-    ) {
-        button {
-            +"Settings"
-            attrs {
-                variant = ButtonVariant.contained
-                color = ButtonColor.primary
-                asDynamic()["aria-controls"] = "simple-menu"
-                asDynamic()["aria-haspopup"] = true
-                startIcon {
-                    SettingsIcon {}
-                }
-                onClickFunction = { event ->
-                    val currentTarget = event.currentTarget
-
-                    setState {
-                        anchor = currentTarget
-                        openMenu = !state.openMenu
-                    }
-
-                }
-            }
-        }
-
-        menu {
-            attrs {
-                id = "simple-menu"
-                open = state.openMenu
-                onClose = { event, s ->
-                    setState {
-                        // anchor = currentTarget
-                        openMenu = false
-
-                    }
-                }
-                anchorEl(state.anchor)
-            }
-            menuItem {
-                attrs {
-                    onClickFunction = {
-                        setState {
-                            this.showSettings = !this.showSettings
-                            openMenu = false
-                        }
-                    }
-                }
-                label {
-                    +" Change GameConfig"
-                }
-            }
-
-            menuItem {
-                attrs {
-                    onClickFunction = {
-                        setState {
-                            showChangePassword = true
-                            openMenu = false
-                        }
-                    }
-                }
-                label {
-                    +"Room password is: ${state.roomPassword}"
-                }
-            }
-            menuItem {
-                attrs {
-                    onClickFunction = {
-                        window.location.href = "https://github.com/Foso/Showdown";
-                    }
-                }
-                label {
-                    +"Showdown v1.0 Github"
-                }
-            }
-
-        }
-
-
-        button {
-            attrs {
-                variant = ButtonVariant.contained
-                color = ButtonColor.primary
-                text("Share")
-                onClickFunction = {
-                    onShareClicked()
-                }
-                startIcon {
-                    ShareIcon {}
-                }
-            }
-        }
-    }
-
-    fun getTimerText(): String {
-        return if (state.startTimer) {
-            floor(state.diffSecs).toString()
-        } else {
-            "0"
-        }
-    }
-
-    private fun snackbarVisibility(): Boolean = state.showSnackbar
-
-    override fun newState(buildState: HomeContract.HomeViewState.(HomeContract.HomeViewState) -> Unit) {
-        setState {
-            buildState(this)
-        }
-    }
-
-    override fun getState(): HomeContract.HomeViewState = state
+override fun getState(): HomeContract.HomeViewState = state
 }
 
 
@@ -469,7 +234,6 @@ fun RBuilder.home() = child(HomeView::class) {
 
     }
 }
-
 
 
 

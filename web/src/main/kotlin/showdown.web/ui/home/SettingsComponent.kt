@@ -117,7 +117,9 @@ class SettingsComponent(prps: SettingsProps) : RComponent<SettingsProps, TTicker
     }
 }
 
-fun RBuilder.adminMenu(gameModeId: Int, onSave: (Int, String) -> Unit) = child(SettingsComponent::class) {
-    attrs.startFrom = onSave
+fun RBuilder.adminMenu(gameModeId: Int, onSave: (Int, String) -> Unit): ReactElement {
+    return child(SettingsComponent::class) {
+        attrs.startFrom = onSave
 
+    }
 }

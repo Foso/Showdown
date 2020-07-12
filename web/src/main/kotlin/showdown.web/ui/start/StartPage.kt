@@ -97,6 +97,7 @@ class StartPage : RComponent<SettingsProps, StartPageState>() {
         }
         br { }
         hr { }
+        br { }
         div { +"\uD83D\uDC47" }//Finger down
         textField {
             attrs {

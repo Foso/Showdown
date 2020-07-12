@@ -3,9 +3,9 @@ package showdown.web.ui.home
 import Application
 import com.badoo.reaktive.completable.subscribe
 import com.badoo.reaktive.observable.subscribe
-import com.soywiz.klock.DateTime
 import de.jensklingenberg.showdown.model.*
 import showdown.web.game.GameDataSource
+import kotlin.js.Date
 
 class HomePresenter(private val view: HomeContract.View) : HomeContract.Presenter {
 
@@ -51,17 +51,20 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
             when (gameState) {
                 GameState.NotStarted -> {
                 }
-                GameState.Started -> {
+                is GameState.NewStarted -> {
                     console.log("GameState.Started")
                     view.newState {
-                        this.timerStart = DateTime.now()
+                        console.log("STARTED"+gameState.clientGameConfig.createdAt)
+                        this.gameStartTime = Date(gameState.clientGameConfig.createdAt.toDouble())
                         this.results = emptyList()
                         this.selectedOptionId=-1
-                        this.startTimer=true
+                        this.startEstimationTimer=true
                         this.requestRoomPassword=false
-                    }
-                }
+                        this.options = gameState.clientGameConfig.voteOptions.options
 
+                    }
+
+                }
                 is GameState.MembersUpdate -> {
                     view.newState {
                         this.players = gameState.members
@@ -71,29 +74,21 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
                 is GameState.GameConfigUpdate -> {
                     console.log("GameConfigUpdate")
                     view.newState {
-                        this.startTimer=true
+
                         this.results = emptyList()
                         this.selectedOptionId=-1
                         this.options = gameState.clientGameConfig.voteOptions.options
-                        this.timerStart= DateTime.fromString(gameState.clientGameConfig.createdAt).utc
+                        this.gameStartTime= Date(gameState.clientGameConfig.createdAt)
+                        this.startEstimationTimer=true
                     }
                 }
                 is GameState.ShowVotes -> {
                     view.newState {
+                        this.startEstimationTimer=false
                         this.results = gameState.results
                     }
                 }
-                is GameState.NewStarted -> {
-                    console.log("GameState.Started")
-                    view.newState {
-                        this.timerStart = DateTime.now()
-                        this.results = emptyList()
-                        this.selectedOptionId=-1
-                        this.startTimer=true
-                        this.requestRoomPassword=false
-                    }
 
-                }
             }
         })
 
@@ -105,10 +100,9 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
 
     }
 
-    override fun joinGame() {
-       val playerName=  view.getState().playerName
+    override fun joinGame(playerName: String) {
         val password=  view.getState().roomPassword
-
+console.log("Player "+playerName)
         gameDataSource.joinRoom(playerName,password)
     }
 
@@ -129,7 +123,7 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
             }
             else -> Fibo()
         }
-       val config = ClientGameConfig(voteOptions = mode,createdAt = DateTime.now().utc.toString())
+       val config = ClientGameConfig(voteOptions = mode,createdAt = Date().toString())
         gameDataSource.changeConfig(config)
     }
 

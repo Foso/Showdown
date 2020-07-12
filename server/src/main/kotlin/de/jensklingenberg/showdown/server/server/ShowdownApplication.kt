@@ -10,10 +10,7 @@ import io.ktor.features.ContentNegotiation
 import io.ktor.features.gzip
 import io.ktor.gson.gson
 import io.ktor.http.HttpStatusCode
-import io.ktor.http.cio.websocket.CloseReason
-import io.ktor.http.cio.websocket.Frame
-import io.ktor.http.cio.websocket.close
-import io.ktor.http.cio.websocket.readText
+import io.ktor.http.cio.websocket.*
 import io.ktor.http.content.*
 import io.ktor.request.uri
 import io.ktor.response.*
@@ -28,6 +25,7 @@ import io.ktor.websocket.webSocket
 import kotlinx.coroutines.channels.consumeEach
 import java.io.File
 import java.io.InputStream
+import java.time.Duration
 
 fun main() {
     ShowdownApplication()
@@ -67,6 +65,9 @@ class ShowdownApplication {
 
             }
             install(WebSockets)
+            {
+                pingPeriod = Duration.ofSeconds(30)
+            }
             // This enables the use of sessions to keep information between requests/refreshes of the browser.
 
             install(Sessions) {

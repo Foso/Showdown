@@ -11,7 +11,7 @@ import react.RBuilder
 import showdown.web.wrapper.material.QrCode
 import kotlin.browser.window
 
-fun RBuilder.shareDialog(show:Boolean, onAcceptClick:(Event)->Unit) {
+fun RBuilder.shareDialog(show: Boolean, onAcceptClick:(Event)->Unit) {
 
     dialog {
         attrs {

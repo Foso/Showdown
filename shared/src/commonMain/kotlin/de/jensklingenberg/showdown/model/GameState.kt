@@ -13,9 +13,6 @@ sealed class GameState {
     object NotStarted : GameState()
 
     @Serializable
-    object Started : GameState()
-
-    @Serializable
     class NewStarted(val clientGameConfig: ClientGameConfig) : GameState()
 
     @Serializable

@@ -1,10 +1,9 @@
 package showdown.web.ui.home
 
-import com.soywiz.klock.DateTime
 import de.jensklingenberg.showdown.model.Member
 import de.jensklingenberg.showdown.model.Result
-import org.w3c.dom.events.EventTarget
 import react.RState
+import kotlin.js.Date
 
 interface HomeContract {
     interface View {
@@ -16,7 +15,7 @@ interface HomeContract {
     interface Presenter {
         fun onCreate()
         fun reset()
-        fun joinGame()
+        fun joinGame(playerName:String)
         fun showVotes()
         fun onSelectedVote(voteId: Int)
         fun changeConfig(gameModeId: Int, gameOptions: String)
@@ -34,12 +33,10 @@ interface HomeContract {
         var gameModeId: Int
         var customOptions : String
         var showEntryPopup:Boolean
-        var showShareDialog: Boolean
         var selectedOptionId: Int
         var roomPassword: String
-        var timerStart : DateTime
-        var startTimer : Boolean
-        var anchor: EventTarget?
+        var gameStartTime : Date
+        var startEstimationTimer : Boolean
         var requestRoomPassword:Boolean
 
         var showConnectionError: Boolean
@@ -47,7 +44,6 @@ interface HomeContract {
         //TOOLBAR
         var diffSecs : Double
         var showSettings : Boolean
-        var openMenu: Boolean
         var showChangePassword:Boolean
 
     }
