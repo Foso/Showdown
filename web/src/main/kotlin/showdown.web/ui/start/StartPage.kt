@@ -26,7 +26,7 @@ class StartPage : RComponent<SettingsProps, StartPageState>() {
     override fun RBuilder.render() {
 
         h1 {
-            +"Showdown - Online Scrum Poker Tool"
+            +"Showdown - Scrum Poker Web App"
         }
         h2 { +"How to:" }
         div {

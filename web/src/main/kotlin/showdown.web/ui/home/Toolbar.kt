@@ -1,5 +1,6 @@
 package showdown.web.ui.home
 
+import Application
 import kotlinx.html.id
 import kotlinx.html.js.onClickFunction
 import materialui.components.appbar.appBar
@@ -14,8 +15,9 @@ import org.w3c.dom.events.EventTarget
 import react.*
 import react.dom.div
 import react.dom.label
+import showdown.web.game.GameDataSource
+import showdown.web.wrapper.material.AccountCircleIcon
 import showdown.web.wrapper.material.AddCircleIcon
-import showdown.web.wrapper.material.SettingsIcon
 import showdown.web.wrapper.material.ShareIcon
 import showdown.web.wrapper.material.VisibilityIcon
 import kotlin.browser.window
@@ -48,20 +50,23 @@ interface ToolbarProps : RProps {
 
 class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(props) {
 
+    private val gameDataSource: GameDataSource = Application.gameDataSource
+
+
     override fun ToolbarState.init(props: ToolbarProps) {
         this.onNewGameClicked = props.onNewGameClicked
         this.onShowVotesClicked = props.onShowVotesClicked
         this.startTimer = props.startTimer
-        this.showShareDialog=false
-        this.diffSecs=props.diffSecs
-        this.onGameModeClicked=props.onGameModeClicked
+        this.showShareDialog = false
+        this.diffSecs = props.diffSecs
+        this.onGameModeClicked = props.onGameModeClicked
     }
 
     override fun componentWillReceiveProps(nextProps: ToolbarProps) {
         setState {
 
-            this.diffSecs=props.diffSecs
-            this.startTimer=props.startTimer
+            this.diffSecs = props.diffSecs
+            this.startTimer = props.startTimer
 
         }
     }
@@ -106,7 +111,7 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
                         }
                     }
                 }
-                settingsPopupMenu(state)
+
 
                 button {
                     attrs {
@@ -123,7 +128,7 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
                         }
                     }
                 }
-
+                settingsPopupMenu(state)
                 +"Estimation time: ${getTimerText()} seconds."
             }
         }
@@ -131,10 +136,6 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
 
     }
 
-    override fun componentDidMount() {
-
-
-    }
 
     private fun getTimerText(): String {
         return if (state.startTimer) {
@@ -155,7 +156,7 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
                 asDynamic()["aria-controls"] = "simple-menu"
                 asDynamic()["aria-haspopup"] = true
                 startIcon {
-                    SettingsIcon {}
+                    AccountCircleIcon {}
                 }
                 onClickFunction = { event ->
                     val currentTarget = event.currentTarget
@@ -188,12 +189,11 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
                         setState {
                             openMenu = false
                         }
-                        state.onGameModeClicked()
 
                     }
                 }
                 label {
-                    +" Change GameConfig"
+                    +"Playername: ${gameDataSource.getPlayerName()}"
                 }
             }
 
@@ -201,15 +201,46 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
                 attrs {
                     onClickFunction = {
                         setState {
-                            showChangePassword = true
                             openMenu = false
                         }
+                        state.onGameModeClicked()
+
                     }
                 }
                 label {
-                    +"Room password is: "
+                    +" Change GameConfig"
+                }
+
+            }
+
+            /***
+             *   menuItem {
+            attrs {
+            onClickFunction = {
+            setState {
+            showChangePassword = true
+            openMenu = false
+            }
+            }
+            }
+            label {
+            +"Room password is: "
+            }
+            }
+             */
+
+
+            menuItem {
+                attrs {
+                    onClickFunction = {
+                        window.location.href = "https://github.com/Foso/Showdown/issues";
+                    }
+                }
+                label {
+                    +"Issues/Feature Requests"
                 }
             }
+
             menuItem {
                 attrs {
                     onClickFunction = {
@@ -217,7 +248,7 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
                     }
                 }
                 label {
-                    +"Showdown v1.0 Github"
+                    +"Source Code on Github"
                 }
             }
 
@@ -241,8 +272,8 @@ fun RBuilder.myToolbar(
             this.onNewGameClicked = onNewGameClicked
             this.onShowVotesClicked = onShowVotesClicked
             this.startTimer = startTimer
-            this.diffSecs=diffSecs
-            this.onGameModeClicked=onGameModeClicked
+            this.diffSecs = diffSecs
+            this.onGameModeClicked = onGameModeClicked
         }
     }
 }

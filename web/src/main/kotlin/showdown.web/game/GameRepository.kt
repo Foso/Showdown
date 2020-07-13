@@ -7,22 +7,20 @@ import de.jensklingenberg.showdown.model.*
 import showdown.web.network.GameApiClient
 import showdown.web.network.NetworkApiObserver
 
-enum class WebSocketConnectionType{
-    INIT,OPEN,CLOSED
-}
 
-
-
-fun Any.stringify():String{
+fun Any.stringify(): String {
     return JSON.stringify(this)
 }
+
 class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource, NetworkApiObserver {
 
     private val gameStateSubject: BehaviorSubject<GameState> = BehaviorSubject(GameState.NotStarted)
     private val errorSubject: BehaviorSubject<ShowdownError?> = BehaviorSubject(null)
+    private var playerName: String = ""
+    private var roomPassword: String = ""
 
     override fun connectToServer(): Completable {
-       return gameApiClient.start(this)
+        return gameApiClient.start(this)
     }
 
     override fun showVotes() {
@@ -31,7 +29,7 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
     }
 
     override fun onSelectedVote(voteId: Int) {
-        val req = Request(VOTEPATH,voteId.toString()).stringify()
+        val req = Request(VOTEPATH, voteId.toString()).stringify()
         gameApiClient.sendMessage(req)
     }
 
@@ -43,15 +41,25 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
     }
 
     override fun changeRoomPassword(password: String) {
-        val req = Request(SETROOMPASSSWORDPATH,password).stringify()
+        val req = Request(SETROOMPASSSWORDPATH, password).stringify()
         gameApiClient.sendMessage(req)
+    }
+
+    override fun getPlayerName(): String {
+        return playerName
+    }
+
+    override fun getRoomPassword(): String {
+        return roomPassword
     }
 
     override fun observeGameState(): Observable<GameState> = gameStateSubject
 
-    override fun joinRoom(name:String,password:String) {
+    override fun joinRoom(name: String, password: String) {
+        playerName=name
+        roomPassword=password
         val req = Request(JOINROOMPATH, JoinGame(name, password).stringify())
-        gameApiClient.sendMessage( JSON.stringify(req))
+        gameApiClient.sendMessage(JSON.stringify(req))
     }
 
     override fun requestReset() {

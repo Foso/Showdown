@@ -11,10 +11,6 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
 
     private val gameDataSource: GameDataSource = Application.gameDataSource
 
-    init {
-
-    }
-
     override fun onCreate() {
         gameDataSource.connectToServer().subscribe(
             onComplete = {

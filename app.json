@@ -1,7 +1,7 @@
 
 {
-  "name": "Start on Heroku: Kotlin",
-  "description": "A barebones Kotlin app, which can easily be deployed to Heroku.",
+  "name": "Showdown - Scrum Poker Web App",
+  "description": "Showdown is a selfhosted web app, you can use for planning poker™.",
   "image": "heroku/java"
 
 }

@@ -14,5 +14,7 @@ interface GameDataSource {
     fun onSelectedVote(voteId: Int)
     fun changeConfig(newGameConfig: NewGameConfig)
     fun changeRoomPassword(password: String)
+    fun getPlayerName():String
+    fun getRoomPassword():String
 }
 
