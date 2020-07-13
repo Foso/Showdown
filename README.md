@@ -31,6 +31,7 @@ Showdown is a selfhosted web app, you can use for planning poker™. The applica
 
 ## 🗺️ Roadmap
 - [ ] Adding passwords to rooms
+- <a href="https://github.com/Foso/Showdown/issues">Your idea?</a>
 
 # 🏠 Architecture
 
