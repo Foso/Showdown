@@ -5,6 +5,10 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
 
+<p align="left">
+    <img src ="https://github.com/Foso/Showdown/blob/master/docs/img/ShowdownExample.png" height=500 />
+ 
+</p>
 
 ## Introduction 🙋‍♂️
 Showdown is a selfhosted web app, you can use for planning poker™. The application does not require any registration at all. All you need is your browser.
