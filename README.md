@@ -1,4 +1,4 @@
-<h1 align="center">Showdown - Online Scrum Poker Web App</h1>
+<h1 align="center">Showdown - Scrum Poker Web App</h1>
 
 [![jCenter](https://img.shields.io/badge/Apache-2.0-green.svg
 )](https://github.com/Foso/Showdown/blob/master/LICENSE)
