@@ -18,7 +18,8 @@ Showdown is a selfhosted web app, you can use for planning poker™. The applica
 
 ## 🎨 Features
 - Automatic estimation timer for your estimations.
-- Choose your estimation sequence
+- Choose your estimation sequence:
+ "Fibonacci","T-Shirt","Modified Fibonacci","Power of 2" "Custom"
 
 
 
