@@ -50,12 +50,15 @@ Showdown is a selfhosted web app, you can use for planning poker™. The applica
 # Development
 
 ### Backend
-* Run <kbd>ShowdownApplicationKt</kdb> to start the Ktor server
+* Run <kbd>ShowdownApplicationKt</kbd> to start the Ktor server
 
 
 ### Frontend
 #### Run development webpack server
-* Run <kbd>./gradlew -t web:run</kdb> inside the project folder to start the development server for the Frontend
+* Run <kbd>./gradlew -t web:run</kbd> inside the project folder to start the development server for the Frontend
+
+#### Build production frontend files
+* Run the gradle task <kbd>browserDistribution</kbd>, you will find the files inside <kdb>web/build/distributions</kdb>
 
 
 ## ✍️ Feedback
