@@ -16,6 +16,15 @@ Showdown is a selfhosted web app, you can use for planning poker™. The applica
 [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
 
+## 🎨 Features
+- Automatic estimation timer for your estimations.
+- Choose your estimation sequence
+
+
+
+## 🗺️ Roadmap
+- [ ] Adding passwords to rooms
+
 # 🏠 Architecture
 
 ## 🛠️ Built With
