@@ -51,7 +51,7 @@ Showdown is a selfhosted web app, you can use for planning poker™. The applica
 
 ## ✍️ Feedback
 
-Feel free to send feedback on [Twitter](https://twitter.com/jklingenberg_) or [file an issue](https://github.com/foso/Showdown/issues/new). Feature requests are always welcome.
+Feel free to send feedback on [Twitter](https://twitter.com/jklingenberg_) or [file an issue](https://github.com/foso/Showdown/issues/new). Feature requests and Pull Requests are always welcome.
 
 
 ## 📜 License
