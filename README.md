@@ -42,7 +42,7 @@ Showdown is a selfhosted web app, you can use for planning poker™. The applica
 
 
 ### Project Structure
-* <kbd>server</kbd> - A Ktor project with the server for 
+* <kbd>server</kbd> - A Ktor project with the server for Showdown
 * <kbd>web</kbd> - The frontend of Showdown, written with Kotlin and Kotlin React
 * <kbd>shared</kbd> - Shared module for <kbd>server and web</kbd>, which contains specific classes/interfaces like Error types or responses
 
