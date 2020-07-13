@@ -1,9 +1,30 @@
-<h1 align="center">Showdown - Online Scrum Poker Tool</h1>
+<h1 align="center">Showdown - Scrum Poker Web App</h1>
 
 [![jCenter](https://img.shields.io/badge/Apache-2.0-green.svg
 )](https://github.com/Foso/Showdown/blob/master/LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
 
-> WIP - Showdown - Online Scrum Poker Tool
+
+## Introduction 🙋‍♂️
+Showdown is a selfhosted web app, you can use for planning poker™. The application does not require any registration at all. All you need is your browser.
+
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+
+
+# 🏠 Architecture
+
+## 🛠️ Built With
+### Kotlin
+[![jCenter](https://img.shields.io/badge/Kotlin-1.3.72-green.svg
+)]()
+
+
+
+### Project Structure
+* <kbd>server</kbd> - A Ktor project with the server for 
+* <kbd>web</kbd> - The frontend of Showdown, written with Kotlin and Kotlin React
+* <kbd>shared</kbd> - Shared module for <kbd>server and web</kbd>, which contains specific classes/interfaces like Error types or responses
+
+# Development
 
