@@ -25,7 +25,7 @@ Showdown is a selfhosted web app, you can use for planning poker™. The applica
 * Choose your estimation sequence:
   
   Select <kbd>Settings>Change GameMode</kbd>, on the page below you can select between:
- "Fibonacci","T-Shirt","Modified Fibonacci","Power of 2" or you can choose "Custom" to add a custom sequence
+ **Fibonacci**, **T-Shirt**, **Modified Fibonacci**, **Power of 2** or you can choose **Custom** to add a custom sequence
 
 
 
