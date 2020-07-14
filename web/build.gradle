@@ -77,6 +77,7 @@ dependencies {
     // dependency('react-star-wars-crawl')
     //  dependency('react', libs.react_version)
     implementation(npm('react-dom', libs.react_version))
+    testImplementation 'org.jetbrains.kotlin:kotlin-test-js'
 
 }
 
