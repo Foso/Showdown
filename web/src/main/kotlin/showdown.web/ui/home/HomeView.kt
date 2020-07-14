@@ -3,6 +3,8 @@ package showdown.web.ui.home
 
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
+import kotlinx.html.js.onKeyDownFunction
+import kotlinx.html.js.onKeyPressFunction
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonColor
 import materialui.components.button.enums.ButtonVariant
@@ -10,6 +12,7 @@ import materialui.components.dialog.dialog
 import materialui.components.formcontrol.enums.FormControlVariant
 import materialui.components.textfield.textField
 import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.events.KeyboardEvent
 import react.RBuilder
 import react.RComponent
 import react.RProps
@@ -142,6 +145,10 @@ class HomeView : RComponent<RProps, HomeContract.HomeViewState>(), HomeContract.
                         value(state.roomPassword)
                         label {
                             +"Set a new room password:"
+                        }
+                        onKeyDownFunction={
+                            it as KeyboardEvent
+                            console.log(it.key )
                         }
                         onChangeFunction = {
                             val target = it.target as HTMLInputElement

@@ -128,7 +128,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
         val votesList = playerList.map { player ->
             val isInActive = inactivePlayers.any { it.sessionId == player.sessionId }
             val inActiveText = if (isInActive) {
-                "(Left)"
+                "(player left the game)"
             } else {
                 ""
             }
@@ -136,7 +136,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
             val playerStatusText = if (voted) {
                 "Voted $inActiveText"
             } else {
-                "? $inActiveText"
+                "Not voted $inActiveText"
             }
 
             Member(player.name, playerStatusText)

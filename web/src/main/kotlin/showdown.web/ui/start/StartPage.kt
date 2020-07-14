@@ -2,9 +2,12 @@ package showdown.web.ui.start
 
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
+import kotlinx.html.js.onKeyDownFunction
+import kotlinx.html.onKeyDown
 import materialui.components.formcontrol.enums.FormControlVariant
 import materialui.components.textfield.textField
 import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.events.KeyboardEvent
 import react.RBuilder
 import react.RComponent
 import react.RState
@@ -40,6 +43,15 @@ class StartPage : RComponent<SettingsProps, StartPageState>() {
                     label {
                         +"Choose new room name:"
                     }
+                    onKeyDownFunction={
+                        if(it.type=="keydown" && it.asDynamic()["key"] == "Enter"){
+
+                                window.location.href = "/#/room/${state.roomName}";
+
+                        }
+
+                    }
+
                     onChangeFunction = {
                         val target = it.target as HTMLInputElement
 
@@ -74,7 +86,13 @@ class StartPage : RComponent<SettingsProps, StartPageState>() {
         }
         div {
             p {
-                +"3) Select an Option"
+                +"3) Share the room link"
+            }
+
+        }
+        div {
+            p {
+                +"4) Select an Option"
             }
             img {
                 attrs {
@@ -85,7 +103,7 @@ class StartPage : RComponent<SettingsProps, StartPageState>() {
         div {
 
             p {
-                +"4) When you are ready click Show Votes"
+                +"5) When you are ready click Show Votes"
             }
             img {
                 attrs {
@@ -112,6 +130,14 @@ class StartPage : RComponent<SettingsProps, StartPageState>() {
                     setState {
                         this.roomName = target.value
                     }
+                }
+                onKeyDownFunction={
+                    if(it.type=="keydown" && it.asDynamic()["key"] == "Enter"){
+
+                            window.location.href = "/#/room/${state.roomName}";
+
+                    }
+
                 }
             }
         }
