@@ -101,8 +101,9 @@ class HomeView : RComponent<RProps, HomeContract.HomeViewState>(), HomeContract.
             }
             presenter.onSelectedVote(index)
         })
-        playersList(state.players)
         resultsList(state.results)
+
+        playersList(state.players)
 
         if (state.showSettings) {
 
