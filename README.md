@@ -58,7 +58,7 @@ Showdown is a selfhosted web app, you can use for planning poker™. The applica
 * Run <kbd>./gradlew -t web:run</kbd> inside the project folder to start the development server for the Frontend. The server will run on port 3001. Open "localhost:3001" inside your browser. 
 
 #### Build production frontend files
-* Run the gradle task <kbd>browserDistribution</kbd>, you will find the files inside <kdb>web/build/distributions</kdb>
+* Run the gradle task <kbd>deployToServerAssets</kbd>,
 
 
 ## ✍️ Feedback

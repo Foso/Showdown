@@ -87,3 +87,11 @@ configurations {
     compileClasspath
 }
 
+
+
+def appProject = project(':server')
+
+task deployToServerAssets(type: Copy, dependsOn: ["browserDistribution"]) {
+    from "./build/distributions/web.js"
+    into "${appProject.projectDir}/src/main/resources/web"
+}
