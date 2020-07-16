@@ -24,7 +24,7 @@ data class ClientGameConfig(override var voteOptions: List<String> = fibo, overr
 data class NewGameConfig(var voteOptions: List<String> = fibo, val autoReveal: Boolean = false)
 
 @Serializable
-data class Member(val playerName: String, val voteStatus:String)
+data class Member(val playerName: String, val voteStatus:String,val voted:Boolean,val isConnected:Boolean)
 
 @Serializable
 data class Result(val optionName:String, val voterName:String)

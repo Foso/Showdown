@@ -49,15 +49,6 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
 
             sendPlayers()
             sendGameStateChanged(GameState.Started(gameConfig.toClient()))
-            val moshi = Moshi.Builder().build()
-            val tt = MyGameState(EnGameState.MEMBERSUDPATE, MyMembersUpdate("HUHU"))
-
-            val test = WebsocketResource(WebSocketResourceType.GameState,tt)
-            val parameterizedType =
-                Types.newParameterizedType(WebsocketResource::class.java, MyGameState::class.java)
-            val adapter = moshi.adapter<WebsocketResource<MyGameState>>(parameterizedType)
-
-            sendBroadcast( adapter.toJson(test))
 
         }
 
@@ -110,7 +101,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
         }
 
         sendPlayers()
-        sendGameStateChanged(GameState.Started(gameConfig.toClient()))
+       // sendGameStateChanged(GameState.Started(gameConfig.toClient()))
         closeRoomIfEmpty()
     }
 
@@ -139,9 +130,8 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
                 "Not voted $inActiveText"
             }
 
-            Member(player.name, playerStatusText)
-        }
-
+            Member(player.name, playerStatusText,voted,isConnected = !isInActive)
+        }.sortedBy { it.voted }
         sendGameStateChanged(GameState.MembersUpdate(votesList))
 
     }
