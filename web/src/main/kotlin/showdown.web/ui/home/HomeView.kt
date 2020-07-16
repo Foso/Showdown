@@ -94,17 +94,6 @@ class HomeView : RComponent<RProps, HomeContract.HomeViewState>(), HomeContract.
                 }
             }
     )
-
-        optionsList(state.options, state.selectedOptionId, onOptionClicked = { index: Int ->
-            setState {
-                this.selectedOptionId = index
-            }
-            presenter.onSelectedVote(index)
-        })
-        resultsList(state.results)
-
-        playersList(state.players)
-
         if (state.showSettings) {
 
             gameModeSettings(state.gameModeId) { gameModeId, gameOptions ->
@@ -116,6 +105,17 @@ class HomeView : RComponent<RProps, HomeContract.HomeViewState>(), HomeContract.
             }
 
         }
+        optionsList(state.options, state.selectedOptionId, onOptionClicked = { index: Int ->
+            setState {
+                this.selectedOptionId = index
+            }
+            presenter.onSelectedVote(index)
+        })
+        resultsList(state.results)
+
+        playersList(state.players)
+
+
     }
 
     private fun RBuilder.setupDialogs() {
