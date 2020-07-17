@@ -41,10 +41,10 @@ class StartPage : RComponent<SettingsProps, StartPageState>() {
                     label {
                         +"Choose new room name:"
                     }
-                    onKeyDownFunction={
-                        if(it.type=="keydown" && it.asDynamic()["key"] == "Enter"){
+                    onKeyDownFunction = {
+                        if (it.type == "keydown" && it.asDynamic()["key"] == "Enter") {
 
-                                window.location.href = "/#/room/${state.roomName}";
+                            window.location.href = "/#/room/${state.roomName}";
 
                         }
 
@@ -129,10 +129,10 @@ class StartPage : RComponent<SettingsProps, StartPageState>() {
                         this.roomName = target.value
                     }
                 }
-                onKeyDownFunction={
-                    if(it.type=="keydown" && it.asDynamic()["key"] == "Enter"){
+                onKeyDownFunction = {
+                    if (it.type == "keydown" && it.asDynamic()["key"] == "Enter") {
 
-                            window.location.href = "/#/room/${state.roomName}";
+                        window.location.href = "/#/room/${state.roomName}";
 
                     }
 
@@ -151,7 +151,29 @@ class StartPage : RComponent<SettingsProps, StartPageState>() {
             }
         }
 
+
+        br {}
+        br { }
+        br { }
+
+        div {
+            a(href = "https://github.com/Foso/Showdown") {
+                +"Showdown"
+            }
+
+            +" by "
+            a(href = "https://www.jensklingenberg.de") {
+                +"Jens Klingenberg"
+            }
+            +". The source code is licensed under "
+            a(href = "http://www.apache.org/licenses/") {
+                +"Apache 2.0"
+            }
+
+        }
     }
+
+
 }
 
 fun RBuilder.startPage() = child(StartPage::class) {
