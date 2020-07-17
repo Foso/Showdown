@@ -16,8 +16,8 @@ import react.*
 import react.dom.div
 import react.dom.label
 import showdown.web.game.GameDataSource
-import showdown.web.wrapper.material.AccountCircleIcon
-import showdown.web.wrapper.material.AddCircleIcon
+import showdown.web.wrapper.material.icons.AccountCircleIcon
+import showdown.web.wrapper.material.icons.AddCircleIcon
 import showdown.web.wrapper.material.ShareIcon
 import showdown.web.wrapper.material.VisibilityIcon
 import kotlin.browser.window

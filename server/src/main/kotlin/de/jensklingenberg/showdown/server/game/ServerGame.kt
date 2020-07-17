@@ -2,8 +2,6 @@ package de.jensklingenberg.showdown.server.game
 
 
 import com.soywiz.klock.DateTime
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.Types
 import de.jensklingenberg.showdown.model.*
 import de.jensklingenberg.showdown.server.model.*
 
@@ -48,7 +46,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
             server.onPlayerAdded(player.sessionId, player)
 
             sendPlayers()
-            sendGameStateChanged(GameState.Started(gameConfig.toClient()))
+            sendGameStateChanged(player.sessionId,gameState)
 
         }
 
@@ -64,7 +62,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
         }
         inactivePlayers.removeIf { it.sessionId == sessionId }
         sendPlayers()
-        sendGameStateChanged(GameState.Started(gameConfig.toClient()))
+        sendGameStateChanged(sessionId,gameState)
     }
 
     fun changeConfig(clientGameConfig: NewGameConfig) {
@@ -101,7 +99,6 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
         }
 
         sendPlayers()
-       // sendGameStateChanged(GameState.Started(gameConfig.toClient()))
         closeRoomIfEmpty()
     }
 
@@ -124,13 +121,8 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
                 ""
             }
             val voted = votes.any { it.playerId == player.sessionId }
-            val playerStatusText = if (voted) {
-                "Voted $inActiveText"
-            } else {
-                "Not voted $inActiveText"
-            }
 
-            Member(player.name, playerStatusText,voted,isConnected = !isInActive)
+            Member(player.name, inActiveText,voted,isConnected = !isInActive)
         }.sortedBy { it.voted }
         sendGameStateChanged(GameState.MembersUpdate(votesList))
 
@@ -141,6 +133,9 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
     }
 
     private fun showVotes() {
+        if(votes.isEmpty()){
+            return
+        }
         val newresults = votes.map {
             val voterId = it.playerId
             val voteText = gameConfig.voteOptions[it.voteId]
@@ -153,6 +148,11 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
     }
 
 
+
+    private fun sendGameStateChanged(sessionId:String,gameState: GameState) {
+       val json= ServerResponse.GameStateChanged(gameState).toJson()
+        server.sendData(sessionId,json)
+    }
 
     private fun sendGameStateChanged(gameState: GameState) {
         sendBroadcast(ServerResponse.GameStateChanged(gameState).toJson())

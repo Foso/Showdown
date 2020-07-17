@@ -6,9 +6,12 @@ import materialui.components.button.enums.ButtonColor
 import materialui.components.button.enums.ButtonVariant
 import react.RBuilder
 import react.dom.h2
+import showdown.web.wrapper.material.icons.TouchAppIcon
 
-fun RBuilder.optionsList(options: List<String>,selectedOptionIndex :Int, onOptionClicked: (Int) -> Unit) {
+fun RBuilder.optionsList(options: List<String>, selectedOptionIndex: Int, onOptionClicked: (Int) -> Unit) {
     h2 {
+        TouchAppIcon {}
+
         +"Select an option:"
     }
     options.forEachIndexed { index, option ->
