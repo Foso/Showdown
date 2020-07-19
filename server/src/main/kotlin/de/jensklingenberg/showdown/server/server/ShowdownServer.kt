@@ -86,7 +86,7 @@ class ShowdownServer : GameServer {
         command: String,
         room: Room
     ) {
-        println("Receiver ROOM:" + room.name + " PW: " + room.password)
+        //println("Receiver ROOM:" + room.name + " PW: " + room.password)
         var gameSource = gameMap[room.name]
         val playerExist = playersSessions.containsKey(sessionId)
         val request: Request = fromJson<Request>(command)

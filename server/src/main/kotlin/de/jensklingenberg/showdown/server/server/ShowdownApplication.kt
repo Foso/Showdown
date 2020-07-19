@@ -42,7 +42,7 @@ class ShowdownApplication {
     private fun start() {
         val port = System.getenv("PORT")?.toInt() ?: 23567
         println("SERVER STARTED on port: " + port)
-        println("http://localhost:$port/room/jens/")
+        println("http://localhost:$port/")
 
         embeddedServer(Netty, port) {
             install(Compression) {
