@@ -54,7 +54,6 @@ class GamePresenter(private val view: GameContract.View) : GameContract.Presente
         gameDataSource.observeRoomConfig().subscribe(onNext = {conf->
            conf?.let {
                view.newState {
-                   this
                    this.autoReveal = conf.autoReveal
                }
            }
