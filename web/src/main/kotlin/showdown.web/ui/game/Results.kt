@@ -1,4 +1,4 @@
-package showdown.web.ui.home
+package showdown.web.ui.game
 
 import de.jensklingenberg.showdown.model.Result
 import react.RBuilder

@@ -1,16 +1,19 @@
-package showdown.web.ui.home
+package showdown.web.ui.game
 
 import Application
 import com.badoo.reaktive.completable.subscribe
+import com.badoo.reaktive.disposable.CompositeDisposable
+import com.badoo.reaktive.disposable.addTo
 import com.badoo.reaktive.observable.subscribe
 import de.jensklingenberg.showdown.model.*
+import de.jensklingenberg.showdown.model.api.clientrequest.NewGameConfig
 import showdown.web.game.GameDataSource
 import kotlin.js.Date
 
-class HomePresenter(private val view: HomeContract.View) : HomeContract.Presenter {
+class GamePresenter(private val view: GameContract.View) : GameContract.Presenter {
 
     private val gameDataSource: GameDataSource = Application.gameDataSource
-
+    private val compositeDisposable = CompositeDisposable()
     override fun onCreate() {
         gameDataSource.connectToServer().subscribe(
             onComplete = {
@@ -23,7 +26,7 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
                     this.showConnectionError = true
                 }
             }
-        )
+        ).addTo(compositeDisposable)
 
         gameDataSource.observeErrors().subscribe(onNext = { error ->
             when (error) {
@@ -32,36 +35,52 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
                         this.requestRoomPassword = true
                     }
                 }
-                null -> {
-                    //Do nothing
-                }
+
                 is ShowdownError.NoConnectionError -> {
                     view.newState {
                         this.showConnectionError = true
                     }
                 }
+                null -> {
+                    //Do nothing
+                }
             }
-        })
+        }).addTo(compositeDisposable)
+
+        gameDataSource.observeMessage().subscribe(onNext = {
+            view.showInfoPopup(it)
+        }).addTo(compositeDisposable)
+
+        gameDataSource.observeRoomConfig().subscribe(onNext = {conf->
+           conf?.let {
+               view.newState {
+                   this
+                   this.autoReveal = conf.autoReveal
+               }
+           }
+
+
+        }).addTo(compositeDisposable)
 
         gameDataSource.observeGameState().subscribe(onNext = { gameState ->
             when (gameState) {
                 GameState.NotStarted -> {
                 }
                 is GameState.Started -> {
-                    console.log("GameState.Started")
                     view.newState {
-                        console.log("STARTED" + gameState.clientGameConfig.createdAt)
-                        this.gameStartTime = Date(gameState.clientGameConfig.createdAt.toDouble())
+                        val conf = gameState.clientGameConfig
+
+                        this.gameStartTime = Date(conf.createdAt.toDouble())
                         this.results = emptyList()
                         this.selectedOptionId = -1
                         this.startEstimationTimer = true
                         this.requestRoomPassword = false
-                        this.options = gameState.clientGameConfig.voteOptions
-
+                        this.options = conf.voteOptions
+                        this.autoReveal = conf.autoReveal
                     }
 
                 }
-                is GameState.MembersUpdate -> {
+                is GameState.PlayerListUpdate -> {
                     view.newState {
                         this.players = gameState.members
                     }
@@ -75,36 +94,36 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
                 }
 
             }
-        })
+        }).addTo(compositeDisposable)
 
+    }
+
+    override fun onDestroy() {
+        compositeDisposable.clear()
     }
 
     override fun reset() {
         gameDataSource.requestReset()
-        console.log("RESET")
-
     }
 
     override fun joinGame(playerName: String) {
         val password = view.getState().roomPassword
-        console.log("Player " + playerName)
         gameDataSource.joinRoom(playerName, password)
     }
 
 
     override fun changeConfig(gameModeId: Int, gameOptions: String) {
-        console.log("CHANGE" + gameModeId)
         val mode = when (gameModeId) {
             0 -> {
                 fibo
             }
             1 -> {
-                tshirtList
+                tshirtSizesList
             }
-            2->{
+            2 -> {
                 modFibo
             }
-            3->{
+            3 -> {
                 powerOf2
             }
             4 -> {
@@ -112,14 +131,14 @@ class HomePresenter(private val view: HomeContract.View) : HomeContract.Presente
             }
             else -> fibo
         }
-        val config = NewGameConfig(voteOptions = mode)
+        val config =
+            NewGameConfig(voteOptions = mode)
         gameDataSource.changeConfig(config)
     }
 
     override fun changeRoomPassword(password: String) {
         gameDataSource.changeRoomPassword(password)
     }
-
 
     override fun showVotes() {
         gameDataSource.showVotes()

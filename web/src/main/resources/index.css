@@ -16,29 +16,6 @@ html, body {
 
 }
 
-.presentatio{
-
-     width: 100%;
-   display: inline-block;
-      margin: 0px auto;
-      text-align: center;
-
-}
 
 
 
-
-.toolbar{
-text-align : center;
-height : 2%;
-margin-bottom: 2%;
-background-color: 1b66b3;
-}
-
-.myTable{
-    width: 100%;
-text-align : center;
-
-    margin: 0px auto;
-
-}

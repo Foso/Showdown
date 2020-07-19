@@ -9,19 +9,18 @@ import showdown.web.network.GameApiClient
 import showdown.web.game.GameDataSource
 import showdown.web.game.GameRepository
 import showdown.web.model.Route
-import showdown.web.ui.home.HomeView
-import showdown.web.ui.start.StartPage
+import showdown.web.ui.game.HomeView
+import showdown.web.ui.onboarding.OnboardingPage
 import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.reflect.KClass
 
-//http://localhost:23567/room/hans
 class Application {
 
     private val rootElement= "root"
 
     private val routeList = listOf(
-            Route("/", StartPage::class, true),
+            Route("/", OnboardingPage::class, true),
             Route("/room", HomeView::class, false)
 
     )
@@ -43,7 +42,7 @@ class Application {
                         }
                     }
                 }
-               // home()
+               // game()
             }
         }
     }

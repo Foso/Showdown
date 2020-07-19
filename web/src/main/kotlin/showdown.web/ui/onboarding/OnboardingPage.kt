@@ -1,4 +1,4 @@
-package showdown.web.ui.start
+package showdown.web.ui.onboarding
 
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
@@ -11,16 +11,20 @@ import react.RComponent
 import react.RState
 import react.dom.*
 import react.setState
-import showdown.web.ui.home.SettingsProps
+import showdown.web.ui.game.SettingsProps
 import kotlin.browser.window
 
-interface StartPageState : RState {
+interface OnboardingPageState : RState {
     var roomName: String
 }
 
-class StartPage : RComponent<SettingsProps, StartPageState>() {
+/**
+ * On this view, the user can see an explanation
+ * on how to use Showdown and can select a room name
+ */
+class OnboardingPage : RComponent<SettingsProps, OnboardingPageState>() {
 
-    override fun StartPageState.init() {
+    override fun OnboardingPageState.init() {
         this.roomName = ""
     }
 
@@ -31,7 +35,7 @@ class StartPage : RComponent<SettingsProps, StartPageState>() {
         }
         h2 { +"How to:" }
         div {
-            p {
+            h3 {
                 +"1) Choose a room name and go to the room"
             }
             textField {
@@ -73,7 +77,7 @@ class StartPage : RComponent<SettingsProps, StartPageState>() {
 
         }
         div {
-            p {
+            h3 {
                 +"2) Choose a player name\n"
             }
             img {
@@ -83,13 +87,13 @@ class StartPage : RComponent<SettingsProps, StartPageState>() {
             }
         }
         div {
-            p {
+            h3 {
                 +"3) Share the room link"
             }
 
         }
         div {
-            p {
+            h3 {
                 +"4) Select an Option"
             }
             img {
@@ -100,8 +104,8 @@ class StartPage : RComponent<SettingsProps, StartPageState>() {
         }
         div {
 
-            p {
-                +"5) When you are ready click Show Votes"
+            h3 {
+                +"5) Click Show Votes to see the votes"
             }
             img {
                 attrs {
@@ -115,6 +119,7 @@ class StartPage : RComponent<SettingsProps, StartPageState>() {
         hr { }
         br { }
         div { +"\uD83D\uDC47" }//Finger down
+        br { }
         textField {
             attrs {
                 variant = FormControlVariant.filled
@@ -162,7 +167,7 @@ class StartPage : RComponent<SettingsProps, StartPageState>() {
             }
 
             +" by "
-            a(href = "https://www.jensklingenberg.de") {
+            a(href = "http://www.jensklingenberg.de") {
                 +"Jens Klingenberg"
             }
             +". The source code is licensed under "
@@ -176,6 +181,6 @@ class StartPage : RComponent<SettingsProps, StartPageState>() {
 
 }
 
-fun RBuilder.startPage() = child(StartPage::class) {
+fun RBuilder.startPage() = child(OnboardingPage::class) {
 
 }

@@ -1,4 +1,4 @@
-package showdown.web.ui.home
+package showdown.web.ui.game
 
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
@@ -52,7 +52,6 @@ class PlayerNameDialogComponent(props:MyProps) : RComponent<MyProps, PlayerNameD
         setState {
             this.showEntryPopup=nextProps.showEntryPopup
         }
-        console.log("componentWillReceiveProps"+nextProps.showEntryPopup)
     }
 
     

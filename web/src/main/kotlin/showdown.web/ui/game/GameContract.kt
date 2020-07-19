@@ -1,19 +1,24 @@
-package showdown.web.ui.home
+package showdown.web.ui.game
 
+import de.jensklingenberg.showdown.model.ClientGameConfig
 import de.jensklingenberg.showdown.model.Member
 import de.jensklingenberg.showdown.model.Result
 import react.RState
 import kotlin.js.Date
 
-interface HomeContract {
-    interface View {
+interface StateView<T>{
+    fun newState(buildState: T.(T) -> Unit)
+    fun getState(): T
+}
 
-        fun newState(buildState: HomeViewState.(HomeViewState) -> Unit)
-        fun getState(): HomeViewState
+interface GameContract {
+    interface View : StateView<HomeViewState> {
+        fun showInfoPopup(it: String)
     }
 
     interface Presenter {
         fun onCreate()
+        fun onDestroy()
         fun reset()
         fun joinGame(playerName:String)
         fun showVotes()
@@ -31,6 +36,7 @@ interface HomeContract {
         var options: List<String>
         var results : List<Result>
         var gameModeId: Int
+        var snackbarMessage :String
         var customOptions : String
         var showEntryPopup:Boolean
         var selectedOptionId: Int
@@ -38,13 +44,12 @@ interface HomeContract {
         var gameStartTime : Date
         var startEstimationTimer : Boolean
         var requestRoomPassword:Boolean
-
+        var autoReveal: Boolean
         var showConnectionError: Boolean
 
         //TOOLBAR
         var diffSecs : Double
         var showSettings : Boolean
-        var showChangePassword:Boolean
 
     }
 }

@@ -1,4 +1,4 @@
-package showdown.web.ui.home
+package showdown.web.ui.game
 
 import Application
 import kotlinx.html.id
@@ -9,6 +9,7 @@ import materialui.components.appbar.enums.AppBarPosition
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonColor
 import materialui.components.button.enums.ButtonVariant
+import materialui.components.checkbox.checkbox
 import materialui.components.menu.menu
 import materialui.components.menuitem.menuItem
 import org.w3c.dom.events.EventTarget
@@ -31,11 +32,10 @@ interface ToolbarState : RState {
 
     var diffSecs: Double
     var openMenu: Boolean
-    var showChangePassword: Boolean
     var anchor: EventTarget?
     var startTimer: Boolean
     var showShareDialog: Boolean
-
+    var gameConfig: Boolean
 }
 
 
@@ -45,6 +45,22 @@ interface ToolbarProps : RProps {
     var startTimer: Boolean
     var diffSecs: Double
     var onGameModeClicked: () -> Unit
+    var autoReveal: Boolean
+
+}
+interface Contract{
+    interface View{
+
+    }
+    interface Presenter{
+        fun onCreate()
+    }
+}
+
+class ToolbarPresenter(val view:Contract.View):Contract.Presenter{
+    override fun onCreate() {
+
+    }
 
 }
 
@@ -67,6 +83,7 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
 
             this.diffSecs = props.diffSecs
             this.startTimer = props.startTimer
+            this.gameConfig=props.autoReveal
 
         }
     }
@@ -196,6 +213,27 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
                     +"Playername: ${gameDataSource.getPlayerName()}"
                 }
             }
+            menuItem {
+                attrs {
+                    onClickFunction = {
+                        setState {
+                            openMenu = false
+                        }
+
+                    }
+                }
+                checkbox{
+                    attrs{
+                        checked=state.gameConfig
+                        onClickFunction={
+                            gameDataSource.setAutoReveal(!state.gameConfig)
+                        }
+                    }
+                }
+                label {
+                    +"AutoReveal Votes"
+                }
+            }
 
             menuItem {
                 attrs {
@@ -265,7 +303,8 @@ fun RBuilder.myToolbar(
     onNewGameClicked: () -> Unit,
     onShowVotesClicked: () -> Unit,
     diffSecs: Double,
-    onGameModeClicked: () -> Unit
+    onGameModeClicked: () -> Unit,
+    gameConfig: Boolean
 ): ReactElement {
     return child(Toolbar::class) {
         attrs {
@@ -274,6 +313,7 @@ fun RBuilder.myToolbar(
             this.startTimer = startTimer
             this.diffSecs = diffSecs
             this.onGameModeClicked = onGameModeClicked
+            this.autoReveal = gameConfig
         }
     }
 }

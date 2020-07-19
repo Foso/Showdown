@@ -1,4 +1,4 @@
-package showdown.web.ui
+package showdown.web
 
 import Application
 

@@ -1,4 +1,4 @@
-package showdown.web.ui.home
+package showdown.web.ui.game
 
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
@@ -10,16 +10,12 @@ import materialui.components.menuitem.menuItem
 import materialui.components.textfield.textField
 import org.w3c.dom.HTMLInputElement
 import react.*
+import react.dom.br
 import react.dom.div
 import react.dom.key
 import react.dom.p
 
-/*
 
-style = kotlinext.js.js {
-                        this.textAlign = "right"
-                    }
- */
 val gameModeOptions: List<Pair<String, Int>>
     get() = listOf(
         "Fibonacci" to 0,
@@ -32,24 +28,26 @@ val gameModeOptions: List<Pair<String, Int>>
 
 interface SettingsProps : RProps {
     var startFrom: (Int, String) -> Unit
+    var gameModeId: Int
 }
 
-interface TTickerState : RState {
+interface SettingsState : RState {
     var onClick: (Int, String) -> Unit
     var gameModeId: Int
     var customOptions: String
 }
 
-class SettingsComponent(prps: SettingsProps) : RComponent<SettingsProps, TTickerState>(prps) {
+class SettingsComponent(prps: SettingsProps) : RComponent<SettingsProps, SettingsState>(prps) {
 
-    override fun TTickerState.init(props: SettingsProps) {
+    override fun SettingsState.init(props: SettingsProps) {
         onClick = props.startFrom
-        gameModeId = 0
+        gameModeId = props.gameModeId
         customOptions = ""
     }
 
 
     override fun RBuilder.render() {
+        br {  }
         div {
             textField {
                 attrs {
@@ -86,6 +84,7 @@ class SettingsComponent(prps: SettingsProps) : RComponent<SettingsProps, TTicker
                 textField {
                     attrs {
                         variant = FormControlVariant.filled
+
                         label {
                             +"Insert Custom options separate with semicolon (;)"
                         }
@@ -123,6 +122,7 @@ class SettingsComponent(prps: SettingsProps) : RComponent<SettingsProps, TTicker
 fun RBuilder.gameModeSettings(gameModeId: Int, onSave: (Int, String) -> Unit): ReactElement {
     return child(SettingsComponent::class) {
         attrs.startFrom = onSave
+        attrs.gameModeId=gameModeId
 
     }
 }

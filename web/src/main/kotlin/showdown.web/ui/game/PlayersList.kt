@@ -1,4 +1,4 @@
-package showdown.web.ui.home
+package showdown.web.ui.game
 
 import de.jensklingenberg.showdown.model.Member
 import kotlinx.css.*
@@ -12,9 +12,7 @@ import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
 import react.RBuilder
 import react.dom.h2
-import showdown.web.wrapper.material.icons.Box
-import showdown.web.wrapper.material.icons.CancelIcon
-import showdown.web.wrapper.material.icons.GroupIcon
+import showdown.web.wrapper.material.icons.*
 import showdown.web.wrapper.material.icons.VerifiedUserIcon
 import styled.css
 import styled.styledDiv
@@ -78,41 +76,46 @@ fun RBuilder.playersList(members: List<Member>) {
 
     list {
 
-        members.forEach {
-            listItemText {
+            members.forEach {
+                listItemText {
 
-                styledDiv {
-                    css {
-                        this.textAlign = TextAlign.center
-                    }
-                    +("Player: " + it.playerName + " Voted:")
+                    styledDiv {
+                        css {
+                            this.textAlign = TextAlign.center
+                        }
+                        +("Player: " + it.playerName + " Voted:")
 
-                    if(it.voted){
-                        styledDiv {
-                            css {
-                                this.color= Color.green
-                                this.display=Display.inlineBlock
+                        if(it.voted){
+                            styledDiv {
+                                css {
+                                    this.color= if(it.voted) {
+                                        Color.green
+                                    }else{
+                                        Color.red
+                                    }
+                                    this.display=Display.inlineBlock
+                                }
+                                CheckCircleIcon{}
                             }
-                            VerifiedUserIcon{}
+                        }else{
+                            styledDiv {
+                                css {
+                                    this.color= Color.red
+                                    this.display=Display.inlineBlock
+                                }
+                                CancelIcon{}
+                            }
                         }
-                    }else{
-                        styledDiv {
-                            css {
-                                this.color= Color.red
-                                this.display=Display.inlineBlock
-                            }
-                            CancelIcon{}
+                        if(!it.isConnected){
+                            +" Connection lost"
                         }
                     }
-                   if(!it.isConnected){
-                       +" Connection lost"
-                   }
+
                 }
 
+                divider {}
             }
 
-            divider {}
-        }
 
     }
 

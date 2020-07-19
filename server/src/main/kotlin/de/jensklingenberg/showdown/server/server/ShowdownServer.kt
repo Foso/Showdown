@@ -1,12 +1,14 @@
 package de.jensklingenberg.showdown.server.server
 
 import de.jensklingenberg.showdown.model.*
+import de.jensklingenberg.showdown.model.api.clientrequest.JoinGame
+import de.jensklingenberg.showdown.model.api.clientrequest.NewGameConfig
 import de.jensklingenberg.showdown.server.common.fromJson
 import de.jensklingenberg.showdown.server.game.GameServer
 import de.jensklingenberg.showdown.server.game.ServerGame
-import de.jensklingenberg.showdown.server.game.getDefaultConfig
 import de.jensklingenberg.showdown.server.model.Player
 import de.jensklingenberg.showdown.server.model.Room
+import de.jensklingenberg.showdown.server.model.getDefaultConfig
 import io.ktor.http.cio.websocket.CloseReason
 import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.WebSocketSession
@@ -49,7 +51,7 @@ class ShowdownServer : GameServer {
         val socketList = members.computeIfAbsent(memberId) { CopyOnWriteArrayList<WebSocketSession>() }
         socketList.add(socket)
         GlobalScope.launch {
-            sendMessage(memberId, "HALLO")
+           // sendMessage(memberId, "HALLO")
         }
     }
 
@@ -70,7 +72,7 @@ class ShowdownServer : GameServer {
                 it.value.onPlayerLeft(sessionId)
             }
 
-            println("Member left: ")
+            //println("Member left: ")
 
         }
     }
@@ -91,8 +93,15 @@ class ShowdownServer : GameServer {
             ?: Request("", "")
 
         when (request.path) {
+            SETAUTOREVEALPATH->{
+                fromJson<Boolean>(request.body)
+                    ?.let { config->
+                        gameSource?.setAutoReveal(config)
+                    }
+
+            }
             SETROOMPASSSWORDPATH -> {
-                gameSource?.changePassword(request.body)
+                gameSource?.changePassword(sessionId,request.body)
             }
             SHOWVOTESPATH -> {
                 gameSource?.showVotes(sessionId)
@@ -104,7 +113,7 @@ class ShowdownServer : GameServer {
                 val id = request.body.toInt()
                 gameSource?.onPlayerVoted(sessionId, id)
             }
-            CHNAGECONFIGPATH -> {
+            PATHS.ROOMCONFIGUPDATE.path -> {
                 fromJson<NewGameConfig>(request.body)
                     ?.let { config->
                     gameSource?.changeConfig(config)

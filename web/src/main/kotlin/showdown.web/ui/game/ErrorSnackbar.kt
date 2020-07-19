@@ -1,4 +1,4 @@
-package showdown.web.ui.home
+package showdown.web.ui.game
 
 import kotlinx.html.js.onClickFunction
 import materialui.components.button.button
@@ -9,8 +9,8 @@ import materialui.components.snackbarcontent.snackbarContent
 import org.w3c.dom.events.Event
 import react.RBuilder
 
-fun connectionErrorSnackbar(rBuilder: RBuilder,showErrorSnackbar:Boolean, onActionClick : (Event)->Unit) {
-   with(rBuilder){
+fun RBuilder.connectionErrorSnackbar(showErrorSnackbar:Boolean, onActionClick : (Event)->Unit) {
+
        snackbar {
            attrs {
                this.open = showErrorSnackbar
@@ -35,7 +35,7 @@ fun connectionErrorSnackbar(rBuilder: RBuilder,showErrorSnackbar:Boolean, onActi
                }
            }
 
-       }
+
    }
 
 }

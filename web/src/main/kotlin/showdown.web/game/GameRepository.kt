@@ -4,6 +4,8 @@ import com.badoo.reaktive.completable.Completable
 import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.subject.behavior.BehaviorSubject
 import de.jensklingenberg.showdown.model.*
+import de.jensklingenberg.showdown.model.api.clientrequest.JoinGame
+import de.jensklingenberg.showdown.model.api.clientrequest.NewGameConfig
 import showdown.web.network.GameApiClient
 import showdown.web.network.NetworkApiObserver
 
@@ -16,6 +18,9 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
 
     private val gameStateSubject: BehaviorSubject<GameState> = BehaviorSubject(GameState.NotStarted)
     private val errorSubject: BehaviorSubject<ShowdownError?> = BehaviorSubject(null)
+    private val messageSubject: BehaviorSubject<String> = BehaviorSubject("")
+    private val configUpdateSubject: BehaviorSubject<ClientGameConfig?> = BehaviorSubject(null)
+
     private var playerName: String = ""
     private var roomPassword: String = ""
 
@@ -35,7 +40,7 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
 
     override fun changeConfig(newGameConfig: NewGameConfig) {
 
-        val req = Request(CHNAGECONFIGPATH, newGameConfig.stringify()).stringify()
+        val req = Request(PATHS.ROOMCONFIGUPDATE.path, newGameConfig.stringify()).stringify()
 
         gameApiClient.sendMessage(req)
     }
@@ -53,12 +58,25 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
         return roomPassword
     }
 
+    override fun setAutoReveal(autoReveal: Boolean) {
+        val req = Request(SETAUTOREVEALPATH, autoReveal.stringify()).stringify()
+        gameApiClient.sendMessage(req)
+    }
+
     override fun observeGameState(): Observable<GameState> = gameStateSubject
+    override fun observeMessage(): Observable<String> {
+        return messageSubject
+    }
+
+    override fun observeRoomConfig(): Observable<ClientGameConfig?> = configUpdateSubject
 
     override fun joinRoom(name: String, password: String) {
         playerName=name
         roomPassword=password
-        val req = Request(JOINROOMPATH, JoinGame(name, password).stringify())
+        val req = Request(JOINROOMPATH, JoinGame(
+            name,
+            password
+        ).stringify())
         gameApiClient.sendMessage(JSON.stringify(req))
     }
 
@@ -77,6 +95,15 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
 
     override fun onError(errorEvent: ServerResponse.ErrorEvent) {
         errorSubject.onNext(errorEvent.error)
+    }
+
+    override fun onMessageEvent(message: String) {
+            messageSubject.onNext(message)
+    }
+
+    override fun onConfigUpdated(clientGameConfig: ClientGameConfig) {
+        configUpdateSubject.onNext(clientGameConfig)
+
     }
 
 }
