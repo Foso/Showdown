@@ -251,23 +251,6 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
 
             }
 
-            /***
-             *   menuItem {
-            attrs {
-            onClickFunction = {
-            setState {
-            showChangePassword = true
-            openMenu = false
-            }
-            }
-            }
-            label {
-            +"Room password is: "
-            }
-            }
-             */
-
-
             menuItem {
                 attrs {
                     onClickFunction = {
@@ -286,7 +269,7 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
                     }
                 }
                 label {
-                    +"Source Code on Github"
+                    +"Showdown v1.1 on Github"
                 }
             }
 

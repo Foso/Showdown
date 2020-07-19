@@ -34,22 +34,20 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
 
         val websocketResource = WebsocketResource(WebSocketResourceType.RESPONSE, response)
         sendBroadcast(websocketResource.toJson())
-
-
-        val configJson = moshi.toJson(gameConfig.toClient())
-        val response2 = Response(PATHS.ROOMCONFIGUPDATE.path, configJson)
-        val websocketResource2 = WebsocketResource(WebSocketResourceType.RESPONSE, response2)
-
-        sendBroadcast(websocketResource2.toJson())
+        sendRoomConfigUpdate(gameConfig.toClient())
     }
 
     fun setAutoReveal(autoReveal: Boolean) {
         gameConfig = gameConfig.copy(autoReveal = autoReveal)
-        val tt = moshi.toJson(gameConfig.toClient())
-        val response2 = Response(PATHS.ROOMCONFIGUPDATE.path, tt)
-        val websocketResource2 = WebsocketResource(WebSocketResourceType.RESPONSE, response2)
+        sendRoomConfigUpdate(gameConfig.toClient())
+    }
 
-        sendBroadcast(websocketResource2.toJson())
+    private fun sendRoomConfigUpdate(clientGameConfig: ClientGameConfig) {
+        val configJson = moshi.toJson(clientGameConfig)
+        val response = Response(PATHS.ROOMCONFIGUPDATE.path, configJson)
+        val websocketResource = WebsocketResource(WebSocketResourceType.RESPONSE, response)
+
+        sendBroadcast(websocketResource.toJson())
     }
 
     fun restart() {
@@ -85,7 +83,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
     }
 
     private fun onPlayerRejoined(sessionId: String, name: String) {
-        //Set new name
+        //Set new player name
         playerList.replaceAll { player ->
             if (player.sessionId == sessionId) {
                 player.copy(name = name)

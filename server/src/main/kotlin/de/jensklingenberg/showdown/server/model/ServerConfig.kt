@@ -16,6 +16,6 @@ data class ServerConfig(override var voteOptions: List<String> = fibo, override 
     Config
 
 fun getDefaultConfig(roomName: String) = ServerConfig(
-    fibo, true, createdAt = DateTime.now().unixMillisDouble.toString(),
+    fibo, autoReveal = false, createdAt = DateTime.now().unixMillisDouble.toString(),
     room = Room(roomName, "")
 )

@@ -48,7 +48,7 @@ class GameApiClient {
 
     private fun onMessage(messageEvent: MessageEvent) {
         val json = messageEvent.data.toString()
-        console.log("ONMESSAGE: " + json)
+        //console.log("ONMESSAGE: " + json)
 
         when (getWebsocketType(json)) {
             WebSocketResourceType.GameEvent -> {
@@ -60,7 +60,7 @@ class GameApiClient {
 
                         }
                         val resource2 = JSON.parse<WebsocketResource<MyGameEvent>>(json)
-                        console.log("EVENT: " + resource2.data?.name)
+                        //console.log("EVENT: " + resource2.data?.name)
                     }
                 }
             }
@@ -79,7 +79,7 @@ class GameApiClient {
                 when(val path = getPath(response.path)){
                     PATHS.MESSAGE->{
                         observer.onMessageEvent(response.body)
-                        console.log("RESPONSE"+response.body)
+                       // console.log("RESPONSE"+response.body)
                     }
                     PATHS.SETROOMPASSSWORDPATH -> {}
                     PATHS.ROOMCONFIGUPDATE -> {
