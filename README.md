@@ -11,7 +11,7 @@
 </p>
 
 ## Introduction  🙋‍♂️ 🙋‍
-Showdown is a selfhosted web app, you can use for planning poker™. The application does not require any registration at all. All you need is your browser. You can try it at  http://shwdwn.herokuapp.com/#/
+Showdown is a selfhosted web app and server, you can use for planning poker™. You can try it at http://shwdwn.herokuapp.com/#/
 
 [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
