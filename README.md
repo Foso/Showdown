@@ -27,10 +27,9 @@ Showdown is a selfhosted web app, you can use for planning poker™. The applica
   Select <kbd>Settings>Change GameMode</kbd>, on the page below you can select between:
  **Fibonacci**, **T-Shirt**, **Modified Fibonacci**, **Power of 2** or you can choose **Custom** to add a custom sequence
 
-
+* Room passwords
 
 ## 🗺️ Roadmap
-- [ ] Adding passwords to rooms
 - <a href="https://github.com/Foso/Showdown/issues">Your idea?</a>
 
 # 🏠 Architecture
