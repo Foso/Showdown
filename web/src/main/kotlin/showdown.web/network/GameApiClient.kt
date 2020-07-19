@@ -34,9 +34,6 @@ class GameApiClient {
         }
     }
 
-    fun get(my: GameEvent): de.jensklingenberg.showdown.model.GameEventType {
-       return de.jensklingenberg.showdown.model.GameEventType.values()[my.eventId]
-    }
 
     fun getPath(path: String): PATHS {
        return PATHS.values().find { it.path==path }?:PATHS.EMPTY
@@ -52,17 +49,7 @@ class GameApiClient {
 
         when (getWebsocketType(json)) {
             WebSocketResourceType.GameEvent -> {
-                val resource = JSON.parse<WebsocketResource<GameEvent>>(json)
-                val my = resource.data!!
-                when (val type = get(my)) {
-                    GameEventType.Normal -> {
-                        fromJson<WebsocketResource<MyGameEvent>>(json)?.let {
 
-                        }
-                        val resource2 = JSON.parse<WebsocketResource<MyGameEvent>>(json)
-                        //console.log("EVENT: " + resource2.data?.name)
-                    }
-                }
             }
             WebSocketResourceType.Notification -> {
 
