@@ -60,6 +60,13 @@ Showdown is a selfhosted web app, you can use for planning poker™. The applica
 #### Build production frontend files
 * Run the gradle task <kbd>deployToServerAssets</kbd>,
 
+# Deployment
+
+### On Heroku 
+You can use this button [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+
+### On other server
+You can download the jar from a release tag or when you want to build it yourself you can use the gradle task <kbd>stage</kbd>. It will build a .jar inside  <kbd>server/build/install/server-shadow/lib</kbd>. You can run it with "java -jar $nameOfTheJarFile"
 
 ## ✍️ Feedback
 
