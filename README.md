@@ -11,7 +11,7 @@
 </p>
 
 ## Introduction  🙋‍♂️ 🙋‍
-Showdown is a selfhosted web app, you can use for planning poker™. The application does not require any registration at all. All you need is your browser. You can try it at  http://shwdwn.herokuapp.com/#/
+Showdown is a selfhosted web app and server, you can use for planning poker™. You can try it at http://shwdwn.herokuapp.com/#/
 
 [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
@@ -58,8 +58,15 @@ Showdown is a selfhosted web app, you can use for planning poker™. The applica
 * Run <kbd>./gradlew -t web:run</kbd> inside the project folder to start the development server for the Frontend. The server will run on port 3001. Open "localhost:3001" inside your browser. 
 
 #### Build production frontend files
-* Run the gradle task <kbd>deployToServerAssets</kbd>,
+* Run the gradle task <kbd>deployToServerAssets</kbd>, it will build the webproject and copy the files to the server project
 
+# Deployment
+
+### On Heroku 
+You can use this button [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+
+### On other server
+You can download the jar from a release tag or when you want to build it yourself you can use the gradle task <kbd>stage</kbd>. It will build a .jar inside  <kbd>server/build/install/server-shadow/lib</kbd>. You can run it with "java -jar $nameOfTheJarFile"
 
 ## ✍️ Feedback
 
