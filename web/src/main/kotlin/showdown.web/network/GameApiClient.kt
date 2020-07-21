@@ -36,17 +36,15 @@ class GameApiClient {
 
 
     fun getPath(path: String): PATHS {
-       return PATHS.values().find { it.path==path }?:PATHS.EMPTY
+        return PATHS.values().find { it.path == path } ?: PATHS.EMPTY
     }
 
-    fun <T> fromJson(json:String): T? {
-        return  JSON.parse<T>(json)
+    private fun <T> fromJson(json: String): T? {
+        return JSON.parse<T>(json)
     }
 
     private fun onMessage(messageEvent: MessageEvent) {
         val json = messageEvent.data.toString()
-        //console.log("ONMESSAGE: " + json)
-
         when (getWebsocketType(json)) {
             WebSocketResourceType.GameEvent -> {
 
@@ -63,18 +61,20 @@ class GameApiClient {
             WebSocketResourceType.RESPONSE -> {
                 val resource2 = JSON.parse<WebsocketResource<Response>>(json)
                 val response = resource2.data!!
-                when(val path = getPath(response.path)){
-                    PATHS.MESSAGE->{
+                when (val path = getPath(response.path)) {
+                    PATHS.MESSAGE -> {
                         observer.onMessageEvent(response.body)
-                       // console.log("RESPONSE"+response.body)
+                        // console.log("RESPONSE"+response.body)
                     }
-                    PATHS.SETROOMPASSSWORDPATH -> {}
+                    PATHS.SETROOMPASSSWORDPATH -> {
+                    }
                     PATHS.ROOMCONFIGUPDATE -> {
                         fromJson<ClientGameConfig>(response.body)?.let {
                             observer.onConfigUpdated(it)
                         }
                     }
-                    PATHS.EMPTY -> {}
+                    PATHS.EMPTY -> {
+                    }
                     else -> {
 
                     }

@@ -37,6 +37,9 @@ interface SettingsState : RState {
     var customOptions: String
 }
 
+/**
+ * Shows the settings where the player can choose a game mode
+ */
 class SettingsComponent(prps: SettingsProps) : RComponent<SettingsProps, SettingsState>(prps) {
 
     override fun SettingsState.init(props: SettingsProps) {
@@ -47,16 +50,15 @@ class SettingsComponent(prps: SettingsProps) : RComponent<SettingsProps, Setting
 
 
     override fun RBuilder.render() {
-        br {  }
+        br { }
         div {
             textField {
                 attrs {
                     select = true
                     label { +"GameMode" }
-                    // classes("$marginStyle $textFieldStyle")
                     inputProps {
                         attrs {
-                            //  startAdornment(startAdornment("Kg"))
+
                         }
                     }
                     value(state.gameModeId)
@@ -122,7 +124,7 @@ class SettingsComponent(prps: SettingsProps) : RComponent<SettingsProps, Setting
 fun RBuilder.gameModeSettings(gameModeId: Int, onSave: (Int, String) -> Unit): ReactElement {
     return child(SettingsComponent::class) {
         attrs.startFrom = onSave
-        attrs.gameModeId=gameModeId
+        attrs.gameModeId = gameModeId
 
     }
 }

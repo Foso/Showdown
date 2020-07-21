@@ -7,6 +7,7 @@ import kotlinx.html.js.onClickFunction
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonColor
 import materialui.components.button.enums.ButtonVariant
+import materialui.components.dialog.DialogElementBuilder
 import materialui.components.dialog.dialog
 import materialui.components.formcontrol.enums.FormControlVariant
 import materialui.components.iconbutton.iconButton
@@ -29,9 +30,7 @@ style = kotlinext.js.js {
                     }
  */
 
-interface FooterProps : RProps {
-
-}
+interface FooterProps : RProps
 
 interface RoomPasswordDialogState : RState {
     var roomPassword: String
@@ -40,9 +39,7 @@ interface RoomPasswordDialogState : RState {
 
 }
 
-interface FooterState : RState, RoomPasswordDialogState {
-
-}
+interface FooterState : RState, RoomPasswordDialogState
 
 interface FooterContract {
     interface View :
@@ -77,6 +74,9 @@ class FooterComponent(prps: FooterProps) : RComponent<FooterProps, FooterState>(
         this.roomHasPassword = false
     }
 
+    /**
+     * On this dialog the user can set/remove the password of the room
+     */
     private fun RBuilder.setRoomPasswordDialog(open: Boolean) {
 
         dialog {
@@ -103,48 +103,59 @@ class FooterComponent(prps: FooterProps) : RComponent<FooterProps, FooterState>(
 
                 }
             }
-            button {
-                attrs {
-                    text("Remove Password")
-                    variant = ButtonVariant.contained
-                    color = ButtonColor.primary
-                    onClickFunction = {
-                        presenter.changeRoomPassword("")
-                        setState {
-                            this.showChangePassword = false
-                        }
+            removePasswordButton()
+            savePasswordButton()
+            closeDialogButton()
 
+        }
+    }
+
+    private fun DialogElementBuilder.closeDialogButton() {
+        button {
+            attrs {
+                text("Close")
+                variant = ButtonVariant.contained
+                color = ButtonColor.primary
+                onClickFunction = {
+                    setState {
+                        this.showChangePassword = false
                     }
                 }
             }
-            button {
-                attrs {
-                    text("Save Password")
-                    variant = ButtonVariant.contained
-                    color = ButtonColor.primary
-                    onClickFunction = {
-                        setState {
-                            this.showChangePassword = false
-                        }
+        }
+    }
 
-                        presenter.changeRoomPassword(state.roomPassword)
+    private fun DialogElementBuilder.savePasswordButton() {
+        button {
+            attrs {
+                text("Save Password")
+                variant = ButtonVariant.contained
+                color = ButtonColor.primary
+                onClickFunction = {
+                    setState {
+                        this.showChangePassword = false
                     }
+
+                    presenter.changeRoomPassword(state.roomPassword)
                 }
             }
+        }
+    }
 
-            button {
-                attrs {
-                    text("Close")
-                    variant = ButtonVariant.contained
-                    color = ButtonColor.primary
-                    onClickFunction = {
-                        setState {
-                            this.showChangePassword = false
-                        }
+    private fun DialogElementBuilder.removePasswordButton() {
+        button {
+            attrs {
+                text("Remove Password")
+                variant = ButtonVariant.contained
+                color = ButtonColor.primary
+                onClickFunction = {
+                    presenter.changeRoomPassword("")
+                    setState {
+                        this.showChangePassword = false
                     }
+
                 }
             }
-
         }
     }
 
@@ -156,7 +167,6 @@ class FooterComponent(prps: FooterProps) : RComponent<FooterProps, FooterState>(
                 bottom = LinearDimension("0")
                 width = LinearDimension.fillAvailable
                 textAlign = TextAlign.end
-                // backgroundColor = Color.transparent
             }
             roomPasswordDialogButton()
 
@@ -218,8 +228,5 @@ class FooterComponent(prps: FooterProps) : RComponent<FooterProps, FooterState>(
 }
 
 fun RBuilder.myfooter(): ReactElement {
-    return child(FooterComponent::class) {
-
-
-    }
+    return child(FooterComponent::class) {}
 }

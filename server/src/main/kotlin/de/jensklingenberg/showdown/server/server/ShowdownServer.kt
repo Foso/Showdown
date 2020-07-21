@@ -51,7 +51,7 @@ class ShowdownServer : GameServer {
         val socketList = members.computeIfAbsent(memberId) { CopyOnWriteArrayList<WebSocketSession>() }
         socketList.add(socket)
         GlobalScope.launch {
-           // sendMessage(memberId, "HALLO")
+            // sendMessage(memberId, "HALLO")
         }
     }
 
@@ -69,7 +69,7 @@ class ShowdownServer : GameServer {
         if (connections != null && connections.isEmpty()) {
 
             gameMap.forEach {
-                it.value.onPlayerLeft(sessionId)
+                it.value.onPlayerLostConnection(sessionId)
             }
 
             //println("Member left: ")
@@ -93,15 +93,15 @@ class ShowdownServer : GameServer {
             ?: Request("", "")
 
         when (request.path) {
-            SETAUTOREVEALPATH->{
+            SETAUTOREVEALPATH -> {
                 fromJson<Boolean>(request.body)
-                    ?.let { config->
+                    ?.let { config ->
                         gameSource?.setAutoReveal(config)
                     }
 
             }
             SETROOMPASSSWORDPATH -> {
-                gameSource?.changePassword(sessionId,request.body)
+                gameSource?.changePassword(sessionId, request.body)
             }
             SHOWVOTESPATH -> {
                 gameSource?.showVotes(sessionId)
@@ -115,24 +115,24 @@ class ShowdownServer : GameServer {
             }
             PATHS.ROOMCONFIGUPDATE.path -> {
                 fromJson<NewGameConfig>(request.body)
-                    ?.let { config->
-                    gameSource?.changeConfig(config)
-                }
+                    ?.let { config ->
+                        gameSource?.changeConfig(config)
+                    }
 
             }
             JOINROOMPATH -> {
                 fromJson<JoinGame>(request.body)
-                    ?.let { joinGame->
-                    if (gameMap.none { it.key == room.name }) {
-                        gameSource = createNewRoom(room.name)
-                    }
+                    ?.let { joinGame ->
+                        if (gameMap.none { it.key == room.name }) {
+                            gameSource = createNewRoom(room.name)
+                        }
 
-                    if (joinGame.roomPassword == gameSource?.gameConfig?.room?.password) {
-                        gameSource?.playerJoined(Player(sessionId, joinGame.playerName))
-                    } else {
-                        sendTo(sessionId, ServerResponse.ErrorEvent(ShowdownError.NotAuthorizedError()).toJson())
+                        if (joinGame.roomPassword == gameSource?.gameConfig?.room?.password) {
+                            gameSource?.playerJoined(Player(sessionId, joinGame.playerName))
+                        } else {
+                            sendTo(sessionId, ServerResponse.ErrorEvent(ShowdownError.NotAuthorizedError()).toJson())
+                        }
                     }
-                }
 
             }
 
@@ -159,7 +159,7 @@ class ShowdownServer : GameServer {
         playersSessions[sessionId] = player
     }
 
-    override fun createNewRoom(roomName: String): ServerGame {
+    fun createNewRoom(roomName: String): ServerGame {
         val game = ServerGame(
             this,
             getDefaultConfig(roomName)
@@ -173,7 +173,7 @@ class ShowdownServer : GameServer {
         gameMap.remove(roomName)
     }
 
-    override fun removeMember(sessionId: String) {
+    override fun removePlayer(sessionId: String) {
         playersSessions.remove(sessionId)
         members.remove(sessionId)
     }

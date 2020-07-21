@@ -11,7 +11,10 @@ import react.RBuilder
 import showdown.web.wrapper.material.QrCode
 import kotlin.browser.window
 
-fun RBuilder.shareDialog(show: Boolean, onAcceptClick:(Event)->Unit) {
+/**
+ * Shows a dialog with a QR Code of the link to the room
+ */
+fun RBuilder.shareDialog(show: Boolean, onAcceptClick: (Event) -> Unit) {
 
     dialog {
         attrs {

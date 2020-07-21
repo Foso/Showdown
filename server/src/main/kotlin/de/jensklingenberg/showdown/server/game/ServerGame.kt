@@ -11,13 +11,17 @@ import de.jensklingenberg.showdown.server.model.ServerConfig
 import de.jensklingenberg.showdown.server.model.Vote
 import de.jensklingenberg.showdown.server.model.toClient
 
-
+/**
+ * This class contains the state/logic of a game
+ * [server] that will handle a responses to the clients
+ * [gameConfig] the config for a game
+ */
 class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
 
     private val playerList = arrayListOf<Player>()
     private var gameState: GameState = GameState.NotStarted
     private val inactivePlayerIds = mutableListOf<String>()
-    val moshi = Moshi.Builder().build()
+    private val moshi = Moshi.Builder().build()
 
     fun changePassword(sessionId: String, password: String) {
         val newRoomData = gameConfig.room.copy(password = password)
@@ -58,7 +62,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
         }
         inactivePlayerIds.clear()
         clearVotes()
-        sendPlayers()
+        sendPlayerList()
         sendGameStateChanged(gameState)
     }
 
@@ -77,7 +81,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
             playerList.add(player)
             server.onPlayerAdded(player.sessionId, player)
 
-            sendPlayers()
+            sendPlayerList()
             sendGameStateChanged(player.sessionId, gameState)
         }
     }
@@ -92,7 +96,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
             }
         }
         inactivePlayerIds.removeIf { it == sessionId }
-        sendPlayers()
+        sendPlayerList()
         sendGameStateChanged(sessionId, gameState)
     }
 
@@ -105,7 +109,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
         clearVotes()
         gameState = GameState.Started(this.gameConfig.toClient())
         sendGameStateChanged(gameState)
-        sendPlayers()
+        sendPlayerList()
     }
 
 
@@ -121,20 +125,20 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
             }
         }
 
-        sendPlayers()
+        sendPlayerList()
         if (gameConfig.autoReveal) {
             if (playerList.all { it.vote != null }) {
-                showVotes()
+                sendVotes()
             }
         }
     }
 
-    fun onPlayerLeft(sessionId: String) {
+    fun onPlayerLostConnection(sessionId: String) {
         playerList.find { it.sessionId == sessionId }?.let {
             inactivePlayerIds.add(it.sessionId)
         }
 
-        sendPlayers()
+        sendPlayerList()
         closeRoomIfEmpty()
     }
 
@@ -142,27 +146,26 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
     private fun closeRoomIfEmpty() {
         if (playerList.size == inactivePlayerIds.size) {
             playerList.forEach {
-                server.removeMember(it.sessionId)
+                server.removePlayer(it.sessionId)
             }
             server.closeRoom(gameConfig.room.name)
         }
     }
 
-    private fun sendPlayers() {
+    private fun sendPlayerList() {
         val votesList = playerList.map { player ->
             val isInActive = inactivePlayerIds.any { it == player.sessionId }
             val voted = player.vote != null
             Member(player.name, voted, isConnected = !isInActive)
         }.sortedBy { it.voted }
         sendGameStateChanged(GameState.PlayerListUpdate(votesList))
-
     }
 
     fun showVotes(sessionId: String) {
-        showVotes()
+        sendVotes()
     }
 
-    private fun showVotes() {
+    private fun sendVotes() {
         if (playerList.none { it.vote != null }) {
             return
         }

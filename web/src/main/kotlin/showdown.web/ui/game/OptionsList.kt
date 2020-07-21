@@ -8,6 +8,9 @@ import react.RBuilder
 import react.dom.h2
 import showdown.web.wrapper.material.icons.TouchAppIcon
 
+/**
+ * Shows the list with options, that the use can vote
+ */
 fun RBuilder.optionsList(options: List<String>, selectedOptionIndex: Int, onOptionClicked: (Int) -> Unit) {
     h2 {
         TouchAppIcon {}

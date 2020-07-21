@@ -1,6 +1,7 @@
 package showdown.web.ui.game
 
 import Application
+import kotlinx.html.DIV
 import kotlinx.html.id
 import kotlinx.html.js.onClickFunction
 import materialui.components.appbar.appBar
@@ -14,13 +15,14 @@ import materialui.components.menu.menu
 import materialui.components.menuitem.menuItem
 import org.w3c.dom.events.EventTarget
 import react.*
+import react.dom.RDOMBuilder
 import react.dom.div
 import react.dom.label
 import showdown.web.game.GameDataSource
-import showdown.web.wrapper.material.icons.AccountCircleIcon
-import showdown.web.wrapper.material.icons.AddCircleIcon
 import showdown.web.wrapper.material.ShareIcon
 import showdown.web.wrapper.material.VisibilityIcon
+import showdown.web.wrapper.material.icons.AccountCircleIcon
+import showdown.web.wrapper.material.icons.AddCircleIcon
 import kotlin.browser.window
 import kotlin.math.floor
 
@@ -48,21 +50,7 @@ interface ToolbarProps : RProps {
     var autoReveal: Boolean
 
 }
-interface Contract{
-    interface View{
 
-    }
-    interface Presenter{
-        fun onCreate()
-    }
-}
-
-class ToolbarPresenter(val view:Contract.View):Contract.Presenter{
-    override fun onCreate() {
-
-    }
-
-}
 
 class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(props) {
 
@@ -80,11 +68,9 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
 
     override fun componentWillReceiveProps(nextProps: ToolbarProps) {
         setState {
-
             this.diffSecs = props.diffSecs
             this.startTimer = props.startTimer
-            this.gameConfig=props.autoReveal
-
+            this.gameConfig = props.autoReveal
         }
     }
 
@@ -101,56 +87,65 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
                 color = AppBarColor.primary
             }
             div {
-                button {
-                    attrs {
-                        variant = ButtonVariant.contained
-                        color = ButtonColor.primary
-                        text("New Game")
-                        onClickFunction = {
-                            state.onNewGameClicked()
-                        }
-                        startIcon {
-                            AddCircleIcon {}
-                        }
-                    }
-                }
-
-                button {
-                    attrs {
-                        variant = ButtonVariant.contained
-                        color = ButtonColor.primary
-                        text("Show Votes")
-                        onClickFunction = {
-                            state.onShowVotesClicked()
-                        }
-                        startIcon {
-                            VisibilityIcon {}
-                        }
-                    }
-                }
-
-
-                button {
-                    attrs {
-                        variant = ButtonVariant.contained
-                        color = ButtonColor.primary
-                        text("Share")
-                        onClickFunction = {
-                            setState {
-                                this.showShareDialog = true
-                            }
-                        }
-                        startIcon {
-                            ShareIcon {}
-                        }
-                    }
-                }
+                newGameButton()
+                showVotesButton()
+                shareButton()
                 settingsPopupMenu(state)
                 +"Estimation time: ${getTimerText()} seconds."
             }
         }
 
 
+    }
+
+    private fun RDOMBuilder<DIV>.newGameButton() {
+        button {
+            attrs {
+                variant = ButtonVariant.contained
+                color = ButtonColor.primary
+                text("New Game")
+                onClickFunction = {
+                    state.onNewGameClicked()
+                }
+                startIcon {
+                    AddCircleIcon {}
+                }
+            }
+        }
+    }
+
+    private fun RDOMBuilder<DIV>.showVotesButton() {
+        button {
+            attrs {
+                variant = ButtonVariant.contained
+                color = ButtonColor.primary
+                text("Show Votes")
+                onClickFunction = {
+                    state.onShowVotesClicked()
+                }
+                startIcon {
+                    VisibilityIcon {}
+                }
+            }
+        }
+    }
+
+    private fun RDOMBuilder<DIV>.shareButton() {
+        button {
+            attrs {
+                variant = ButtonVariant.contained
+                color = ButtonColor.primary
+                text("Share")
+                onClickFunction = {
+                    setState {
+                        this.showShareDialog = true
+                    }
+                }
+                startIcon {
+                    ShareIcon {}
+                }
+            }
+        }
     }
 
 
@@ -193,9 +188,7 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
                 open = state.openMenu
                 onClose = { event, s ->
                     setState {
-                        // anchor = currentTarget
                         openMenu = false
-
                     }
                 }
                 anchorEl(state.anchor)
@@ -222,10 +215,10 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
 
                     }
                 }
-                checkbox{
-                    attrs{
-                        checked=state.gameConfig
-                        onClickFunction={
+                checkbox {
+                    attrs {
+                        checked = state.gameConfig
+                        onClickFunction = {
                             gameDataSource.setAutoReveal(!state.gameConfig)
                         }
                     }
@@ -272,13 +265,8 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
                     +"Showdown v1.1 on Github"
                 }
             }
-
         }
-
-
     }
-
-
 }
 
 fun RBuilder.myToolbar(

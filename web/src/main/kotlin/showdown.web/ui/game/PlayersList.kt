@@ -12,54 +12,59 @@ import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
 import react.RBuilder
 import react.dom.h2
-import showdown.web.wrapper.material.icons.*
-import showdown.web.wrapper.material.icons.VerifiedUserIcon
+import showdown.web.wrapper.material.icons.Box
+import showdown.web.wrapper.material.icons.CancelIcon
+import showdown.web.wrapper.material.icons.CheckCircleIcon
+import showdown.web.wrapper.material.icons.GroupIcon
 import styled.css
 import styled.styledDiv
 import kotlin.math.round
 
+/**
+ * Shows the list of players
+ */
 fun RBuilder.playersList(members: List<Member>) {
 
 
     h2 {
-            GroupIcon{
+        GroupIcon {
 
-            }
+        }
 
         +"Players (${members.size}) Voted:"
 
 
-        Box{
+        Box {
             attrs {
-                this.display="inline-flex"
-                this.position="relative"
+                this.display = "inline-flex"
+                this.position = "relative"
             }
-            circularProgress{
+            circularProgress {
                 attrs {
-                    variant=CircularProgressVariant.static
-                    val tes =(members.filter { it.voted }.size.toDouble()/members.size.toDouble())*100
+                    variant = CircularProgressVariant.static
+                    val tes = (members.filter { it.voted }.size.toDouble() / members.size.toDouble()) * 100
 
-                    value= round(tes)
+                    value = round(tes)
                 }
             }
-            Box{
+            Box {
                 attrs {
-                    this.display="flex"
-                    this.alignItems="center"
+                    this.display = "flex"
+                    this.alignItems = "center"
                     this.top = 0
-                    left=0
-                    right=0
-                    bottom=0
-                    justifyContent="center"
-                    this.position="absolute"
+                    left = 0
+                    right = 0
+                    bottom = 0
+                    justifyContent = "center"
+                    this.position = "absolute"
                 }
-                typography{
+                typography {
                     attrs {
-                        variant= TypographyVariant.caption
-                        component="div"
-                        color= TypographyColor.textSecondary
+                        variant = TypographyVariant.caption
+                        component = "div"
+                        color = TypographyColor.textSecondary
                     }
-                    val tes =(members.filter { it.voted }.size.toDouble()/members.size.toDouble())*100
+                    val tes = (members.filter { it.voted }.size.toDouble() / members.size.toDouble()) * 100
 
                     +"${round(tes)}%"
                 }
@@ -67,54 +72,49 @@ fun RBuilder.playersList(members: List<Member>) {
             }
 
         }
-
-
-
     }
-
-
 
     list {
 
-            members.forEach {
-                listItemText {
+        members.forEach {
+            listItemText {
 
-                    styledDiv {
-                        css {
-                            this.textAlign = TextAlign.center
-                        }
-                        +("Player: " + it.playerName + " Voted:")
+                styledDiv {
+                    css {
+                        this.textAlign = TextAlign.center
+                    }
+                    +("Player: " + it.playerName + " Voted:")
 
-                        if(it.voted){
-                            styledDiv {
-                                css {
-                                    this.color= if(it.voted) {
-                                        Color.green
-                                    }else{
-                                        Color.red
-                                    }
-                                    this.display=Display.inlineBlock
+                    if (it.voted) {
+                        styledDiv {
+                            css {
+                                this.color = if (it.voted) {
+                                    Color.green
+                                } else {
+                                    Color.red
                                 }
-                                CheckCircleIcon{}
+                                this.display = Display.inlineBlock
                             }
-                        }else{
-                            styledDiv {
-                                css {
-                                    this.color= Color.red
-                                    this.display=Display.inlineBlock
-                                }
-                                CancelIcon{}
-                            }
+                            CheckCircleIcon {}
                         }
-                        if(!it.isConnected){
-                            +" Connection lost"
+                    } else {
+                        styledDiv {
+                            css {
+                                this.color = Color.red
+                                this.display = Display.inlineBlock
+                            }
+                            CancelIcon {}
                         }
                     }
-
+                    if (!it.isConnected) {
+                        +" Connection lost"
+                    }
                 }
 
-                divider {}
             }
+
+            divider {}
+        }
 
 
     }

@@ -8,6 +8,6 @@ interface NetworkApiObserver {
 
     fun onGameStateChanged(gameState: GameState)
     fun onError(errorEvent: ServerResponse.ErrorEvent)
-    fun onMessageEvent(message:String)
+    fun onMessageEvent(message: String)
     fun onConfigUpdated(clientGameConfig: ClientGameConfig)
 }

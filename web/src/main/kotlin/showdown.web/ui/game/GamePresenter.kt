@@ -51,12 +51,12 @@ class GamePresenter(private val view: GameContract.View) : GameContract.Presente
             view.showInfoPopup(it)
         }).addTo(compositeDisposable)
 
-        gameDataSource.observeRoomConfig().subscribe(onNext = {conf->
-           conf?.let {
-               view.newState {
-                   this.autoReveal = conf.autoReveal
-               }
-           }
+        gameDataSource.observeRoomConfig().subscribe(onNext = { conf ->
+            conf?.let {
+                view.newState {
+                    this.autoReveal = conf.autoReveal
+                }
+            }
 
 
         }).addTo(compositeDisposable)

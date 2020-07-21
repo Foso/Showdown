@@ -47,7 +47,7 @@ class HomeView : RComponent<RProps, GameContract.HomeViewState>(), GameContract.
         //MESSAGE
         showConnectionError = false
         autoReveal = false
-        snackbarMessage=""
+        snackbarMessage = ""
 
     }
 
@@ -69,14 +69,14 @@ class HomeView : RComponent<RProps, GameContract.HomeViewState>(), GameContract.
 
     override fun RBuilder.render() {
 
-      if(state.snackbarMessage.isNotEmpty()){
-          mySnackbar(state.snackbarMessage){
-              setState {
-                  this.snackbarMessage=""
-              }
-          }
+        if (state.snackbarMessage.isNotEmpty()) {
+            mySnackbar(state.snackbarMessage) {
+                setState {
+                    this.snackbarMessage = ""
+                }
+            }
 
-      }
+        }
         connectionErrorSnackbar(state.showConnectionError, onActionClick = {
             presenter.onCreate()
 
@@ -178,7 +178,7 @@ class HomeView : RComponent<RProps, GameContract.HomeViewState>(), GameContract.
 
     override fun showInfoPopup(it: String) {
         setState {
-            this.snackbarMessage=it
+            this.snackbarMessage = it
         }
     }
 

@@ -13,15 +13,15 @@ import org.w3c.dom.HTMLInputElement
 import react.*
 import react.dom.div
 
-interface PlayerNameDialogComponentState:RState{
-    var showEntryPopup:Boolean
+interface PlayerNameDialogComponentState : RState {
+    var showEntryPopup: Boolean
     var playerName: String
-    var onJoinClicked : (String)->Unit
+    var onJoinClicked: (String) -> Unit
 }
 
-interface MyProps : RProps{
-    var onJoinClicked : (String)->Unit
-    var showEntryPopup:Boolean
+interface MyProps : RProps {
+    var onJoinClicked: (String) -> Unit
+    var showEntryPopup: Boolean
 
 }
 
@@ -37,24 +37,25 @@ fun DialogElementBuilder.joinGameButton(onClick: () -> Unit) {
         }
     }
 }
+
 /**
  * On this dialog the user has to choose a player name
  */
-class PlayerNameDialogComponent(props:MyProps) : RComponent<MyProps, PlayerNameDialogComponentState>(props) {
+class PlayerNameDialogComponent(props: MyProps) : RComponent<MyProps, PlayerNameDialogComponentState>(props) {
 
     override fun PlayerNameDialogComponentState.init(props: MyProps) {
-        this.playerName="Jens"
-        this.onJoinClicked=props.onJoinClicked
-        this.showEntryPopup=props.showEntryPopup
+        this.playerName = "Jens"
+        this.onJoinClicked = props.onJoinClicked
+        this.showEntryPopup = props.showEntryPopup
     }
 
     override fun componentWillReceiveProps(nextProps: MyProps) {
         setState {
-            this.showEntryPopup=nextProps.showEntryPopup
+            this.showEntryPopup = nextProps.showEntryPopup
         }
     }
 
-    
+
     override fun RBuilder.render() {
         dialog {
             attrs {
@@ -63,7 +64,6 @@ class PlayerNameDialogComponent(props:MyProps) : RComponent<MyProps, PlayerNameD
             playerNameDialogContent()
         }
     }
-
 
 
     private fun DialogElementBuilder.playerNameDialogContent() {
@@ -94,11 +94,11 @@ class PlayerNameDialogComponent(props:MyProps) : RComponent<MyProps, PlayerNameD
     }
 }
 
-fun RBuilder.playerNameDialog(showEntryPopup:Boolean, onJoinClicked : (String)->Unit): ReactElement {
-    return child(PlayerNameDialogComponent::class){
+fun RBuilder.playerNameDialog(showEntryPopup: Boolean, onJoinClicked: (String) -> Unit): ReactElement {
+    return child(PlayerNameDialogComponent::class) {
         attrs {
-            this.showEntryPopup=showEntryPopup
-            this.onJoinClicked=onJoinClicked
+            this.showEntryPopup = showEntryPopup
+            this.onJoinClicked = onJoinClicked
         }
     }
 }

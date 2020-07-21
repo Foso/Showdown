@@ -5,13 +5,12 @@ fun getServerResponseType(toString: String): ServerResponseTypes {
 
     return ServerResponseTypes.values().firstOrNull() {
         toString.startsWith("{\"id\":${it.ordinal}")
-    }?:ServerResponseTypes.UNKNOWN
+    } ?: ServerResponseTypes.UNKNOWN
 }
 
 
-
-fun getServerResponse(json:String): ServerResponse? {
-    return when(getServerResponseType(json)){
+fun getServerResponse(json: String): ServerResponse? {
+    return when (getServerResponseType(json)) {
         ServerResponseTypes.STATE_CHANGED -> {
             ServerResponseParser.getGameStateChangedCommand(json)
         }

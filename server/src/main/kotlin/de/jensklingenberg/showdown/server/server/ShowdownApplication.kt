@@ -1,7 +1,7 @@
 package de.jensklingenberg.showdown.server.server
 
-import de.jensklingenberg.showdown.server.model.Session
 import de.jensklingenberg.showdown.server.model.Room
+import de.jensklingenberg.showdown.server.model.Session
 import io.ktor.application.ApplicationCallPipeline
 import io.ktor.application.call
 import io.ktor.application.install
@@ -9,11 +9,12 @@ import io.ktor.features.Compression
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.gzip
 import io.ktor.gson.gson
-import io.ktor.http.HttpStatusCode
 import io.ktor.http.cio.websocket.*
-import io.ktor.http.content.*
+import io.ktor.http.content.resources
+import io.ktor.http.content.static
 import io.ktor.request.uri
-import io.ktor.response.*
+import io.ktor.response.respondBytes
+import io.ktor.response.respondRedirect
 import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
@@ -23,8 +24,6 @@ import io.ktor.util.generateNonce
 import io.ktor.websocket.WebSockets
 import io.ktor.websocket.webSocket
 import kotlinx.coroutines.channels.consumeEach
-import java.io.File
-import java.io.InputStream
 import java.time.Duration
 
 fun main() {
@@ -73,14 +72,14 @@ class ShowdownApplication {
 
             routing {
                 get("") {
-                    val res=   this.javaClass.getResourceAsStream("/web/index.html")
+                    val res = this.javaClass.getResourceAsStream("/web/index.html")
                     call.respondBytes { res.readBytes() }
                 }
 
                 get("room/{roomName}/{param...}") {
                     val roomName = call.parameters["roomName"] ?: ""
 
-                    if(!call.request.uri.endsWith("/")){
+                    if (!call.request.uri.endsWith("/")) {
                         call.respondRedirect("/room/$roomName/")
                     }
 
@@ -120,7 +119,7 @@ class ShowdownApplication {
                                 // At this point we have context about this connection, the session, the text and the server.
                                 // So we have everything we need.
 
-                                server.receivedMessage(session.id, frame.readText(), Room(roomName,password))
+                                server.receivedMessage(session.id, frame.readText(), Room(roomName, password))
                             }
                         }
                     } finally {

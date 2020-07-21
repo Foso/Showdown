@@ -2,6 +2,9 @@ package de.jensklingenberg.showdown.model
 
 import kotlinx.serialization.Serializable
 
+/**
+ * Contains the path for a request/response between Server and Client
+ */
 enum class PATHS(val path:String){
     SETROOMPASSSWORDPATH( "/room/password/set"),
     MESSAGE("/event"),
@@ -20,14 +23,23 @@ val VOTEPATH= "/vote"
 val GAMEEVENTPATH = "/event"
 
 
-interface Config{
+interface GameConfig{
     var voteOptions: List<String>
+
+    /**
+     * If true, all votes will be shown, when all
+     * players voted
+     */
      val autoReveal: Boolean
+
+    /**
+     * The time when a game was created
+     */
     var createdAt:String
 }
 
 @Serializable
-data class ClientGameConfig(override var voteOptions: List<String> = fibo, override val autoReveal: Boolean = false, override var createdAt:String,val roomHasPassword:Boolean=false) :Config
+data class ClientGameConfig(override var voteOptions: List<String> = fibo, override val autoReveal: Boolean = false, override var createdAt:String,val roomHasPassword:Boolean=false) :GameConfig
 
 @Serializable
 data class Member(val playerName: String, val voted: Boolean, val isConnected: Boolean)

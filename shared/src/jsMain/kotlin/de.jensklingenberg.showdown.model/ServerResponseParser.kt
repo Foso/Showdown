@@ -10,18 +10,21 @@ class ServerResponseParser {
 
         fun getGameStateChangedCommand(jsonStr: String): ServerResponse.GameStateChanged {
             return json.parse(
-                ServerResponse.GameStateChanged.serializer(), jsonStr)
+                ServerResponse.GameStateChanged.serializer(), jsonStr
+            )
         }
 
 
         fun getErrorCommand(jsonStr: String): ServerResponse.ErrorEvent {
             return json.parse(
-                ServerResponse.ErrorEvent.serializer(), jsonStr)
+                ServerResponse.ErrorEvent.serializer(), jsonStr
+            )
         }
 
         fun toJson(cmd: ServerResponse.ErrorEvent): String {
             return json.stringify(
-                ServerResponse.ErrorEvent.serializer(), cmd)
+                ServerResponse.ErrorEvent.serializer(), cmd
+            )
         }
 
     }

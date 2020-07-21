@@ -11,7 +11,6 @@ interface GameDataSource {
     fun observeGameState(): Observable<GameState>
     fun observeMessage(): Observable<String>
     fun observeRoomConfig(): Observable<ClientGameConfig?>
-
     fun requestReset()
     fun observeErrors(): Observable<ShowdownError?>
     fun showVotes()

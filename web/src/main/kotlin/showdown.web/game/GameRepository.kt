@@ -6,13 +6,12 @@ import com.badoo.reaktive.subject.behavior.BehaviorSubject
 import de.jensklingenberg.showdown.model.*
 import de.jensklingenberg.showdown.model.api.clientrequest.JoinGame
 import de.jensklingenberg.showdown.model.api.clientrequest.NewGameConfig
+import showdown.web.common.stringify
 import showdown.web.network.GameApiClient
 import showdown.web.network.NetworkApiObserver
 
 
-fun Any.stringify(): String {
-    return JSON.stringify(this)
-}
+
 
 class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource, NetworkApiObserver {
 
@@ -39,9 +38,7 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
     }
 
     override fun changeConfig(newGameConfig: NewGameConfig) {
-
         val req = Request(PATHS.ROOMCONFIGUPDATE.path, newGameConfig.stringify()).stringify()
-
         gameApiClient.sendMessage(req)
     }
 
@@ -71,12 +68,14 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
     override fun observeRoomConfig(): Observable<ClientGameConfig?> = configUpdateSubject
 
     override fun joinRoom(name: String, password: String) {
-        playerName=name
-        roomPassword=password
-        val req = Request(JOINROOMPATH, JoinGame(
-            name,
-            password
-        ).stringify())
+        playerName = name
+        roomPassword = password
+        val req = Request(
+            JOINROOMPATH, JoinGame(
+                name,
+                password
+            ).stringify()
+        )
         gameApiClient.sendMessage(JSON.stringify(req))
     }
 
@@ -98,7 +97,7 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
     }
 
     override fun onMessageEvent(message: String) {
-            messageSubject.onNext(message)
+        messageSubject.onNext(message)
     }
 
     override fun onConfigUpdated(clientGameConfig: ClientGameConfig) {
