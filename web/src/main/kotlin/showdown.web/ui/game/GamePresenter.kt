@@ -51,6 +51,10 @@ class GamePresenter(private val view: GameContract.View) : GameContract.Presente
             view.showInfoPopup(it)
         }).addTo(compositeDisposable)
 
+        gameDataSource.observeSpectatorStatus().subscribe(onNext = {
+            view.setSpectatorStatus(it)
+        }).addTo(compositeDisposable)
+
         gameDataSource.observeRoomConfig().subscribe(onNext = { conf ->
             conf?.let {
                 view.newState {
@@ -137,6 +141,12 @@ class GamePresenter(private val view: GameContract.View) : GameContract.Presente
 
     override fun changeRoomPassword(password: String) {
         gameDataSource.changeRoomPassword(password)
+    }
+
+    override fun setSpectatorStatus(b: Boolean) {
+
+        gameDataSource.setSpectatorStatus(b)
+
     }
 
     override fun showVotes() {

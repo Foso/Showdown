@@ -20,20 +20,23 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
 
     private val playerList = arrayListOf<Player>()
     private var gameState: GameState = GameState.NotStarted
-    private val inactivePlayerIds = mutableListOf<String>()
+    private val inactivePlayerIds = mutableSetOf<String>()
+    private val spectatorIds = mutableSetOf<String>()
     private val moshi = Moshi.Builder().build()
 
-    fun changePassword(sessionId: String, password: String) {
+    fun changeRoomPassword(sessionId: String, password: String) {
         val newRoomData = gameConfig.room.copy(password = password)
         gameConfig = gameConfig.copy(room = newRoomData)
 
+        val keyword = if (password.isEmpty()) {
+            "removed"
+        } else {
+            "set"
+        }
+
         val response = Response(
             PATHS.MESSAGE.path,
-            if (password.isEmpty()) {
-                "Room password was removed by: " + playerList.find { it.sessionId == sessionId }?.name
-            } else {
-                "Room password was set by: " + playerList.find { it.sessionId == sessionId }?.name
-            }
+            "Room password was $keyword by: " + playerList.find { it.sessionId == sessionId }?.name
         )
 
         val websocketResource = WebsocketResource(WebSocketResourceType.RESPONSE, response)
@@ -50,16 +53,17 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
         val configJson = moshi.toJson(clientGameConfig)
         val response = Response(PATHS.ROOMCONFIGUPDATE.path, configJson)
         val websocketResource = WebsocketResource(WebSocketResourceType.RESPONSE, response)
-
         sendBroadcast(websocketResource.toJson())
     }
 
     fun restart() {
         gameState =
             GameState.Started(gameConfig.toClient().copy(createdAt = DateTime.now().unixMillisDouble.toString()))
-        inactivePlayerIds.forEach { inactivePlayer ->
-            playerList.removeIf { it.sessionId == inactivePlayer }
+        inactivePlayerIds.forEach { inactivePlayerId ->
+            playerList.removeIf { it.sessionId == inactivePlayerId }
+            spectatorIds.removeIf { it == inactivePlayerId }
         }
+
         inactivePlayerIds.clear()
         clearVotes()
         sendPlayerList()
@@ -88,6 +92,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
 
     private fun onPlayerRejoined(sessionId: String, name: String) {
         //Set new player name
+
         playerList.replaceAll { player ->
             if (player.sessionId == sessionId) {
                 player.copy(name = name)
@@ -113,8 +118,32 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
     }
 
 
+    fun onSpectate(sessionId: String, spectate: Boolean) {
+
+        if (spectate) {
+            spectatorIds.add(sessionId)
+            playerList.replaceAll { player ->
+                if (player.sessionId == sessionId) {
+                    player.copy(vote = null)
+                } else {
+                    player
+                }
+            }
+        } else {
+            spectatorIds.remove(sessionId)
+        }
+        val response = Response(PATHS.SPECTATORPATH.path, moshi.toJson(spectate))
+        val websocketResource = WebsocketResource(WebSocketResourceType.RESPONSE, response)
+
+        server.sendData(sessionId, websocketResource.toJson())
+        sendPlayerList()
+    }
+
     fun onPlayerVoted(sessionId: String, voteId: Int) {
         if (gameState is GameState.ShowVotes) {
+            return
+        }
+        if (spectatorIds.any { it == sessionId }) {
             return
         }
         playerList.replaceAll { player ->
@@ -127,7 +156,12 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
 
         sendPlayerList()
         if (gameConfig.autoReveal) {
-            if (playerList.all { it.vote != null }) {
+
+            if (playerList
+                    .filter { !inactivePlayerIds.contains(it.sessionId) }
+                    .filter { !spectatorIds.contains(it.sessionId) }
+                    .all { it.vote != null }
+            ) {
                 sendVotes()
             }
         }
@@ -154,9 +188,10 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
 
     private fun sendPlayerList() {
         val votesList = playerList.map { player ->
-            val isInActive = inactivePlayerIds.any { it == player.sessionId }
+            val isActive = inactivePlayerIds.none { it == player.sessionId }
+            val isSpectator = spectatorIds.any { it == player.sessionId }
             val voted = player.vote != null
-            Member(player.name, voted, isConnected = !isInActive)
+            Member(player.name, voted, isConnected = isActive, isSpectator = isSpectator)
         }.sortedBy { it.voted }
         sendGameStateChanged(GameState.PlayerListUpdate(votesList))
     }

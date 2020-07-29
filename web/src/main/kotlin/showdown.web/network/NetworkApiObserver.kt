@@ -10,4 +10,5 @@ interface NetworkApiObserver {
     fun onError(errorEvent: ServerResponse.ErrorEvent)
     fun onMessageEvent(message: String)
     fun onConfigUpdated(clientGameConfig: ClientGameConfig)
+    fun onSpectatorStatusChanged(isSpectator:Boolean)
 }

@@ -19,6 +19,7 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
     private val errorSubject: BehaviorSubject<ShowdownError?> = BehaviorSubject(null)
     private val messageSubject: BehaviorSubject<String> = BehaviorSubject("")
     private val configUpdateSubject: BehaviorSubject<ClientGameConfig?> = BehaviorSubject(null)
+    private val spectatorStatusSubject: BehaviorSubject<Boolean> = BehaviorSubject(false)
 
     private var playerName: String = ""
     private var roomPassword: String = ""
@@ -60,12 +61,20 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
         gameApiClient.sendMessage(req)
     }
 
+    override fun setSpectatorStatus(b: Boolean) {
+        val req = Request(PATHS.SPECTATORPATH.path,b.stringify()).stringify()
+        gameApiClient.sendMessage(req)
+    }
+
     override fun observeGameState(): Observable<GameState> = gameStateSubject
     override fun observeMessage(): Observable<String> {
         return messageSubject
     }
 
     override fun observeRoomConfig(): Observable<ClientGameConfig?> = configUpdateSubject
+    override fun observeSpectatorStatus(): Observable<Boolean> {
+        return spectatorStatusSubject
+    }
 
     override fun joinRoom(name: String, password: String) {
         playerName = name
@@ -103,6 +112,10 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
     override fun onConfigUpdated(clientGameConfig: ClientGameConfig) {
         configUpdateSubject.onNext(clientGameConfig)
 
+    }
+
+    override fun onSpectatorStatusChanged(isSpectator: Boolean) {
+        spectatorStatusSubject.onNext(isSpectator)
     }
 
 }

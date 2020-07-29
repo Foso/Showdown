@@ -3,6 +3,7 @@ package showdown.web.ui.game
 import kotlinx.html.js.onClickFunction
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonColor
+import materialui.components.button.enums.ButtonSize
 import materialui.components.button.enums.ButtonVariant
 import react.RBuilder
 import react.dom.h2
@@ -21,6 +22,7 @@ fun RBuilder.optionsList(options: List<String>, selectedOptionIndex: Int, onOpti
 
         button {
             attrs {
+                this.size = ButtonSize.large
                 this.color = if (index != selectedOptionIndex) {
                     ButtonColor.primary
                 } else {
@@ -36,5 +38,14 @@ fun RBuilder.optionsList(options: List<String>, selectedOptionIndex: Int, onOpti
 
         }
 
+        button {
+            attrs {
+                this.size = ButtonSize.small
+            }
+            +""
+
+        }
+
     }
+
 }

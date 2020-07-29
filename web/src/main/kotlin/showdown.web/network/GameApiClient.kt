@@ -46,37 +46,32 @@ class GameApiClient {
     private fun onMessage(messageEvent: MessageEvent) {
         val json = messageEvent.data.toString()
         when (getWebsocketType(json)) {
-            WebSocketResourceType.GameEvent -> {
-
-            }
-            WebSocketResourceType.Notification -> {
-
-            }
-            WebSocketResourceType.MESSAGE -> {
-
-            }
-            WebSocketResourceType.UNKNOWN -> {
+            WebSocketResourceType.GameEvent, WebSocketResourceType.Notification, WebSocketResourceType.MESSAGE, WebSocketResourceType.UNKNOWN -> {
 
             }
             WebSocketResourceType.RESPONSE -> {
                 val resource2 = JSON.parse<WebsocketResource<Response>>(json)
                 val response = resource2.data!!
-                when (val path = getPath(response.path)) {
+                when (getPath(response.path)) {
                     PATHS.MESSAGE -> {
                         observer.onMessageEvent(response.body)
                         // console.log("RESPONSE"+response.body)
                     }
-                    PATHS.SETROOMPASSSWORDPATH -> {
-                    }
+
                     PATHS.ROOMCONFIGUPDATE -> {
                         fromJson<ClientGameConfig>(response.body)?.let {
                             observer.onConfigUpdated(it)
                         }
                     }
-                    PATHS.EMPTY -> {
-                    }
-                    else -> {
 
+
+                    PATHS.SPECTATORPATH -> {
+                        fromJson<Boolean>(response.body)?.let {
+                            observer.onSpectatorStatusChanged(it)
+                        }
+                    }
+                    PATHS.SETROOMPASSSWORDPATH, PATHS.EMPTY, PATHS.ROOMUPDATE -> {
+                        //TODO()
                     }
                 }
             }

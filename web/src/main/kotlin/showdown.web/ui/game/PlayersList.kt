@@ -20,18 +20,29 @@ import styled.css
 import styled.styledDiv
 import kotlin.math.round
 
+
+fun getSpectators(members: List<Member>): List<Member> {
+    return members.filter { it.isSpectator }
+}
+
+fun getPlayers(members: List<Member>): List<Member> {
+   return members.filter { !it.isSpectator }
+}
+
 /**
  * Shows the list of players
  */
 fun RBuilder.playersList(members: List<Member>) {
 
+    val players = getPlayers(members)
+    val spectators = getSpectators(members)
 
     h2 {
         GroupIcon {
 
         }
 
-        +"Players (${members.size}) Voted:"
+        +"Players (${players.size}) Voted:"
 
 
         Box {
@@ -42,9 +53,9 @@ fun RBuilder.playersList(members: List<Member>) {
             circularProgress {
                 attrs {
                     variant = CircularProgressVariant.static
-                    val tes = (members.filter { it.voted }.size.toDouble() / members.size.toDouble()) * 100
+                    val progressPercent = (players.filter { it.voted }.size.toDouble() / players.size.toDouble()) * 100
 
-                    value = round(tes)
+                    value = round(progressPercent)
                 }
             }
             Box {
@@ -64,9 +75,9 @@ fun RBuilder.playersList(members: List<Member>) {
                         component = "div"
                         color = TypographyColor.textSecondary
                     }
-                    val tes = (members.filter { it.voted }.size.toDouble() / members.size.toDouble()) * 100
+                    val progressPercent = (players.filter { it.voted }.size.toDouble() / players.size.toDouble()) * 100
 
-                    +"${round(tes)}%"
+                    +"${round(progressPercent)}%"
                 }
 
             }
@@ -76,7 +87,7 @@ fun RBuilder.playersList(members: List<Member>) {
 
     list {
 
-        members.forEach {
+        players.forEach {
             listItemText {
 
                 styledDiv {
@@ -117,6 +128,41 @@ fun RBuilder.playersList(members: List<Member>) {
         }
 
 
+    }
+
+    if(spectators.isNotEmpty()){
+        h2 {
+            GroupIcon {
+
+            }
+
+            +"Spectators (${spectators.size})"
+
+        }
+
+        list {
+
+            spectators.forEach {
+                listItemText {
+
+                    styledDiv {
+                        css {
+                            this.textAlign = TextAlign.center
+                        }
+                        +("" + it.playerName + " ")
+
+                        if (!it.isConnected) {
+                            +" Connection lost"
+                        }
+                    }
+
+                }
+
+                divider {}
+            }
+
+
+        }
     }
 
 }

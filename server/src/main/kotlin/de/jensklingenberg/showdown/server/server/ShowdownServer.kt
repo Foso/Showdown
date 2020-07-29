@@ -50,9 +50,7 @@ class ShowdownServer : GameServer {
         // But since this is a sample we are not doing it.
         val socketList = members.computeIfAbsent(memberId) { CopyOnWriteArrayList<WebSocketSession>() }
         socketList.add(socket)
-        GlobalScope.launch {
-            // sendMessage(memberId, "HALLO")
-        }
+
     }
 
 
@@ -71,9 +69,6 @@ class ShowdownServer : GameServer {
             gameMap.forEach {
                 it.value.onPlayerLostConnection(sessionId)
             }
-
-            //println("Member left: ")
-
         }
     }
 
@@ -86,9 +81,7 @@ class ShowdownServer : GameServer {
         command: String,
         room: Room
     ) {
-        //println("Receiver ROOM:" + room.name + " PW: " + room.password)
         var gameSource = gameMap[room.name]
-        val playerExist = playersSessions.containsKey(sessionId)
         val request: Request = fromJson<Request>(command)
             ?: Request("", "")
 
@@ -101,7 +94,7 @@ class ShowdownServer : GameServer {
 
             }
             SETROOMPASSSWORDPATH -> {
-                gameSource?.changePassword(sessionId, request.body)
+                gameSource?.changeRoomPassword(sessionId, request.body)
             }
             SHOWVOTESPATH -> {
                 gameSource?.showVotes(sessionId)
@@ -110,8 +103,15 @@ class ShowdownServer : GameServer {
                 gameSource?.restart()
             }
             VOTEPATH -> {
-                val id = request.body.toInt()
-                gameSource?.onPlayerVoted(sessionId, id)
+                fromJson<Int>(request.body)?.let { voteId ->
+                    gameSource?.onPlayerVoted(sessionId, voteId)
+                }
+            }
+            PATHS.SPECTATORPATH.path -> {
+                fromJson<Boolean>(request.body)
+                    ?.let { isSpectator ->
+                        gameSource?.onSpectate(sessionId, isSpectator)
+                    }
             }
             PATHS.ROOMCONFIGUPDATE.path -> {
                 fromJson<NewGameConfig>(request.body)

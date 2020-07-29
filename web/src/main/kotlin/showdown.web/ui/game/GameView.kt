@@ -2,6 +2,8 @@ package showdown.web.ui.game
 
 
 import kotlinx.html.js.onChangeFunction
+import kotlinx.html.js.onClickFunction
+import materialui.components.checkbox.checkbox
 import materialui.components.dialog.dialog
 import materialui.components.formcontrol.enums.FormControlVariant
 import materialui.components.textfield.textField
@@ -48,7 +50,7 @@ class HomeView : RComponent<RProps, GameContract.HomeViewState>(), GameContract.
         showConnectionError = false
         autoReveal = false
         snackbarMessage = ""
-
+        isSpectator = false
     }
 
     override fun componentWillUnmount() {
@@ -118,6 +120,17 @@ class HomeView : RComponent<RProps, GameContract.HomeViewState>(), GameContract.
             }
             presenter.onSelectedVote(index)
         })
+        div {
+            checkbox {
+                attrs {
+                    checked = state.isSpectator
+                    onClickFunction = {
+                        presenter.setSpectatorStatus(!state.isSpectator)
+                    }
+                }
+            }
+            +"I'm a spectator"
+        }
         resultsList(state.results)
 
         playersList(state.players)
@@ -179,6 +192,12 @@ class HomeView : RComponent<RProps, GameContract.HomeViewState>(), GameContract.
     override fun showInfoPopup(it: String) {
         setState {
             this.snackbarMessage = it
+        }
+    }
+
+    override fun setSpectatorStatus(it: Boolean) {
+        setState {
+            this.isSpectator = it
         }
     }
 

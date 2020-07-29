@@ -14,6 +14,7 @@ interface StateView<T>{
 interface GameContract {
     interface View : StateView<HomeViewState> {
         fun showInfoPopup(it: String)
+        fun setSpectatorStatus(it: Boolean)
     }
 
     interface Presenter {
@@ -25,6 +26,7 @@ interface GameContract {
         fun onSelectedVote(voteId: Int)
         fun changeConfig(gameModeId: Int, gameOptions: String)
         fun changeRoomPassword(password:String)
+        fun setSpectatorStatus(b: Boolean)
 
     }
 
@@ -50,6 +52,8 @@ interface GameContract {
         //TOOLBAR
         var diffSecs : Double
         var showSettings : Boolean
+
+        var isSpectator:Boolean
 
     }
 }

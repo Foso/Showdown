@@ -57,6 +57,10 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0"
     implementation("com.soywiz.korlibs.klock:klock-jvm:$klockVersion")
 
+
+    testImplementation "org.mockito:mockito-core:3.4.4"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
+
 }
 
 sourceSets {
