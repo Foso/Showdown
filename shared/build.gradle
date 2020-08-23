@@ -4,6 +4,7 @@ buildscript {
         google()
         jcenter()
         mavenCentral()
+        maven { url "https://kotlin.bintray.com/kotlinx" }
     }
 }
 
@@ -46,7 +47,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-stdlib-common'
-                implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:0.20.0"
+                implementation "org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0-RC"
             }
 
         }
@@ -58,7 +59,6 @@ kotlin {
                 // implementation 'de.jodamob.kotlin:kotlin-runner-junit4:0.3.1'
 
                 implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-                implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0"
 
             }
         }
@@ -67,7 +67,6 @@ kotlin {
         jsMain {
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-stdlib-js'
-                implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:0.20.0"
 
             }
         }

@@ -2,8 +2,8 @@ buildscript {
     apply from: './constants.gradle'
 }
 buildscript {
-    ext.kotlin_version = '1.3.72'
-    ext.ktor_version = '1.3.2'
+    ext.kotlin_version = '1.4.0'
+    ext.ktor_version = '1.4.0'
 
     repositories {
         mavenCentral()
@@ -44,7 +44,7 @@ task stage {
 }
 
 
-def klockVersion = "1.10.3"
+def klockVersion = "1.12.0"
 dependencies {
     implementation project(":shared")
 
@@ -54,7 +54,7 @@ dependencies {
     implementation "io.ktor:ktor-gson:$ktor_version"
     implementation "io.ktor:ktor-websockets:$ktor_version"
     implementation "com.squareup.moshi:moshi-kotlin:${libs.moshikotlin}"
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0-RC"
     implementation("com.soywiz.korlibs.klock:klock-jvm:$klockVersion")
 
 

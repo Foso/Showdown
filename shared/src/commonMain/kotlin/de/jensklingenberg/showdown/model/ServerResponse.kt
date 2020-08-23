@@ -2,7 +2,6 @@ package de.jensklingenberg.showdown.model
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 
 
 enum class ServerResponseTypes {
@@ -23,10 +22,10 @@ sealed class ServerResponse(val id: Int) {
 
 
 fun ServerResponse.ErrorEvent.toJson(): String {
-    return Json(JsonConfiguration.Stable).stringify(ServerResponse.ErrorEvent.serializer(), this)
+    return Json { allowStructuredMapKeys = true }.encodeToString(ServerResponse.ErrorEvent.serializer(), this)
 }
 
 fun ServerResponse.GameStateChanged.toJson(): String {
-    return Json(JsonConfiguration.Stable).stringify(ServerResponse.GameStateChanged.serializer(), this)
+    return Json { allowStructuredMapKeys = true }.encodeToString(ServerResponse.GameStateChanged.serializer(), this)
 }
 
