@@ -64,9 +64,9 @@ dependencies {
 
     implementation "org.jetbrains:kotlin-react-router-dom:5.1.2-$kotlin_wrappers_version"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:0.20.0"
-    implementation "subroh0508.net.kotlinmaterialui:core:0.5.0-beta2"
-    implementation "subroh0508.net.kotlinmaterialui:lab:0.5.0-beta2"
-    implementation 'com.badoo.reaktive:reaktive-js:1.1.16'
+    implementation "net.subroh0508.kotlinmaterialui:core:0.5.1"
+    implementation "net.subroh0508.kotlinmaterialui:lab:0.5.1"
+    implementation 'com.badoo.reaktive:reaktive-js:1.1.18'
     implementation(npm('react', libs.react_version))
 
     implementation(npm('@material-ui/core', libs.material_ui_core))
