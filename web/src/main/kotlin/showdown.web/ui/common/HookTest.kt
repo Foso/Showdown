@@ -1,6 +1,5 @@
 package showdown.web.ui.common
 
-import kotlinx.html.js.onClickFunction
 import materialui.components.snackbar.enums.SnackbarOriginHorizontal
 import materialui.components.snackbar.enums.SnackbarOriginVertical
 import materialui.components.snackbar.horizontal
@@ -9,25 +8,12 @@ import materialui.components.snackbar.vertical
 import materialui.lab.components.alert.alert
 import materialui.lab.components.alert.enums.AlertSeverity
 import materialui.lab.components.alert.enums.AlertVariant
-import react.*
-import react.dom.button
-
-val renderCount = functionalComponent<RProps> {
-    val (count, setCount) = useState(0)
-    useEffect {
-    }
-    +"count $count"
-    button {
-        attrs {
-            onClickFunction = {
-                setCount(count + 1)
-            }
-        }
-    }
-}
-fun RBuilder.renderCount() {
-    child(renderCount)
-}
+import react.RBuilder
+import react.RProps
+import react.child
+import react.functionalComponent
+import react.useEffect
+import react.useState
 
 
 fun RBuilder.mySnackbar(message:String,onClose:()->Unit) {
@@ -37,7 +23,7 @@ fun RBuilder.mySnackbar(message:String,onClose:()->Unit) {
     }
 }
 
-interface MySnackbarProps : RProps {
+external interface MySnackbarProps : RProps {
     var snackbarMessage: String
     var onClose:()->Unit
 }
@@ -45,9 +31,7 @@ interface MySnackbarProps : RProps {
 val mySnackbar = functionalComponent<MySnackbarProps> {props->
     val text = props.snackbarMessage
     val (visible, setVisibility) = useState(true)
-   // setVisibility(true)
-    useEffect {
-    }
+
     snackbar {
         attrs {
             anchorOrigin {
