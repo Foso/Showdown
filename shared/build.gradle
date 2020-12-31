@@ -56,9 +56,7 @@ kotlin {
         jvmMain {
             resources.srcDirs += "resources"
             dependencies {
-                // implementation 'de.jodamob.kotlin:kotlin-runner-junit4:0.3.1'
 
-                implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
 
             }
         }
@@ -66,7 +64,6 @@ kotlin {
 
         jsMain {
             dependencies {
-                implementation 'org.jetbrains.kotlin:kotlin-stdlib-js'
 
             }
         }

@@ -12,10 +12,12 @@ import react.RBuilder
 import react.RComponent
 import react.RProps
 import react.dom.div
+import react.dom.source
+import react.dom.video
 import react.setState
 import showdown.web.ui.common.mySnackbar
 import showdown.web.ui.game.footer.myfooter
-import kotlin.browser.window
+import kotlinx.browser.window
 import kotlin.js.Date
 
 
@@ -133,6 +135,19 @@ class HomeView : RComponent<RProps, GameContract.HomeViewState>(), GameContract.
         }
         resultsList(state.results)
 
+        /**
+         * video {
+        attrs {
+        autoPlay=true
+        }
+        source {
+        attrs {
+        src="https://media0.giphy.com/media/26n6xBpxNXExDfuKc/giphy.mp4"
+        type="video/mp4"
+        }
+        }
+        }
+         */
         playersList(state.players)
 
 

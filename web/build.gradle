@@ -49,40 +49,30 @@ kotlin {
         }
     }
 }
-def kotlin_wrappers_version = 'pre.134-kotlin-1.4.10' // for kotlin-wrappers
 
 dependencies {
     implementation project(":shared")
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-js'
     implementation("org.jetbrains.kotlinx:kotlinx-html-assembly:${libs.kotlinx_html_version}")
-    implementation "org.jetbrains:kotlin-react:17.0.0-pre.134-kotlin-1.4.10"
+    implementation "org.jetbrains:kotlin-react:17.0.0-pre.133-kotlin-1.4.21"
     implementation("org.jetbrains:kotlin-react-dom:17.0.0-pre.133-kotlin-1.4.21")
-    implementation "org.jetbrains:kotlin-styled:5.2.0-$kotlin_wrappers_version"
+    implementation "org.jetbrains:kotlin-styled:5.2.0-pre.133-kotlin-1.4.21"
     implementation "org.jetbrains:kotlin-extensions:1.0.1-pre.133-kotlin-1.4.21"
     implementation "org.jetbrains:kotlin-css-js:1.0.0-pre.133-kotlin-1.4.21"
     implementation 'org.jetbrains.kotlin:kotlin-source-map-loader:1.3.72'
 
-    implementation "org.jetbrains:kotlin-react-router-dom:5.2.0-$kotlin_wrappers_version"
+    implementation "org.jetbrains:kotlin-react-router-dom:5.2.0-pre.133-kotlin-1.4.21"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:0.20.0"
     implementation "net.subroh0508.kotlinmaterialui:core:0.5.4"
     implementation "net.subroh0508.kotlinmaterialui:lab:0.5.4"
     implementation 'com.badoo.reaktive:reaktive-js:1.1.19'
     implementation(npm('react', libs.react_version))
-
     implementation(npm('@material-ui/core', libs.material_ui_core))
     implementation(npm('core-js', ''))
-
-  //  implementation(npm('apexcharts', ''))
-   // implementation(npm('react-apexcharts', ''))
-
     implementation(npm('react-qr-code', ''))
-
     implementation(npm('@material-ui/icons', '4.11.2'))
     implementation(npm('inline-style-prefixer', ''))
     implementation(npm('uglifyjs-webpack-plugin', ''))
-
-    // dependency('react-star-wars-crawl')
-    //  dependency('react', libs.react_version)
     implementation(npm('react-dom', libs.react_version))
     testImplementation 'org.jetbrains.kotlin:kotlin-test-js'
 
