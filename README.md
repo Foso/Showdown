@@ -7,7 +7,7 @@
 
 <p align="left">
     <img src ="https://github.com/Foso/Showdown/blob/master/docs/img/ShowdownExample.png" height=500 />
- 
+
 </p>
 
 ## Introduction  🙋‍♂️ 🙋‍
@@ -23,7 +23,7 @@ Showdown is a selfhosted web app and server, you can use for planning poker™. 
 ## 🎨 Features
 * Automatic estimation timer for your estimations.
 * Choose your estimation sequence:
-  
+
   Select <kbd>Settings>Change GameMode</kbd>, on the page below you can select between:
  **Fibonacci**, **T-Shirt**, **Modified Fibonacci**, **Power of 2** or you can choose **Custom** to add a custom sequence
 
@@ -55,15 +55,30 @@ Showdown is a selfhosted web app and server, you can use for planning poker™. 
 
 ### Frontend
 #### Run development webpack server
-* Run <kbd>./gradlew -t web:run</kbd> inside the project folder to start the development server for the Frontend. The server will run on port 3001. Open "localhost:3001" inside your browser. 
+* Run <kbd>./gradlew -t web:run</kbd> inside the project folder to start the development server for the Frontend. The server will run on port 3001. Open "localhost:3001" inside your browser.
 
 #### Build production frontend files
 * Run the gradle task <kbd>deployToServerAssets</kbd>, it will build the webproject and copy the files to the server project
 
 # Deployment
 
-### On Heroku 
+### On Heroku
 You can use this button [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+
+
+### On Docker
+
+Build image with
+
+```bash
+docker build -t foso-showdown . 
+```
+
+Launch container from image with
+
+```bash
+docker run -p 23567:23567 foso-showdown
+```
 
 ### On other server
 You can download the jar from a release tag or when you want to build it yourself you can use the gradle task <kbd>stage</kbd>. It will build a .jar inside  <kbd>server/build/install/server-shadow/lib</kbd>. You can run it with "java -jar $nameOfTheJarFile"
