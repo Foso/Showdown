@@ -44,7 +44,7 @@ fun DialogElementBuilder.joinGameButton(onClick: () -> Unit) {
 class PlayerNameDialogComponent(props: MyProps) : RComponent<MyProps, PlayerNameDialogComponentState>(props) {
 
     override fun PlayerNameDialogComponentState.init(props: MyProps) {
-        this.playerName = "Jens"
+        this.playerName = "Player"+ (0..1000).random().toString()
         this.onJoinClicked = props.onJoinClicked
         this.showEntryPopup = props.showEntryPopup
     }
