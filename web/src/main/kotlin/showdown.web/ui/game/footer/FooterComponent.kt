@@ -1,6 +1,16 @@
 package showdown.web.ui.game.footer
 
-import kotlinx.css.*
+import kotlinx.css.Color
+import kotlinx.css.Display
+import kotlinx.css.LinearDimension
+import kotlinx.css.Position
+import kotlinx.css.TextAlign
+import kotlinx.css.bottom
+import kotlinx.css.color
+import kotlinx.css.display
+import kotlinx.css.position
+import kotlinx.css.textAlign
+import kotlinx.css.width
 import kotlinx.html.DIV
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
@@ -14,8 +24,13 @@ import materialui.components.iconbutton.iconButton
 import materialui.components.textfield.textField
 import materialui.components.tooltip.tooltip
 import org.w3c.dom.HTMLInputElement
-import react.*
+import react.RBuilder
+import react.RComponent
+import react.RProps
+import react.RState
+import react.ReactElement
 import react.dom.div
+import react.setState
 import showdown.web.ui.game.StateView
 import showdown.web.wrapper.material.icons.LockIcon
 import showdown.web.wrapper.material.icons.LockOpenIcon

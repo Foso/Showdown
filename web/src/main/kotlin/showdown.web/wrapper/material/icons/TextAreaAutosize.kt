@@ -7,8 +7,8 @@ import react.RProps
 @JsModule("@material-ui/core/TextareaAutosize")
 external val TextareaAutosizeImport: dynamic
 
-external interface TextareaAutosizeProps :RProps {
-  var  onChangeFunction : (Event) -> Unit
+external interface TextareaAutosizeProps : RProps {
+    var onChangeFunction: (Event) -> Unit
 }
 
 var TextareaAutosize: RClass<TextareaAutosizeProps> = TextareaAutosizeImport.default

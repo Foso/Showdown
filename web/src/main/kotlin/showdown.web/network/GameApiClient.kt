@@ -1,7 +1,15 @@
 package showdown.web.network
 
 import com.badoo.reaktive.completable.completable
-import de.jensklingenberg.showdown.model.*
+import de.jensklingenberg.showdown.model.ClientGameConfig
+import de.jensklingenberg.showdown.model.PATHS
+import de.jensklingenberg.showdown.model.Response
+import de.jensklingenberg.showdown.model.ServerResponse
+import de.jensklingenberg.showdown.model.ShowdownError
+import de.jensklingenberg.showdown.model.WebSocketResourceType
+import de.jensklingenberg.showdown.model.WebsocketResource
+import de.jensklingenberg.showdown.model.getServerResponse
+import de.jensklingenberg.showdown.model.getWebsocketType
 import org.w3c.dom.MessageEvent
 import org.w3c.dom.WebSocket
 import org.w3c.dom.events.Event

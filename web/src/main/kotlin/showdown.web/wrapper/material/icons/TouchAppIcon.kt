@@ -9,7 +9,7 @@ external val TouchAppIconImport: dynamic
 
 external interface TouchAppIconProps : RProps {
     var onClick: (Event) -> Unit
-    var color : String
+    var color: String
 }
 
 var TouchAppIcon: RClass<TouchAppIconProps> = TouchAppIconImport.default

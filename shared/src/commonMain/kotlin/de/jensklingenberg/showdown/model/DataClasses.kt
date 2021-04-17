@@ -16,6 +16,8 @@ enum class PATHS(val path:String){
 }
 val SETROOMPASSSWORDPATH= "/room/password/set"
 val SETAUTOREVEALPATH= "/room/autoreveal/set"
+val SETANONYMVOTES= "/room/config/anonymvote/set"
+
 
 val SHOWVOTESPATH= "/room/showvotes"
 val RESTARTPATH= "/room/restart"
@@ -38,10 +40,13 @@ interface GameConfig{
      * The time when a game was created
      */
     var createdAt:String
+    var anonymResults:Boolean
 }
 
 @Serializable
-data class ClientGameConfig(override var voteOptions: List<String> = fibo, override val autoReveal: Boolean = false, override var createdAt:String,val roomHasPassword:Boolean=false) :GameConfig
+data class ClientGameConfig(override var voteOptions: List<String> = fibo, override val autoReveal: Boolean = false, override var createdAt:String, val roomHasPassword:Boolean=false,
+                            override var anonymResults: Boolean = false
+) :GameConfig
 
 @Serializable
 data class Member(val playerName: String, val voted: Boolean, val isConnected: Boolean, val isSpectator:Boolean)

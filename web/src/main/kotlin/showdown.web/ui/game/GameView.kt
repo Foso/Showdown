@@ -1,6 +1,7 @@
 package showdown.web.ui.game
 
 
+import kotlinx.browser.window
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import materialui.components.checkbox.checkbox
@@ -12,12 +13,10 @@ import react.RBuilder
 import react.RComponent
 import react.RProps
 import react.dom.div
-import react.dom.source
-import react.dom.video
 import react.setState
 import showdown.web.ui.common.mySnackbar
 import showdown.web.ui.game.footer.myfooter
-import kotlinx.browser.window
+import showdown.web.ui.game.toolbar.myToolbar
 import kotlin.js.Date
 
 
@@ -92,30 +91,16 @@ class HomeView : RComponent<RProps, GameContract.HomeViewState>(), GameContract.
 
         myToolbar(
             startTimer = state.startEstimationTimer,
-            onNewGameClicked = {
-                presenter.reset()
-            },
-            onShowVotesClicked = {
-                presenter.showVotes()
-            }, diffSecs = state.diffSecs,
+            diffSecs = state.diffSecs,
             onGameModeClicked = {
                 setState {
                     this.showSettings = !this.showSettings
                 }
             },
-            gameConfig = state.autoReveal
+            autoReveal = state.autoReveal,
+            gameModeId = state.gameModeId
         )
-        if (state.showSettings) {
 
-            gameModeSettings(state.gameModeId) { gameModeId, gameOptions ->
-                setState {
-                    this.gameModeId = gameModeId
-                    this.customOptions = gameOptions
-                }
-                presenter.changeConfig(gameModeId, gameOptions)
-            }
-
-        }
         optionsList(state.options, state.selectedOptionId, onOptionClicked = { index: Int ->
             setState {
                 this.selectedOptionId = index
@@ -135,19 +120,7 @@ class HomeView : RComponent<RProps, GameContract.HomeViewState>(), GameContract.
         }
         resultsList(state.results)
 
-        /**
-         * video {
-        attrs {
-        autoPlay=true
-        }
-        source {
-        attrs {
-        src="https://media0.giphy.com/media/26n6xBpxNXExDfuKc/giphy.mp4"
-        type="video/mp4"
-        }
-        }
-        }
-         */
+
         playersList(state.players)
 
 

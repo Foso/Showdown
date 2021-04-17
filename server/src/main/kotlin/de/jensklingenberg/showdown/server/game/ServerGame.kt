@@ -49,6 +49,11 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
         sendRoomConfigUpdate(gameConfig.toClient())
     }
 
+    fun setAnonymResults(autoReveal: Boolean) {
+        gameConfig = gameConfig.copy(anonymResults = autoReveal)
+        sendRoomConfigUpdate(gameConfig.toClient())
+    }
+
     private fun sendRoomConfigUpdate(clientGameConfig: ClientGameConfig) {
         val configJson = moshi.toJson(clientGameConfig)
         val response = Response(PATHS.ROOMCONFIGUPDATE.path, configJson)
@@ -206,7 +211,12 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
         }
         val newVotes = playerList.filter { it.vote != null }.map {
             val voteText = gameConfig.voteOptions[it.vote!!.voteId]
-            Result(voteText, it.name)
+            val userName = if(gameConfig.anonymResults){
+                "Anonym"
+            }else{
+                it.name
+            }
+            Result(voteText, userName)
         }.sortedBy { it.optionName }
 
         gameState = GameState.ShowVotes(newVotes)

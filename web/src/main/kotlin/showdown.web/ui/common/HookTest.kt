@@ -12,35 +12,34 @@ import react.RBuilder
 import react.RProps
 import react.child
 import react.functionalComponent
-import react.useEffect
 import react.useState
 
 
-fun RBuilder.mySnackbar(message:String,onClose:()->Unit) {
-    child(mySnackbar){
-        attrs.snackbarMessage=message
-        attrs.onClose=onClose
+fun RBuilder.mySnackbar(message: String, onClose: () -> Unit) {
+    child(mySnackbar) {
+        attrs.snackbarMessage = message
+        attrs.onClose = onClose
     }
 }
 
 external interface MySnackbarProps : RProps {
     var snackbarMessage: String
-    var onClose:()->Unit
+    var onClose: () -> Unit
 }
 
-val mySnackbar = functionalComponent<MySnackbarProps> {props->
+val mySnackbar = functionalComponent<MySnackbarProps> { props ->
     val text = props.snackbarMessage
     val (visible, setVisibility) = useState(true)
 
     snackbar {
         attrs {
             anchorOrigin {
-                this.horizontal= SnackbarOriginHorizontal.left
-                this.vertical= SnackbarOriginVertical.bottom
+                this.horizontal = SnackbarOriginHorizontal.left
+                this.vertical = SnackbarOriginVertical.bottom
             }
             this.open = visible
-            autoHideDuration=5000
-            onClose={_,_->
+            autoHideDuration = 5000
+            onClose = { _, _ ->
                 setVisibility(false)
                 props.onClose()
             }
@@ -48,15 +47,13 @@ val mySnackbar = functionalComponent<MySnackbarProps> {props->
 
         alert {
             attrs {
-                severity= AlertSeverity.info
-                variant= AlertVariant.filled
+                severity = AlertSeverity.info
+                variant = AlertVariant.filled
 
             }
 
             +text
         }
-
-
 
 
     }

@@ -9,7 +9,7 @@ external val CancelIconImport: dynamic
 
 external interface CancelIconProps : RProps {
     var onClick: (Event) -> Unit
-    var color : String
+    var color: String
 }
 
 var CancelIcon: RClass<CancelIconProps> = CancelIconImport.default

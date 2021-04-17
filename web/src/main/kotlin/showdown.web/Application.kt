@@ -1,4 +1,6 @@
 import kotlinext.js.requireAll
+import kotlinx.browser.document
+import kotlinx.browser.window
 import react.Component
 import react.RProps
 import react.dom.render
@@ -11,11 +13,14 @@ import showdown.web.model.Route
 import showdown.web.network.GameApiClient
 import showdown.web.ui.game.HomeView
 import showdown.web.ui.onboarding.OnboardingPage
-import kotlin.browser.document
-import kotlin.browser.window
 import kotlin.reflect.KClass
 
 class Application {
+    companion object {
+        private val gameApiHandler = GameApiClient()
+        val gameDataSource: GameDataSource = GameRepository(gameApiHandler)
+
+    }
 
     private val rootElement = "root"
 
@@ -25,11 +30,6 @@ class Application {
 
     )
 
-    companion object {
-        private val gameApiHandler = GameApiClient()
-        val gameDataSource: GameDataSource = GameRepository(gameApiHandler)
-
-    }
 
     init {
         window.onload = {

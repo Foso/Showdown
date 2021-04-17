@@ -10,8 +10,13 @@ import materialui.components.dialog.dialog
 import materialui.components.formcontrol.enums.FormControlVariant
 import materialui.components.textfield.textField
 import org.w3c.dom.HTMLInputElement
-import react.*
+import react.RBuilder
+import react.RComponent
+import react.RProps
+import react.RState
+import react.ReactElement
 import react.dom.div
+import react.setState
 
 interface PlayerNameDialogComponentState : RState {
     var showEntryPopup: Boolean
@@ -44,7 +49,7 @@ fun DialogElementBuilder.joinGameButton(onClick: () -> Unit) {
 class PlayerNameDialogComponent(props: MyProps) : RComponent<MyProps, PlayerNameDialogComponentState>(props) {
 
     override fun PlayerNameDialogComponentState.init(props: MyProps) {
-        this.playerName = "Player"+ (0..1000).random().toString()
+        this.playerName = "Player" + (0..1000).random().toString()
         this.onJoinClicked = props.onJoinClicked
         this.showEntryPopup = props.showEntryPopup
     }

@@ -5,8 +5,8 @@ import com.badoo.reaktive.completable.subscribe
 import com.badoo.reaktive.disposable.CompositeDisposable
 import com.badoo.reaktive.disposable.addTo
 import com.badoo.reaktive.observable.subscribe
-import de.jensklingenberg.showdown.model.*
-import de.jensklingenberg.showdown.model.api.clientrequest.NewGameConfig
+import de.jensklingenberg.showdown.model.GameState
+import de.jensklingenberg.showdown.model.ShowdownError
 import showdown.web.game.GameDataSource
 import kotlin.js.Date
 
@@ -29,20 +29,13 @@ class GamePresenter(private val view: GameContract.View) : GameContract.Presente
         ).addTo(compositeDisposable)
 
         gameDataSource.observeErrors().subscribe(onNext = { error ->
-            when (error) {
-                is ShowdownError.NotAuthorizedError -> {
-                    view.newState {
-                        this.requestRoomPassword = true
-                    }
+            if (error is ShowdownError.NotAuthorizedError) {
+                view.newState {
+                    this.requestRoomPassword = true
                 }
-
-                is ShowdownError.NoConnectionError -> {
-                    view.newState {
-                        this.showConnectionError = true
-                    }
-                }
-                null -> {
-                    //Do nothing
+            } else if (error is ShowdownError.NoConnectionError) {
+                view.newState {
+                    this.showConnectionError = true
                 }
             }
         }).addTo(compositeDisposable)
@@ -105,39 +98,12 @@ class GamePresenter(private val view: GameContract.View) : GameContract.Presente
         compositeDisposable.clear()
     }
 
-    override fun reset() {
-        gameDataSource.requestReset()
-    }
 
     override fun joinGame(playerName: String) {
         val password = view.getState().roomPassword
         gameDataSource.joinRoom(playerName, password)
     }
 
-
-    override fun changeConfig(gameModeId: Int, gameOptions: String) {
-        val mode = when (gameModeId) {
-            0 -> {
-                fibo
-            }
-            1 -> {
-                tshirtSizesList
-            }
-            2 -> {
-                modFibo
-            }
-            3 -> {
-                powerOf2
-            }
-            4 -> {
-                gameOptions.split(";")
-            }
-            else -> fibo
-        }
-        val config =
-            NewGameConfig(voteOptions = mode)
-        gameDataSource.changeConfig(config)
-    }
 
     override fun changeRoomPassword(password: String) {
         gameDataSource.changeRoomPassword(password)
@@ -149,9 +115,6 @@ class GamePresenter(private val view: GameContract.View) : GameContract.Presente
 
     }
 
-    override fun showVotes() {
-        gameDataSource.showVotes()
-    }
 
     override fun onSelectedVote(voteId: Int) {
         gameDataSource.onSelectedVote(voteId)

@@ -25,7 +25,7 @@ class FooterPresenter(private val view: FooterContract.View) :
 
         }).addTo(compositeDisposable)
 
-        gameDataSource.observeRoomConfig().subscribe(onNext = {conf->
+        gameDataSource.observeRoomConfig().subscribe(onNext = { conf ->
             conf?.let {
                 view.newState {
                     this.roomHasPassword = conf.roomHasPassword

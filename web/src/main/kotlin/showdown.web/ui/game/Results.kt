@@ -19,7 +19,7 @@ fun RBuilder.resultsList(results: List<Result>) {
             val firsttopCount = groupedResults.entries.maxBy { it.value }?.value
             val tops = groupedResults.entries.filter { it.value == firsttopCount }
 
-            p{
+            p {
                 +"Top Voted Answer: ${tops.joinToString(separator = " | ") { it.key }}"
             }
 
@@ -34,10 +34,9 @@ fun RBuilder.resultsList(results: List<Result>) {
                 +"$optionName: voted by: $optionVoters"
             }
         }
-        hr {  }
+        hr { }
 
     }
-
 
 
 }

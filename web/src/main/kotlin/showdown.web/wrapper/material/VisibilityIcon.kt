@@ -7,7 +7,7 @@ import react.RProps
 @JsModule("@material-ui/icons/Visibility")
 external val VisibilityIconImport: dynamic
 
-external interface VisibilityIconProps :RProps {
+external interface VisibilityIconProps : RProps {
     var onClick: (Event) -> Unit
 }
 

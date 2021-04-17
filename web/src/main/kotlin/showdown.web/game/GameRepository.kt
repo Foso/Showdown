@@ -3,14 +3,24 @@ package showdown.web.game
 import com.badoo.reaktive.completable.Completable
 import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.subject.behavior.BehaviorSubject
-import de.jensklingenberg.showdown.model.*
+import de.jensklingenberg.showdown.model.ClientGameConfig
+import de.jensklingenberg.showdown.model.GameState
+import de.jensklingenberg.showdown.model.JOINROOMPATH
+import de.jensklingenberg.showdown.model.PATHS
+import de.jensklingenberg.showdown.model.RESTARTPATH
+import de.jensklingenberg.showdown.model.Request
+import de.jensklingenberg.showdown.model.SETANONYMVOTES
+import de.jensklingenberg.showdown.model.SETAUTOREVEALPATH
+import de.jensklingenberg.showdown.model.SETROOMPASSSWORDPATH
+import de.jensklingenberg.showdown.model.SHOWVOTESPATH
+import de.jensklingenberg.showdown.model.ServerResponse
+import de.jensklingenberg.showdown.model.ShowdownError
+import de.jensklingenberg.showdown.model.VOTEPATH
 import de.jensklingenberg.showdown.model.api.clientrequest.JoinGame
 import de.jensklingenberg.showdown.model.api.clientrequest.NewGameConfig
 import showdown.web.common.stringify
 import showdown.web.network.GameApiClient
 import showdown.web.network.NetworkApiObserver
-
-
 
 
 class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource, NetworkApiObserver {
@@ -56,15 +66,21 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
         return roomPassword
     }
 
-    override fun setAutoReveal(autoReveal: Boolean) {
-        val req = Request(SETAUTOREVEALPATH, autoReveal.stringify()).stringify()
+    override fun setAutoReveal(enabled: Boolean) {
+        val req = Request(SETAUTOREVEALPATH, enabled.stringify()).stringify()
         gameApiClient.sendMessage(req)
     }
 
-    override fun setSpectatorStatus(b: Boolean) {
-        val req = Request(PATHS.SPECTATORPATH.path,b.stringify()).stringify()
+    override fun setSpectatorStatus(enabled: Boolean) {
+        val req = Request(PATHS.SPECTATORPATH.path, enabled.stringify()).stringify()
         gameApiClient.sendMessage(req)
     }
+
+    override fun setAnonymVote(enabled: Boolean) {
+        val req = Request(SETANONYMVOTES, enabled.stringify()).stringify()
+        gameApiClient.sendMessage(req)
+    }
+
 
     override fun observeGameState(): Observable<GameState> = gameStateSubject
     override fun observeMessage(): Observable<String> {

@@ -9,11 +9,16 @@ import materialui.components.formcontrol.enums.FormControlVariant
 import materialui.components.menuitem.menuItem
 import materialui.components.textfield.textField
 import org.w3c.dom.HTMLInputElement
-import react.*
+import react.RBuilder
+import react.RComponent
+import react.RProps
+import react.RState
+import react.ReactElement
 import react.dom.br
 import react.dom.div
 import react.dom.key
 import react.dom.p
+import react.setState
 
 
 val gameModeOptions: List<Pair<String, Int>>
@@ -27,7 +32,7 @@ val gameModeOptions: List<Pair<String, Int>>
     )
 
 interface SettingsProps : RProps {
-    var startFrom: (Int, String) -> Unit
+    var onSave: (Int, String) -> Unit
     var gameModeId: Int
 }
 
@@ -43,7 +48,7 @@ interface SettingsState : RState {
 class SettingsComponent(prps: SettingsProps) : RComponent<SettingsProps, SettingsState>(prps) {
 
     override fun SettingsState.init(props: SettingsProps) {
-        onClick = props.startFrom
+        onClick = props.onSave
         gameModeId = props.gameModeId
         customOptions = ""
     }
@@ -86,6 +91,7 @@ class SettingsComponent(prps: SettingsProps) : RComponent<SettingsProps, Setting
                 textField {
                     attrs {
                         variant = FormControlVariant.filled
+                        fullWidth = true
 
                         label {
                             +"Insert Custom options separate with semicolon (;)"
@@ -123,7 +129,7 @@ class SettingsComponent(prps: SettingsProps) : RComponent<SettingsProps, Setting
 
 fun RBuilder.gameModeSettings(gameModeId: Int, onSave: (Int, String) -> Unit): ReactElement {
     return child(SettingsComponent::class) {
-        attrs.startFrom = onSave
+        attrs.onSave = onSave
         attrs.gameModeId = gameModeId
 
     }

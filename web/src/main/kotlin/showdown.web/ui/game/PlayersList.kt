@@ -1,7 +1,12 @@
 package showdown.web.ui.game
 
 import de.jensklingenberg.showdown.model.Member
-import kotlinx.css.*
+import kotlinx.css.Color
+import kotlinx.css.Display
+import kotlinx.css.TextAlign
+import kotlinx.css.color
+import kotlinx.css.display
+import kotlinx.css.textAlign
 import materialui.components.circularprogress.circularProgress
 import materialui.components.circularprogress.enums.CircularProgressVariant
 import materialui.components.divider.divider
@@ -26,7 +31,7 @@ fun getSpectators(members: List<Member>): List<Member> {
 }
 
 fun getPlayers(members: List<Member>): List<Member> {
-   return members.filter { !it.isSpectator }
+    return members.filter { !it.isSpectator }
 }
 
 /**
@@ -130,7 +135,7 @@ fun RBuilder.playersList(members: List<Member>) {
 
     }
 
-    if(spectators.isNotEmpty()){
+    if (spectators.isNotEmpty()) {
         h2 {
             GroupIcon {
 

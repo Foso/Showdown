@@ -7,7 +7,7 @@ import react.RProps
 @JsModule("@material-ui/icons/Share")
 external val SkipNextIconImport: dynamic
 
-external interface ShareIconProps :RProps {
+external interface ShareIconProps : RProps {
     var onClick: (Event) -> Unit
 }
 

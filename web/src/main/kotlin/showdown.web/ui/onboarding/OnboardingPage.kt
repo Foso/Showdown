@@ -10,7 +10,16 @@ import org.w3c.dom.HTMLInputElement
 import react.RBuilder
 import react.RComponent
 import react.RState
-import react.dom.*
+import react.dom.RDOMBuilder
+import react.dom.a
+import react.dom.br
+import react.dom.button
+import react.dom.div
+import react.dom.h1
+import react.dom.h2
+import react.dom.h3
+import react.dom.hr
+import react.dom.img
 import react.setState
 import showdown.web.ui.game.SettingsProps
 import kotlin.browser.window

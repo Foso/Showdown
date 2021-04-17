@@ -1,4 +1,4 @@
-package showdown.web.ui.game
+package showdown.web.ui.game.toolbar
 
 import Application
 import kotlinx.html.DIV
@@ -14,22 +14,26 @@ import materialui.components.checkbox.checkbox
 import materialui.components.menu.menu
 import materialui.components.menuitem.menuItem
 import org.w3c.dom.events.EventTarget
-import react.*
+import react.RBuilder
+import react.RComponent
+import react.RProps
+import react.RState
+import react.ReactElement
 import react.dom.RDOMBuilder
 import react.dom.div
 import react.dom.label
+import react.setState
 import showdown.web.game.GameDataSource
+import showdown.web.ui.game.shareDialog
 import showdown.web.wrapper.material.ShareIcon
 import showdown.web.wrapper.material.VisibilityIcon
 import showdown.web.wrapper.material.icons.AccountCircleIcon
 import showdown.web.wrapper.material.icons.AddCircleIcon
-import kotlin.browser.window
 import kotlin.math.floor
 
 
 interface ToolbarState : RState {
-    var onNewGameClicked: () -> Unit
-    var onShowVotesClicked: () -> Unit
+
     var onGameModeClicked: () -> Unit
 
     var diffSecs: Double
@@ -37,49 +41,58 @@ interface ToolbarState : RState {
     var anchor: EventTarget?
     var startTimer: Boolean
     var showShareDialog: Boolean
-    var gameConfig: Boolean
+    var autoReveal: Boolean
+    var gameModeId: Int
 }
 
 
 interface ToolbarProps : RProps {
-    var onNewGameClicked: () -> Unit
-    var onShowVotesClicked: () -> Unit
+
     var startTimer: Boolean
     var diffSecs: Double
     var onGameModeClicked: () -> Unit
     var autoReveal: Boolean
+    var gameModeId: Int
 
 }
 
+class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(props), ToolContract.View {
 
-class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(props) {
+    private val presenter: ToolContract.Presenter by kotlin.lazy {
+        ToolbarPresenter(this)
+    }
 
     private val gameDataSource: GameDataSource = Application.gameDataSource
 
 
     override fun ToolbarState.init(props: ToolbarProps) {
-        this.onNewGameClicked = props.onNewGameClicked
-        this.onShowVotesClicked = props.onShowVotesClicked
         this.startTimer = props.startTimer
         this.showShareDialog = false
         this.diffSecs = props.diffSecs
         this.onGameModeClicked = props.onGameModeClicked
+        this.gameModeId = props.gameModeId
+        this.autoReveal = props.autoReveal
     }
 
     override fun componentWillReceiveProps(nextProps: ToolbarProps) {
         setState {
             this.diffSecs = props.diffSecs
             this.startTimer = props.startTimer
-            this.gameConfig = props.autoReveal
+            this.autoReveal = props.autoReveal
         }
     }
 
     override fun RBuilder.render() {
-        shareDialog(state.showShareDialog) {
-            setState {
-                this.showShareDialog = false
-            }
+        if (state.showShareDialog) {
+            shareDialog(onCloseFunction = {
+                setState {
+                    this.showShareDialog = false
+                }
+            }, state.gameModeId, onSave = { gameModeId, gameOptions ->
+                presenter.changeConfig(gameModeId, gameOptions)
+            }, state.autoReveal)
         }
+
 
         appBar {
             attrs {
@@ -89,8 +102,7 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
             div {
                 newGameButton()
                 showVotesButton()
-                shareButton()
-                settingsPopupMenu(state)
+                shareButton(state.autoReveal)
                 +"Estimation time: ${getTimerText()} seconds."
             }
         }
@@ -105,7 +117,7 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
                 color = ButtonColor.primary
                 text("New Game")
                 onClickFunction = {
-                    state.onNewGameClicked()
+                    presenter.reset()
                 }
                 startIcon {
                     AddCircleIcon {}
@@ -121,7 +133,7 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
                 color = ButtonColor.primary
                 text("Show Votes")
                 onClickFunction = {
-                    state.onShowVotesClicked()
+                    presenter.showVotes()
                 }
                 startIcon {
                     VisibilityIcon {}
@@ -130,7 +142,7 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
         }
     }
 
-    private fun RDOMBuilder<DIV>.shareButton() {
+    private fun RDOMBuilder<DIV>.shareButton(autoReveal: Boolean) {
         button {
             attrs {
                 variant = ButtonVariant.contained
@@ -217,9 +229,9 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
                 }
                 checkbox {
                     attrs {
-                        checked = state.gameConfig
+                        checked = state.autoReveal
                         onClickFunction = {
-                            gameDataSource.setAutoReveal(!state.gameConfig)
+                            gameDataSource.setAutoReveal(!state.autoReveal)
                         }
                     }
                 }
@@ -228,63 +240,27 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
                 }
             }
 
-            menuItem {
-                attrs {
-                    onClickFunction = {
-                        setState {
-                            openMenu = false
-                        }
-                        state.onGameModeClicked()
 
-                    }
-                }
-                label {
-                    +" Change GameConfig"
-                }
-
-            }
-
-            menuItem {
-                attrs {
-                    onClickFunction = {
-                        window.location.href = "https://github.com/Foso/Showdown/issues";
-                    }
-                }
-                label {
-                    +"Issues/Feature Requests"
-                }
-            }
-
-            menuItem {
-                attrs {
-                    onClickFunction = {
-                        window.location.href = "https://github.com/Foso/Showdown";
-                    }
-                }
-                label {
-                    +"Showdown v1.1 on Github"
-                }
-            }
         }
     }
 }
 
 fun RBuilder.myToolbar(
     startTimer: Boolean,
-    onNewGameClicked: () -> Unit,
-    onShowVotesClicked: () -> Unit,
     diffSecs: Double,
     onGameModeClicked: () -> Unit,
-    gameConfig: Boolean
-): ReactElement {
+    autoReveal: Boolean,
+    gameModeId: Int,
+
+    ): ReactElement {
     return child(Toolbar::class) {
         attrs {
-            this.onNewGameClicked = onNewGameClicked
-            this.onShowVotesClicked = onShowVotesClicked
             this.startTimer = startTimer
             this.diffSecs = diffSecs
             this.onGameModeClicked = onGameModeClicked
-            this.autoReveal = gameConfig
+            this.autoReveal = autoReveal
+            this.gameModeId = gameModeId
+
         }
     }
 }

@@ -8,7 +8,7 @@ import showdown.web.wrapper.material.ShareIconProps
 @JsModule("@material-ui/icons/Lock")
 external val LockIconImport: dynamic
 
-external interface LockIconProps :RProps {
+external interface LockIconProps : RProps {
     var onClick: (Event) -> Unit
 }
 

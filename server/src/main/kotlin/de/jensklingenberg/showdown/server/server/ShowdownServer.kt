@@ -93,6 +93,12 @@ class ShowdownServer : GameServer {
                     }
 
             }
+            SETANONYMVOTES->{
+                fromJson<Boolean>(request.body)
+                    ?.let { config ->
+                        gameSource?.setAnonymResults(config)
+                    }
+            }
             SETROOMPASSSWORDPATH -> {
                 gameSource?.changeRoomPassword(sessionId, request.body)
             }

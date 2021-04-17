@@ -7,7 +7,7 @@ import react.RProps
 @JsModule("@material-ui/icons/Settings")
 external val SettingsIconImport: dynamic
 
-external interface SettingsIconProps :RProps {
+external interface SettingsIconProps : RProps {
     var onClick: (Event) -> Unit
 }
 

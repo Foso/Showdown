@@ -9,7 +9,7 @@ external val VerifiedUserIconImport: dynamic
 
 external interface VerifiedUserIconProps : RProps {
     var onClick: (Event) -> Unit
-    var color : String
+    var color: String
 }
 
 var VerifiedUserIcon: RClass<VerifiedUserIconProps> = VerifiedUserIconImport.default

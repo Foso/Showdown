@@ -9,7 +9,7 @@ external val GroupIconImport: dynamic
 
 external interface GroupIconProps : RProps {
     var onClick: (Event) -> Unit
-    var color : String
+    var color: String
 }
 
 var GroupIcon: RClass<GroupIconProps> = GroupIconImport.default

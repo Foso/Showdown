@@ -1,45 +1,114 @@
 package showdown.web.ui.game
 
+import Application
+import kotlinx.browser.window
 import kotlinx.html.js.onClickFunction
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonColor
 import materialui.components.button.enums.ButtonVariant
+import materialui.components.checkbox.checkbox
 import materialui.components.dialog.dialog
+import materialui.components.dialogcontent.dialogContent
 import materialui.components.textfield.textField
 import org.w3c.dom.events.Event
 import react.RBuilder
+import react.dom.a
+import react.dom.div
 import showdown.web.wrapper.material.QrCode
-import kotlin.browser.window
+
 
 /**
  * Shows a dialog with a QR Code of the link to the room
  */
-fun RBuilder.shareDialog(show: Boolean, onAcceptClick: (Event) -> Unit) {
+fun RBuilder.shareDialog(
+    onCloseFunction: (Event) -> Unit,
+    gameModeId: Int,
+    onSave: (Int, String) -> Unit,
+    autoReveal: Boolean
+) {
 
     dialog {
         attrs {
-            this.open = show
+            this.open = true
+            this.fullWidth = true
+
         }
-        QrCode {
-            attrs {
-                value = window.location.toString()
+        dialogContent {
+            div {
+                QrCode {
+                    attrs {
+                        value = window.location.toString()
+                    }
+                }
+            }
+
+            div {
+                textField {
+                    attrs {
+                        value = window.location.toString()
+                    }
+                }
+            }
+
+            div {
+                a {
+                    attrs {
+                        href = "https://github.com/Foso/Showdown/issues"
+                    }
+                    +"Issues/Feature Requests"
+
+                }
+            }
+
+            div {
+                a {
+                    attrs {
+                        href = "https://github.com/Foso/Showdown"
+                    }
+                    +"Showdown v1.2 on Github"
+
+                }
+            }
+
+            div {
+                gameModeSettings(gameModeId, onSave)
+            }
+
+            div {
+                checkbox {
+                    attrs {
+                        checked = autoReveal
+                        onClickFunction = {
+                            Application.gameDataSource.setAutoReveal(!autoReveal)
+                        }
+                    }
+                }
+                +"Auto Reveal votes when all voted"
+            }
+
+            div {
+                checkbox {
+                    attrs {
+                        checked = autoReveal
+                        onClickFunction = {
+                            Application.gameDataSource.setAnonymVote(true)
+                        }
+                    }
+                }
+                +"anonymize vote results"
+            }
+
+
+            button {
+                attrs {
+                    text("Close")
+                    variant = ButtonVariant.contained
+                    color = ButtonColor.primary
+                    onClickFunction = onCloseFunction
+                }
             }
         }
 
-        textField {
-            attrs {
-                value = window.location.toString()
-            }
-        }
-
-        button {
-            attrs {
-                text("Okay")
-                variant = ButtonVariant.contained
-                color = ButtonColor.primary
-                onClickFunction = onAcceptClick
-            }
-        }
 
     }
 }

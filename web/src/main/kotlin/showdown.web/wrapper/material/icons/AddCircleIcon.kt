@@ -8,7 +8,7 @@ import showdown.web.wrapper.material.ShareIconProps
 @JsModule("@material-ui/icons/AddCircle")
 external val AddCircleIconImport: dynamic
 
-external interface AddCircleIconProps :RProps {
+external interface AddCircleIconProps : RProps {
     var onClick: (Event) -> Unit
 }
 
