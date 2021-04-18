@@ -9,11 +9,11 @@ import materialui.components.snackbarcontent.snackbarContent
 import org.w3c.dom.events.Event
 import react.RBuilder
 
-fun RBuilder.connectionErrorSnackbar(showErrorSnackbar: Boolean, onActionClick: (Event) -> Unit) {
+fun RBuilder.connectionErrorSnackbar( onActionClick: (Event) -> Unit) {
 
     snackbar {
         attrs {
-            this.open = showErrorSnackbar
+            this.open = true
         }
         snackbarContent {
             attrs {

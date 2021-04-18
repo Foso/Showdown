@@ -49,8 +49,10 @@ class GamePresenter(private val view: GameContract.View) : GameContract.Presente
         }).addTo(compositeDisposable)
 
         gameDataSource.observeRoomConfig().subscribe(onNext = { conf ->
+            console.log("ROOM: "+conf?.anonymResults)
             conf?.let {
                 view.newState {
+                    this.anonymResults=conf.anonymResults
                     this.autoReveal = conf.autoReveal
                 }
             }
@@ -73,6 +75,8 @@ class GamePresenter(private val view: GameContract.View) : GameContract.Presente
                         this.requestRoomPassword = false
                         this.options = conf.voteOptions
                         this.autoReveal = conf.autoReveal
+                        this.anonymResults = conf.anonymResults
+
                     }
 
                 }

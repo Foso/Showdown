@@ -43,12 +43,9 @@ fun RBuilder.playersList(members: List<Member>) {
     val spectators = getSpectators(members)
 
     h2 {
-        GroupIcon {
-
-        }
+        GroupIcon {}
 
         +"Players (${players.size}) Voted:"
-
 
         Box {
             attrs {
@@ -137,12 +134,8 @@ fun RBuilder.playersList(members: List<Member>) {
 
     if (spectators.isNotEmpty()) {
         h2 {
-            GroupIcon {
-
-            }
-
+            GroupIcon {}
             +"Spectators (${spectators.size})"
-
         }
 
         list {

@@ -2,7 +2,6 @@ ext {
 
     gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
     buildTime = new Date().format("yyyy-MM-dd'T'HH:mm:ss'Z'", TimeZone.getTimeZone("UTC"))
-    kotlin_version = '1.4.0'
 
     mavenRepos = ["https://dl.bintray.com/kotlin/kotlin-eap",
                   "https://kotlin.bintray.com/kotlin/kotlinx",

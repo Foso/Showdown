@@ -20,7 +20,7 @@ import showdown.web.ui.game.toolbar.myToolbar
 import kotlin.js.Date
 
 
-class HomeView : RComponent<RProps, GameContract.HomeViewState>(), GameContract.View {
+class GameView : RComponent<RProps, GameContract.HomeViewState>(), GameContract.View {
 
     private val presenter: GameContract.Presenter by lazy {
         GamePresenter(this)
@@ -35,10 +35,8 @@ class HomeView : RComponent<RProps, GameContract.HomeViewState>(), GameContract.
         playerName = "Jens"
         customOptions = ""
         showEntryPopup = false
-
         selectedOptionId = -1
         roomPassword = ""
-
         showSettings = false
         startEstimationTimer = false
         requestRoomPassword = false
@@ -52,6 +50,7 @@ class HomeView : RComponent<RProps, GameContract.HomeViewState>(), GameContract.
         autoReveal = false
         snackbarMessage = ""
         isSpectator = false
+        anonymResults=false
     }
 
     override fun componentWillUnmount() {
@@ -72,35 +71,14 @@ class HomeView : RComponent<RProps, GameContract.HomeViewState>(), GameContract.
 
     override fun RBuilder.render() {
 
-        if (state.snackbarMessage.isNotEmpty()) {
-            mySnackbar(state.snackbarMessage) {
-                setState {
-                    this.snackbarMessage = ""
-                }
-            }
-
-        }
-        connectionErrorSnackbar(state.showConnectionError, onActionClick = {
-            presenter.onCreate()
-
-            setState {
-                this.showConnectionError = false
-            }
-        })
-        setupDialogs()
-
         myToolbar(
             startTimer = state.startEstimationTimer,
             diffSecs = state.diffSecs,
-            onGameModeClicked = {
-                setState {
-                    this.showSettings = !this.showSettings
-                }
-            },
-            autoReveal = state.autoReveal,
-            gameModeId = state.gameModeId
+            gameModeId = state.gameModeId,
+            shareDialogDataHolder = ShareDialogDataHolder(state.autoReveal,state.anonymResults)
         )
 
+        setupDialogs()
         optionsList(state.options, state.selectedOptionId, onOptionClicked = { index: Int ->
             setState {
                 this.selectedOptionId = index
@@ -119,39 +97,56 @@ class HomeView : RComponent<RProps, GameContract.HomeViewState>(), GameContract.
             +"I'm a spectator"
         }
         resultsList(state.results)
-
-
         playersList(state.players)
-
-
         myfooter()
+        if (state.snackbarMessage.isNotEmpty()) {
+            mySnackbar(state.snackbarMessage) {
+                setState {
+                    this.snackbarMessage = ""
+                }
+            }
+
+        }
+
+        if (state.showConnectionError) {
+            connectionErrorSnackbar(onActionClick = {
+                presenter.onCreate()
+
+                setState {
+                    this.showConnectionError = false
+                }
+            })
+        }
     }
 
     private fun RBuilder.setupDialogs() {
-        playerNameDialog(state.showEntryPopup, onJoinClicked = { playerName ->
-            setState {
-                this.playerName = playerName
-                this.showEntryPopup = false
-            }
-            presenter.joinGame(playerName)
-        })
+        if (state.showEntryPopup) {
+            playerNameDialog(onJoinClicked = { playerName ->
+                setState {
+                    this.playerName = playerName
+                    this.showEntryPopup = false
+                }
+                presenter.joinGame(playerName)
+            })
+        }
+
         insertPasswordDialog(state)
 
 
     }
 
 
-    private fun RBuilder.insertPasswordDialog(dialogState: GameContract.HomeViewState) {
+    private fun RBuilder.insertPasswordDialog(homeViewState: GameContract.HomeViewState) {
         dialog {
             attrs {
-                this.open = dialogState.requestRoomPassword
+                this.open = homeViewState.requestRoomPassword
             }
 
             div {
                 textField {
                     attrs {
                         variant = FormControlVariant.filled
-                        value(dialogState.roomPassword)
+                        value(homeViewState.roomPassword)
                         label {
                             +"A room password is required"
                         }
@@ -200,7 +195,7 @@ class HomeView : RComponent<RProps, GameContract.HomeViewState>(), GameContract.
 }
 
 
-fun RBuilder.home() = child(HomeView::class) {
+fun RBuilder.home() = child(GameView::class) {
     this.attrs {
 
     }

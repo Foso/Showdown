@@ -19,11 +19,8 @@ interface GameContract {
     interface Presenter {
         fun onCreate()
         fun onDestroy()
-
         fun joinGame(playerName: String)
-
         fun onSelectedVote(voteId: Int)
-
         fun changeRoomPassword(password: String)
         fun setSpectatorStatus(b: Boolean)
 
@@ -47,7 +44,7 @@ interface GameContract {
         var requestRoomPassword: Boolean
         var autoReveal: Boolean
         var showConnectionError: Boolean
-
+        var anonymResults:Boolean
         //TOOLBAR
         var diffSecs: Double
         var showSettings: Boolean

@@ -45,14 +45,15 @@ interface SettingsState : RState {
 /**
  * Shows the settings where the player can choose a game mode
  */
-class SettingsComponent(prps: SettingsProps) : RComponent<SettingsProps, SettingsState>(prps) {
+class GameSettingsComponent(prps: SettingsProps) : RComponent<SettingsProps, SettingsState>(prps) {
+
+    val CUSTOM_MODE = 4
 
     override fun SettingsState.init(props: SettingsProps) {
         onClick = props.onSave
         gameModeId = props.gameModeId
         customOptions = ""
     }
-
 
     override fun RBuilder.render() {
         br { }
@@ -61,11 +62,7 @@ class SettingsComponent(prps: SettingsProps) : RComponent<SettingsProps, Setting
                 attrs {
                     select = true
                     label { +"GameMode" }
-                    inputProps {
-                        attrs {
-
-                        }
-                    }
+                    inputProps {}
                     value(state.gameModeId)
                     onChangeFunction = { event ->
                         val value = event.target.asDynamic().value
@@ -86,7 +83,7 @@ class SettingsComponent(prps: SettingsProps) : RComponent<SettingsProps, Setting
             }
         }
 
-        if (state.gameModeId == 4) {
+        if (state.gameModeId == CUSTOM_MODE) {
             div {
                 textField {
                     attrs {
@@ -115,7 +112,7 @@ class SettingsComponent(prps: SettingsProps) : RComponent<SettingsProps, Setting
                 attrs {
                     variant = ButtonVariant.contained
                     color = ButtonColor.primary
-                    text("Save")
+                    text("Change Mode")
                     onClickFunction = {
                         state.onClick(state.gameModeId, state.customOptions)
                     }
@@ -128,7 +125,7 @@ class SettingsComponent(prps: SettingsProps) : RComponent<SettingsProps, Setting
 }
 
 fun RBuilder.gameModeSettings(gameModeId: Int, onSave: (Int, String) -> Unit): ReactElement {
-    return child(SettingsComponent::class) {
+    return child(GameSettingsComponent::class) {
         attrs.onSave = onSave
         attrs.gameModeId = gameModeId
 

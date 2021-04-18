@@ -10,7 +10,8 @@ fun ServerConfig.toClient(): ClientGameConfig {
         this.voteOptions,
         this.autoReveal,
         this.createdAt,
-        roomHasPassword = this.room.password.isNotEmpty()
+        roomHasPassword = this.room.password.isNotEmpty(),
+        this.anonymResults
     )
 }
 

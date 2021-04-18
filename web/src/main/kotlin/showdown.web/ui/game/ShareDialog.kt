@@ -14,8 +14,11 @@ import org.w3c.dom.events.Event
 import react.RBuilder
 import react.dom.a
 import react.dom.div
+import react.dom.h1
 import showdown.web.wrapper.material.QrCode
 
+
+data class ShareDialogDataHolder(val autoReveal: Boolean, val anonymResults:Boolean)
 
 /**
  * Shows a dialog with a QR Code of the link to the room
@@ -24,7 +27,7 @@ fun RBuilder.shareDialog(
     onCloseFunction: (Event) -> Unit,
     gameModeId: Int,
     onSave: (Int, String) -> Unit,
-    autoReveal: Boolean
+    shareDialogDataHolder: ShareDialogDataHolder
 ) {
 
     dialog {
@@ -34,6 +37,42 @@ fun RBuilder.shareDialog(
 
         }
         dialogContent {
+
+            h1 {
+                +"Game Settings"
+            }
+
+            div {
+                gameModeSettings(gameModeId, onSave)
+            }
+
+            div {
+                checkbox {
+                    attrs {
+                        checked = shareDialogDataHolder.autoReveal
+                        onClickFunction = {
+                            Application.gameDataSource.setAutoReveal(!shareDialogDataHolder.autoReveal)
+                        }
+                    }
+                }
+                +"Auto Reveal votes when all voted"
+            }
+
+            div {
+                checkbox {
+                    attrs {
+                        checked = shareDialogDataHolder.anonymResults
+                        onClickFunction = {
+                            Application.gameDataSource.setAnonymVote(!shareDialogDataHolder.anonymResults)
+                        }
+                    }
+                }
+                +"anonymize vote results"
+            }
+
+            h1 {
+                +"About"
+            }
             div {
                 QrCode {
                     attrs {
@@ -69,35 +108,6 @@ fun RBuilder.shareDialog(
 
                 }
             }
-
-            div {
-                gameModeSettings(gameModeId, onSave)
-            }
-
-            div {
-                checkbox {
-                    attrs {
-                        checked = autoReveal
-                        onClickFunction = {
-                            Application.gameDataSource.setAutoReveal(!autoReveal)
-                        }
-                    }
-                }
-                +"Auto Reveal votes when all voted"
-            }
-
-            div {
-                checkbox {
-                    attrs {
-                        checked = autoReveal
-                        onClickFunction = {
-                            Application.gameDataSource.setAnonymVote(true)
-                        }
-                    }
-                }
-                +"anonymize vote results"
-            }
-
 
             button {
                 attrs {

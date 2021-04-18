@@ -3,8 +3,17 @@ package de.jensklingenberg.showdown.server.game
 
 import com.soywiz.klock.DateTime
 import com.squareup.moshi.Moshi
-import de.jensklingenberg.showdown.model.*
+import de.jensklingenberg.showdown.model.ClientGameConfig
+import de.jensklingenberg.showdown.model.GameState
+import de.jensklingenberg.showdown.model.Member
+import de.jensklingenberg.showdown.model.PATHS
+import de.jensklingenberg.showdown.model.Response
+import de.jensklingenberg.showdown.model.Result
+import de.jensklingenberg.showdown.model.ServerResponse
+import de.jensklingenberg.showdown.model.WebSocketResourceType
+import de.jensklingenberg.showdown.model.WebsocketResource
 import de.jensklingenberg.showdown.model.api.clientrequest.NewGameConfig
+import de.jensklingenberg.showdown.model.toJson
 import de.jensklingenberg.showdown.server.common.toJson
 import de.jensklingenberg.showdown.server.model.Player
 import de.jensklingenberg.showdown.server.model.ServerConfig
@@ -211,9 +220,9 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
         }
         val newVotes = playerList.filter { it.vote != null }.map {
             val voteText = gameConfig.voteOptions[it.vote!!.voteId]
-            val userName = if(gameConfig.anonymResults){
+            val userName = if (gameConfig.anonymResults) {
                 "Anonym"
-            }else{
+            } else {
                 it.name
             }
             Result(voteText, userName)

@@ -19,15 +19,12 @@ import react.dom.div
 import react.setState
 
 interface PlayerNameDialogComponentState : RState {
-    var showEntryPopup: Boolean
     var playerName: String
     var onJoinClicked: (String) -> Unit
 }
 
-interface MyProps : RProps {
+interface PlayerNameDialogComponentProps : RProps {
     var onJoinClicked: (String) -> Unit
-    var showEntryPopup: Boolean
-
 }
 
 fun DialogElementBuilder.joinGameButton(onClick: () -> Unit) {
@@ -46,25 +43,18 @@ fun DialogElementBuilder.joinGameButton(onClick: () -> Unit) {
 /**
  * On this dialog the user has to choose a player name
  */
-class PlayerNameDialogComponent(props: MyProps) : RComponent<MyProps, PlayerNameDialogComponentState>(props) {
+class PlayerNameDialogComponent(props: PlayerNameDialogComponentProps) :
+    RComponent<PlayerNameDialogComponentProps, PlayerNameDialogComponentState>(props) {
 
-    override fun PlayerNameDialogComponentState.init(props: MyProps) {
-        this.playerName = "Player" + (0..1000).random().toString()
+    override fun PlayerNameDialogComponentState.init(props: PlayerNameDialogComponentProps) {
+        this.playerName = "User" + (0..1000).random().toString()
         this.onJoinClicked = props.onJoinClicked
-        this.showEntryPopup = props.showEntryPopup
     }
-
-    override fun componentWillReceiveProps(nextProps: MyProps) {
-        setState {
-            this.showEntryPopup = nextProps.showEntryPopup
-        }
-    }
-
 
     override fun RBuilder.render() {
         dialog {
             attrs {
-                this.open = state.showEntryPopup
+                this.open = true
             }
             playerNameDialogContent()
         }
@@ -99,10 +89,9 @@ class PlayerNameDialogComponent(props: MyProps) : RComponent<MyProps, PlayerName
     }
 }
 
-fun RBuilder.playerNameDialog(showEntryPopup: Boolean, onJoinClicked: (String) -> Unit): ReactElement {
+fun RBuilder.playerNameDialog(onJoinClicked: (String) -> Unit): ReactElement {
     return child(PlayerNameDialogComponent::class) {
         attrs {
-            this.showEntryPopup = showEntryPopup
             this.onJoinClicked = onJoinClicked
         }
     }

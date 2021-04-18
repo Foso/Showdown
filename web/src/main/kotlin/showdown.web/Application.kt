@@ -11,7 +11,7 @@ import showdown.web.game.GameDataSource
 import showdown.web.game.GameRepository
 import showdown.web.model.Route
 import showdown.web.network.GameApiClient
-import showdown.web.ui.game.HomeView
+import showdown.web.ui.game.GameView
 import showdown.web.ui.onboarding.OnboardingPage
 import kotlin.reflect.KClass
 
@@ -26,7 +26,7 @@ class Application {
 
     private val routeList = listOf(
         Route("/", OnboardingPage::class, true),
-        Route("/room", HomeView::class, false)
+        Route("/room", GameView::class, false)
 
     )
 
