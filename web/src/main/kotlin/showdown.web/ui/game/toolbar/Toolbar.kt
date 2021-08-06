@@ -9,6 +9,7 @@ import react.RComponent
 import react.RProps
 import react.RState
 import react.ReactElement
+import react.State
 import react.dom.RDOMBuilder
 import react.dom.attrs
 import react.dom.div
@@ -21,7 +22,7 @@ import showdown.web.wrapper.material.icons.AddCircleIcon
 import kotlin.math.floor
 
 
-interface ToolbarState : RState {
+interface ToolbarState : State {
     var diffSecs: Double
     var startTimer: Boolean
     var showShareDialog: Boolean

@@ -43,7 +43,7 @@ class GameApiClient {
     }
 
 
-    fun getPath(path: String): PATHS {
+    private fun getPath(path: String): PATHS {
         return PATHS.values().find { it.path == path } ?: PATHS.EMPTY
     }
 

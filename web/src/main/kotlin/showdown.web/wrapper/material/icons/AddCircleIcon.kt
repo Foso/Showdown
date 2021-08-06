@@ -1,6 +1,7 @@
 package showdown.web.wrapper.material.icons
 
 import org.w3c.dom.events.Event
+import react.ComponentClass
 import react.RClass
 import react.RProps
 import showdown.web.wrapper.material.ShareIconProps
@@ -12,4 +13,4 @@ external interface AddCircleIconProps : RProps {
     var onClick: (Event) -> Unit
 }
 
-var AddCircleIcon: RClass<ShareIconProps> = AddCircleIconImport.default
+var AddCircleIcon: ComponentClass<ShareIconProps> = AddCircleIconImport.default

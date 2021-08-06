@@ -15,11 +15,12 @@ import react.RComponent
 import react.RProps
 import react.RState
 import react.ReactElement
+import react.State
 import react.dom.attrs
 import react.dom.div
 import react.setState
 
-interface PlayerNameDialogComponentState : RState {
+interface PlayerNameDialogComponentState : State {
     var playerName: String
     var onJoinClicked: (String) -> Unit
 }

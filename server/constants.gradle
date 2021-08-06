@@ -8,6 +8,6 @@ ext {
                   "https://jitpack.io"]
 
     libs = [
-            moshikotlin          : '1.5.0'
+            moshikotlin          : '1.12.0'
     ]
 }

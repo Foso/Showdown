@@ -1,5 +1,6 @@
 package showdown.web.wrapper.material.icons
 
+import react.ComponentClass
 import react.RClass
 import react.RProps
 
@@ -19,4 +20,4 @@ external interface BoxIconProps : RProps {
     var alignItems: String
 }
 
-var Box: RClass<BoxIconProps> = BoxIconImport.default
+var Box: ComponentClass<BoxIconProps> = BoxIconImport.default

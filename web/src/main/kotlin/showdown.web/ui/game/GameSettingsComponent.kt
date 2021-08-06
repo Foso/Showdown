@@ -14,6 +14,7 @@ import react.RComponent
 import react.RProps
 import react.RState
 import react.ReactElement
+import react.State
 import react.dom.*
 import react.setState
 
@@ -33,7 +34,7 @@ interface SettingsProps : RProps {
     var gameModeId: Int
 }
 
-interface SettingsState : RState {
+interface SettingsState : State {
     var onClick: (Int, String) -> Unit
     var gameModeId: Int
     var customOptions: String

@@ -29,6 +29,7 @@ import react.RComponent
 import react.RProps
 import react.RState
 import react.ReactElement
+import react.State
 import react.dom.attrs
 import react.dom.div
 import react.setState
@@ -39,12 +40,7 @@ import styled.StyledDOMBuilder
 import styled.css
 import styled.styledDiv
 
-/*
 
-style = kotlinext.js.js {
-                        this.textAlign = "right"
-                    }
- */
 
 interface FooterProps : RProps
 
@@ -55,7 +51,7 @@ interface RoomPasswordDialogState : RState {
 
 }
 
-interface FooterState : RState, RoomPasswordDialogState
+interface FooterState : State, RoomPasswordDialogState
 
 interface FooterContract {
     interface View :
@@ -74,7 +70,7 @@ interface FooterContract {
 class FooterComponent(prps: FooterProps) : RComponent<FooterProps, FooterState>(prps),
     FooterContract.View {
 
-    private val presenter: FooterContract.Presenter by kotlin.lazy {
+    private val presenter: FooterContract.Presenter by lazy {
         FooterPresenter(this)
     }
 

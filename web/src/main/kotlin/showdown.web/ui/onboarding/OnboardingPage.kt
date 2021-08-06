@@ -13,9 +13,10 @@ import react.RState
 import react.dom.*
 import react.setState
 import showdown.web.ui.game.SettingsProps
-import kotlin.browser.window
+import kotlinx.browser.window
+import react.State
 
-interface OnboardingPageState : RState {
+interface OnboardingPageState : State {
     var roomName: String
 }
 

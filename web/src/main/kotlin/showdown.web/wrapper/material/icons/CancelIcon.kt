@@ -1,6 +1,7 @@
 package showdown.web.wrapper.material.icons
 
 import org.w3c.dom.events.Event
+import react.ComponentClass
 import react.RClass
 import react.RProps
 
@@ -12,4 +13,4 @@ external interface CancelIconProps : RProps {
     var color: String
 }
 
-var CancelIcon: RClass<CancelIconProps> = CancelIconImport.default
+var CancelIcon: ComponentClass<CancelIconProps> = CancelIconImport.default

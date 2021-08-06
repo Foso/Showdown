@@ -3,6 +3,7 @@ package showdown.web.ui.game
 import de.jensklingenberg.showdown.model.Member
 import de.jensklingenberg.showdown.model.Result
 import react.RState
+import react.State
 import kotlin.js.Date
 
 interface StateView<T> {
@@ -26,7 +27,7 @@ interface GameContract {
 
     }
 
-    interface HomeViewState : RState {
+    interface HomeViewState : State {
         var playerName: String
         var errorMessage: String
         var showSnackbar: Boolean

@@ -1,6 +1,7 @@
 package showdown.web.wrapper.material.icons
 
 import org.w3c.dom.events.Event
+import react.ComponentClass
 import react.RClass
 import react.RProps
 
@@ -11,4 +12,4 @@ external interface TextareaAutosizeProps : RProps {
     var onChangeFunction: (Event) -> Unit
 }
 
-var TextareaAutosize: RClass<TextareaAutosizeProps> = TextareaAutosizeImport.default
+var TextareaAutosize: ComponentClass<TextareaAutosizeProps> = TextareaAutosizeImport.default

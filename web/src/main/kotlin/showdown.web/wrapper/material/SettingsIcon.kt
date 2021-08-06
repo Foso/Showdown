@@ -1,6 +1,7 @@
 package showdown.web.wrapper.material
 
 import org.w3c.dom.events.Event
+import react.ComponentClass
 import react.RClass
 import react.RProps
 
@@ -11,4 +12,4 @@ external interface SettingsIconProps : RProps {
     var onClick: (Event) -> Unit
 }
 
-var SettingsIcon: RClass<ShareIconProps> = SettingsIconImport.default
+var SettingsIcon: ComponentClass<ShareIconProps> = SettingsIconImport.default

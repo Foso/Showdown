@@ -1,6 +1,6 @@
 package showdown.web.network
 
-import kotlin.browser.window
+import kotlinx.browser.window
 
 
 class NetworkPreferences {

@@ -1,6 +1,7 @@
 package showdown.web.wrapper.material.icons
 
 import org.w3c.dom.events.Event
+import react.ComponentClass
 import react.RClass
 import react.RProps
 import showdown.web.wrapper.material.ShareIconProps
@@ -12,4 +13,4 @@ external interface LockIconProps : RProps {
     var onClick: (Event) -> Unit
 }
 
-var LockIcon: RClass<ShareIconProps> = LockIconImport.default
+var LockIcon: ComponentClass<ShareIconProps> = LockIconImport.default

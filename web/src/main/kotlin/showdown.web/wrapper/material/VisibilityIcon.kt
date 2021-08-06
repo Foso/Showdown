@@ -1,6 +1,7 @@
 package showdown.web.wrapper.material
 
 import org.w3c.dom.events.Event
+import react.ComponentClass
 import react.RClass
 import react.RProps
 
@@ -11,4 +12,4 @@ external interface VisibilityIconProps : RProps {
     var onClick: (Event) -> Unit
 }
 
-var VisibilityIcon: RClass<VisibilityIconProps> = VisibilityIconImport.default
+var VisibilityIcon: ComponentClass<VisibilityIconProps> = VisibilityIconImport.default

@@ -1,5 +1,6 @@
 package showdown.web.wrapper.material
 
+import react.ComponentClass
 import react.RClass
 import react.RProps
 
@@ -11,5 +12,5 @@ external interface QrCodeProps : RProps {
 
 }
 
-var QrCode: RClass<QrCodeProps> = QrCodeImport.default
+var QrCode: ComponentClass<QrCodeProps> = QrCodeImport.default
 
