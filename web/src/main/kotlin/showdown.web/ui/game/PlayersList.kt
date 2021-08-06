@@ -74,7 +74,7 @@ fun RBuilder.playersList(members: List<Member>) {
                 typography {
                     attrs {
                         variant = TypographyVariant.caption
-                        component = "div"
+                        //component = "div"
                         color = TypographyColor.textSecondary
                     }
                     val progressPercent = (players.filter { it.voted }.size.toDouble() / players.size.toDouble()) * 100

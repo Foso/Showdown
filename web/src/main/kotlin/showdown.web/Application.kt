@@ -1,3 +1,5 @@
+package showdown.web
+
 import kotlinext.js.requireAll
 import kotlinx.browser.document
 import kotlinx.browser.window
@@ -39,7 +41,7 @@ class Application {
                 hashRouter {
                     switch {
                         routeList.forEach {
-                            route(it.path, it.kClass as KClass<out Component<RProps, *>>, it.exact)
+                            route(path= arrayOf(it.path), component = it.kClass as KClass<out Component<RProps, *>>, exact = it.exact)
                         }
                     }
                 }

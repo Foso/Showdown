@@ -3,12 +3,13 @@ ext {
     libs = [
             kotlinx_html_version    : '0.7.2',
             kotlin_frontend_version : '0.0.45',
-            react_version           : '17.0.0',
-            material_ui_core        : "4.11.2",
+            react_version           : '17.0.2',
+            material_ui_core        : "4.11.3",
 
     ]
 
     mavenRepos = [
+            "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/kotlin-js-wrappers",
             "https://dl.bintray.com/kotlin/kotlin-eap",
             "https://dl.bintray.com/kotlin/kotlin-js-wrappers",
             "https://jitpack.io",

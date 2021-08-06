@@ -1,6 +1,6 @@
 package showdown.web.ui.game.toolbar
 
-import Application
+import showdown.web.Application
 import de.jensklingenberg.showdown.model.api.clientrequest.NewGameConfig
 import de.jensklingenberg.showdown.model.fibo
 import de.jensklingenberg.showdown.model.modFibo
