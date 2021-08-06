@@ -2,9 +2,7 @@ buildscript {
     repositories {
         mavenLocal()
         google()
-        jcenter()
         mavenCentral()
-        maven { url "https://kotlin.bintray.com/kotlinx" }
     }
 }
 
@@ -55,17 +53,12 @@ kotlin {
 
         jvmMain {
             resources.srcDirs += "resources"
-            dependencies {
-
-
-            }
+            dependencies {}
         }
 
 
         jsMain {
-            dependencies {
-
-            }
+            dependencies {}
         }
     }
 }

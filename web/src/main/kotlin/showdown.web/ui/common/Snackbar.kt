@@ -11,6 +11,7 @@ import materialui.lab.components.alert.enums.AlertVariant
 import react.RBuilder
 import react.RProps
 import react.child
+import react.dom.attrs
 import react.functionalComponent
 import react.useState
 

@@ -10,6 +10,7 @@ import react.RProps
 import react.RState
 import react.ReactElement
 import react.dom.RDOMBuilder
+import react.dom.attrs
 import react.dom.div
 import react.setState
 import showdown.web.ui.game.ShareDialogDataHolder
@@ -122,8 +123,8 @@ fun RBuilder.myToolbar(
     diffSecs: Double,
     gameModeId: Int,
     shareDialogDataHolder: ShareDialogDataHolder,
-): ReactElement {
-    return child(Toolbar::class) {
+) {
+    child(Toolbar::class) {
         attrs {
             this.startTimer = startTimer
             this.diffSecs = diffSecs

@@ -4,10 +4,8 @@ ext {
 
     mavenRepos = ["https://plugins.gradle.org/m2/",
                   "https://oss.sonatype.org/content/repositories/snapshots",
-                  "https://dl.bintray.com/kotlin/ktor",
-                  "https://dl.bintray.com/kotlin/kotlinx",
-                  "https://jitpack.io",
-                  "https://dl.bintray.com/kotlin/kotlin-eap"]
+
+                  "https://jitpack.io"]
 
     libs = [
             moshikotlin          : '1.5.0'

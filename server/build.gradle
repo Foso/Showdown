@@ -2,8 +2,8 @@ buildscript {
     apply from: './constants.gradle'
 }
 buildscript {
-    ext.kotlin_version = '1.4.32'
-    ext.ktor_version = '1.5.3'
+    ext.kotlin_version = '1.5.21'
+    ext.ktor_version = '1.6.2'
 
     repositories {
         mavenCentral()
@@ -24,12 +24,6 @@ group 'ges.example'
 apply plugin: 'application'
 
 sourceCompatibility = 1.8
-
-
-repositories {
-    jcenter()
-}
-
 mainClassName = 'de.jensklingenberg.showdown.server.server.ShowdownApplicationKt'
 
 shadowJar {
@@ -42,28 +36,24 @@ task stage {
 }
 
 
-def klockVersion = "2.0.3"
+def klockVersion = "2.3.1"
 dependencies {
     implementation project(":shared")
 
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    testCompile group: 'junit', name: 'junit', version: '4.12'
     implementation "io.ktor:ktor-server-netty:$ktor_version"
     implementation "io.ktor:ktor-gson:$ktor_version"
     implementation "io.ktor:ktor-websockets:$ktor_version"
     implementation "com.squareup.moshi:moshi-kotlin:${libs.moshikotlin}"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0-RC"
     implementation("com.soywiz.korlibs.klock:klock-jvm:$klockVersion")
-
-
     testImplementation "org.mockito:mockito-core:3.4.4"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
 
 }
 
 sourceSets {
     main.kotlin.srcDirs += "src/main/kotlin"
-    // main.resources.srcDirs = ['resources']
 }
 
 compileKotlin {

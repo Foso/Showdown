@@ -16,6 +16,7 @@ import materialui.components.typography.enums.TypographyColor
 import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
 import react.RBuilder
+import react.dom.attrs
 import react.dom.h2
 import showdown.web.wrapper.material.icons.Box
 import showdown.web.wrapper.material.icons.CancelIcon
@@ -53,7 +54,7 @@ fun RBuilder.playersList(members: List<Member>) {
                 this.position = "relative"
             }
             circularProgress {
-                attrs {
+                this.attrs {
                     variant = CircularProgressVariant.static
                     val progressPercent = (players.filter { it.voted }.size.toDouble() / players.size.toDouble()) * 100
 

@@ -29,6 +29,7 @@ import react.RComponent
 import react.RProps
 import react.RState
 import react.ReactElement
+import react.dom.attrs
 import react.dom.div
 import react.setState
 import showdown.web.ui.game.StateView
@@ -242,6 +243,6 @@ class FooterComponent(prps: FooterProps) : RComponent<FooterProps, FooterState>(
     }
 }
 
-fun RBuilder.myfooter(): ReactElement {
-    return child(FooterComponent::class) {}
+fun RBuilder.myfooter() {
+    child(FooterComponent::class) {}
 }

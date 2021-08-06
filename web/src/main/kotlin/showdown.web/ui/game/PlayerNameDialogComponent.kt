@@ -15,6 +15,7 @@ import react.RComponent
 import react.RProps
 import react.RState
 import react.ReactElement
+import react.dom.attrs
 import react.dom.div
 import react.setState
 
@@ -89,8 +90,8 @@ class PlayerNameDialogComponent(props: PlayerNameDialogComponentProps) :
     }
 }
 
-fun RBuilder.playerNameDialog(onJoinClicked: (String) -> Unit): ReactElement {
-    return child(PlayerNameDialogComponent::class) {
+fun RBuilder.playerNameDialog(onJoinClicked: (String) -> Unit) {
+    child(PlayerNameDialogComponent::class) {
         attrs {
             this.onJoinClicked = onJoinClicked
         }

@@ -6,6 +6,7 @@ import materialui.components.button.enums.ButtonColor
 import materialui.components.button.enums.ButtonSize
 import materialui.components.button.enums.ButtonVariant
 import react.RBuilder
+import react.dom.attrs
 import react.dom.h2
 import showdown.web.wrapper.material.icons.TouchAppIcon
 

@@ -14,10 +14,7 @@ import react.RComponent
 import react.RProps
 import react.RState
 import react.ReactElement
-import react.dom.br
-import react.dom.div
-import react.dom.key
-import react.dom.p
+import react.dom.*
 import react.setState
 
 
@@ -124,10 +121,10 @@ class GameSettingsComponent(prps: SettingsProps) : RComponent<SettingsProps, Set
     }
 }
 
-fun RBuilder.gameModeSettings(gameModeId: Int, onSave: (Int, String) -> Unit): ReactElement {
-    return child(GameSettingsComponent::class) {
-        attrs.onSave = onSave
-        attrs.gameModeId = gameModeId
+fun RBuilder.gameModeSettings(gameModeId: Int, onSave: (Int, String) -> Unit) {
+    child(GameSettingsComponent::class) {
+        this.attrs.onSave = onSave
+        this.attrs.gameModeId = gameModeId
 
     }
 }

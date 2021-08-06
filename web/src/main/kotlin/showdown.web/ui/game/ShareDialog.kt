@@ -13,6 +13,7 @@ import materialui.components.textfield.textField
 import org.w3c.dom.events.Event
 import react.RBuilder
 import react.dom.a
+import react.dom.attrs
 import react.dom.div
 import react.dom.h1
 import showdown.web.wrapper.material.QrCode

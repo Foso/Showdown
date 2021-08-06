@@ -12,6 +12,7 @@ import org.w3c.dom.HTMLInputElement
 import react.RBuilder
 import react.RComponent
 import react.RProps
+import react.dom.attrs
 import react.dom.div
 import react.setState
 import showdown.web.ui.common.mySnackbar
