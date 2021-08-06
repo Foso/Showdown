@@ -1,6 +1,6 @@
 package showdown.web.ui.game.footer
 
-import Application
+import showdown.web.Application
 import com.badoo.reaktive.disposable.CompositeDisposable
 import com.badoo.reaktive.disposable.addTo
 import com.badoo.reaktive.observable.subscribe

@@ -1,6 +1,6 @@
 package showdown.web.ui.game
 
-import Application
+import showdown.web.Application
 import com.badoo.reaktive.completable.subscribe
 import com.badoo.reaktive.disposable.CompositeDisposable
 import com.badoo.reaktive.disposable.addTo

@@ -1,6 +1,6 @@
 package showdown.web.ui.game
 
-import Application
+import showdown.web.Application
 import kotlinx.browser.window
 import kotlinx.html.js.onClickFunction
 import materialui.components.button.button
