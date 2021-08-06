@@ -15,7 +15,7 @@ plugins {
 kotlin {
 
 
-    js {
+    js() {
         browser {
             testTask {
                 testLogging {
@@ -45,7 +45,8 @@ kotlin {
         commonMain {
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-stdlib-common'
-                implementation "org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.0"
+                implementation "org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.2"
+                implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2"
             }
 
         }

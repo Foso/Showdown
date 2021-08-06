@@ -37,7 +37,7 @@ allprojects {
 
 
 kotlin {
-    js(IR) {
+    js() {
         useCommonJs()
         browser {
 
@@ -48,7 +48,7 @@ def kotlinWrappersVersion = "0.0.1-pre.222-kotlin-1.5.21"
 
 dependencies {
     implementation project(":shared")
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-js'
+
     implementation("org.jetbrains.kotlinx:kotlinx-html-assembly:${libs.kotlinx_html_version}")
     implementation(enforcedPlatform("org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:${kotlinWrappersVersion}"))
     implementation("org.jetbrains.kotlin-wrappers:kotlin-react")
@@ -63,7 +63,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:0.20.0"
     implementation("net.subroh0508.kotlinmaterialui:core:0.6.0")
     implementation("net.subroh0508.kotlinmaterialui:lab:0.6.0")
-    implementation 'com.badoo.reaktive:reaktive-js:1.1.22'
+    implementation 'com.badoo.reaktive:reaktive-js:1.2.0'
     implementation(npm('react', libs.react_version))
     implementation(npm('@material-ui/core', libs.material_ui_core))
     implementation(npm('core-js', ''))
