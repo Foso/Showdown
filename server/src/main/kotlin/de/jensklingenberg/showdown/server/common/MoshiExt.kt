@@ -4,6 +4,7 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import de.jensklingenberg.showdown.model.Response
 import de.jensklingenberg.showdown.model.WebsocketResource
 import java.io.IOException
@@ -32,7 +33,7 @@ fun Moshi.toJson(any: Any): String {
 
 
 inline fun <reified T> fromJson(json:String) : T?{
-    val moshi = Moshi.Builder().build()
+    val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
     val jsonAdapter: JsonAdapter<T> = moshi.adapter(T::class.java)
 
     return try {
