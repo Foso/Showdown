@@ -3,6 +3,7 @@ package showdown.web
 import kotlinext.js.requireAll
 import kotlinx.browser.document
 import kotlinx.browser.window
+import materialui.styles.themeprovider.ThemeProviderBuilder
 import react.Component
 import react.RProps
 import react.dom.render
@@ -35,6 +36,7 @@ class Application {
 
     init {
         window.onload = {
+
             requireAll(kotlinext.js.require.context("kotlin", true, js("/\\.css$/")))
             render(document.getElementById(rootElement)) {
 
