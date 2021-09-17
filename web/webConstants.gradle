@@ -3,7 +3,7 @@ ext {
     libs = [
             kotlinx_html_version    : '0.7.3',
             react_version           : '17.0.2',
-            material_ui_core        : "4.11.3",
+            material_ui_core        : "4.12.3",
 
     ]
 

@@ -9,11 +9,11 @@ import materialui.components.formcontrol.enums.FormControlVariant
 import materialui.components.menuitem.menuItem
 import materialui.components.textfield.textField
 import org.w3c.dom.HTMLInputElement
+
 import react.RBuilder
 import react.RComponent
 import react.RProps
-import react.RState
-import react.ReactElement
+
 import react.State
 import react.dom.*
 import react.setState
@@ -29,7 +29,7 @@ val gameModeOptions: List<Pair<String, Int>>
         "Custom" to 4
     )
 
-interface SettingsProps : RProps {
+external interface SettingsProps : RProps {
     var onSave: (Int, String) -> Unit
     var gameModeId: Int
 }

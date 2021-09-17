@@ -29,6 +29,7 @@ external interface MySnackbarProps : RProps {
     var onClose: () -> Unit
 }
 
+@JsExport
 val mySnackbar = fc<MySnackbarProps> { props ->
     val text = props.snackbarMessage
     val (visible, setVisibility) = useState(true)

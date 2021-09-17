@@ -9,14 +9,14 @@ import materialui.components.textfield.textField
 import org.w3c.dom.HTMLInputElement
 import react.RBuilder
 import react.RComponent
-import react.RState
+
 import react.dom.*
 import react.setState
 import showdown.web.ui.game.SettingsProps
 import kotlinx.browser.window
 import react.State
 
-interface OnboardingPageState : State {
+external interface OnboardingPageState : State {
     var roomName: String
 }
 
