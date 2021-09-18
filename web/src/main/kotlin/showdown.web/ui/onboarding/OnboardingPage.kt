@@ -1,6 +1,6 @@
 package showdown.web.ui.onboarding
 
-import kotlinx.html.DIV
+import kotlinx.browser.window
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onKeyDownFunction
@@ -9,99 +9,94 @@ import materialui.components.textfield.textField
 import org.w3c.dom.HTMLInputElement
 import react.RBuilder
 import react.RComponent
+import react.RProps
+import react.RState
+import react.child
+import react.dom.a
+import react.dom.attrs
+import react.dom.br
+import react.dom.button
+import react.dom.div
+import react.dom.h1
+import react.dom.h2
+import react.dom.h3
+import react.dom.hr
+import react.dom.img
+import react.fc
+import react.useState
 
-import react.dom.*
-import react.setState
-import showdown.web.ui.game.SettingsProps
-import kotlinx.browser.window
-import react.State
 
-external interface OnboardingPageState : State {
-    var roomName: String
+class OnboardingClass : RComponent<RProps, RState>() {
+    override fun RBuilder.render() {
+        child(onboardingScreen) {
+
+        }
+    }
 }
 
 /**
  * On this view, the user can see an explanation
  * on how to use Showdown and can select a room name
  */
-class OnboardingPage : RComponent<SettingsProps, OnboardingPageState>() {
+val onboardingScreen = fc<RProps> { props ->
 
-    override fun OnboardingPageState.init() {
-        this.roomName = ""
-    }
+    val (roomName, setRoomName) = useState("")
 
-    override fun RBuilder.render() {
+    h2 { +"How to: $roomName" }
 
-        h1 {
-            +"Showdown - Scrum Poker Web App"
-        }
-        h2 { +"How to:" }
-        div {
-            step1()
-        }
-        div {
-            step2()
-        }
-        div {
-            step3()
-        }
-        div {
-            step4()
-        }
-        div {
-            step5()
-        }
-        br { }
-        hr { }
-        br { }
-        fingerDown()//Finger down
-        br { }
-        goToRoom()
-        br {}
-        br { }
-        br { }
-        footer()
-    }
-
-    private fun RBuilder.footer() {
-        div {
-            a(href = "https://github.com/Foso/Showdown") {
-                +"Showdown"
+    textField {
+        attrs {
+            variant = FormControlVariant.filled
+            value(roomName)
+            label {
+                +"Choose new room name:"
             }
+            onChangeFunction = {
+                val target = it.target as HTMLInputElement
 
-            +" by "
-            a(href = "http://www.jensklingenberg.de") {
-                +"Jens Klingenberg"
-            }
-            +". The source code is licensed under "
-            a(href = "http://www.apache.org/licenses/") {
-                +"Apache 2.0"
-            }
 
+                setRoomName(target.value)
+            }
+            onKeyDownFunction = {
+                if (it.type == "keydown" && it.asDynamic()["key"] == "Enter") {
+
+                    window.location.href = "/#/room/${roomName}";
+
+                }
+
+            }
         }
     }
 
-    private fun RBuilder.goToRoom() {
+
+    h1 {
+        +"Showdown - Scrum Poker Web App"
+    }
+    h2 { +"How to:" }
+    div {
+        h3 {
+            +"1) Choose a room name and go to the room"
+        }
         textField {
             attrs {
                 variant = FormControlVariant.filled
-                value(state.roomName)
+                value(roomName)
                 label {
                     +"Choose new room name:"
-                }
-                onChangeFunction = {
-                    val target = it.target as HTMLInputElement
-
-                    setState {
-                        this.roomName = target.value
-                    }
                 }
                 onKeyDownFunction = {
                     if (it.type == "keydown" && it.asDynamic()["key"] == "Enter") {
 
-                        window.location.href = "/#/room/${state.roomName}";
+                        window.location.href = "/#/room/${roomName}";
 
                     }
+
+                }
+
+                onChangeFunction = {
+                    val target = it.target as HTMLInputElement
+
+                    setRoomName(target.value)
 
                 }
             }
@@ -112,46 +107,13 @@ class OnboardingPage : RComponent<SettingsProps, OnboardingPageState>() {
                 +"Go to room"
                 attrs {
                     onClickFunction = {
-                        window.location.href = "/#/room/${state.roomName}";
+                        window.location.href = "/#/room/${roomName}";
                     }
                 }
             }
         }
     }
-
-    private fun RBuilder.fingerDown() {
-        div { +"\uD83D\uDC47" }
-    }
-
-    private fun RDOMBuilder<DIV>.step5() {
-        h3 {
-            +"5) Click Show Votes to see the votes"
-        }
-        img {
-            attrs {
-                src = "/web/img/showvotes.png"
-            }
-        }
-    }
-
-    private fun RDOMBuilder<DIV>.step4() {
-        h3 {
-            +"4) Select an Option"
-        }
-        img {
-            attrs {
-                src = "/web/img/option.png"
-            }
-        }
-    }
-
-    private fun RDOMBuilder<DIV>.step3() {
-        h3 {
-            +"3) Share the room link"
-        }
-    }
-
-    private fun RDOMBuilder<DIV>.step2() {
+    div {
         h3 {
             +"2) Choose a player name\n"
         }
@@ -161,52 +123,90 @@ class OnboardingPage : RComponent<SettingsProps, OnboardingPageState>() {
             }
         }
     }
-
-    private fun RDOMBuilder<DIV>.step1() {
+    div {
         h3 {
-            +"1) Choose a room name and go to the room"
+            +"3) Share the room link"
         }
-        textField {
+    }
+    div {
+        h3 {
+            +"4) Select an Option"
+        }
+        img {
             attrs {
-                variant = FormControlVariant.filled
-                value(state.roomName)
-                label {
-                    +"Choose new room name:"
-                }
-                onKeyDownFunction = {
-                    if (it.type == "keydown" && it.asDynamic()["key"] == "Enter") {
-
-                        window.location.href = "/#/room/${state.roomName}";
-
-                    }
-
-                }
-
-                onChangeFunction = {
-                    val target = it.target as HTMLInputElement
-
-                    setState {
-                        this.roomName = target.value
-                    }
-                }
+                src = "/web/img/option.png"
             }
         }
+    }
+    div {
+        h3 {
+            +"5) Click Show Votes to see the votes"
+        }
+        img {
+            attrs {
+                src = "/web/img/showvotes.png"
+            }
+        }
+    }
+    br { }
+    hr { }
+    br { }
+    //Finger down
+    div { +"\uD83D\uDC47" }
+    br { }
+    textField {
+        attrs {
+            variant = FormControlVariant.filled
+            value(roomName)
+            label {
+                +"Choose new room name:"
+            }
+            onChangeFunction = {
+                val target = it.target as HTMLInputElement
 
-        div {
-            button {
-                +"Go to room"
-                attrs {
-                    onClickFunction = {
-                        window.location.href = "/#/room/${state.roomName}";
-                    }
+                setRoomName(target.value)
+
+            }
+            onKeyDownFunction = {
+                if (it.type == "keydown" && it.asDynamic()["key"] == "Enter") {
+
+                    window.location.href = "/#/room/${roomName}";
+
                 }
+
             }
         }
     }
 
+    div {
+        button {
+            +"Go to room"
+            attrs {
+                onClickFunction = {
+                    window.location.href = "/#/room/${roomName}";
+                }
+            }
+        }
+    }
+    br {}
+    br { }
+    br { }
+    div {
+        a(href = "https://github.com/Foso/Showdown") {
+            +"Showdown"
+        }
 
+        +" by "
+        a(href = "http://www.jensklingenberg.de") {
+            +"Jens Klingenberg"
+        }
+        +". The source code is licensed under "
+        a(href = "http://www.apache.org/licenses/") {
+            +"Apache 2.0"
+        }
+
+    }
 }
 
-fun RBuilder.startPage() = child(OnboardingPage::class) {
 
-}
+

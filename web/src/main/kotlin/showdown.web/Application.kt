@@ -3,7 +3,6 @@ package showdown.web
 import kotlinext.js.requireAll
 import kotlinx.browser.document
 import kotlinx.browser.window
-import materialui.styles.themeprovider.ThemeProviderBuilder
 import react.Component
 import react.RProps
 import react.dom.render
@@ -15,7 +14,7 @@ import showdown.web.game.GameRepository
 import showdown.web.model.Route
 import showdown.web.network.GameApiClient
 import showdown.web.ui.game.GameView
-import showdown.web.ui.onboarding.OnboardingPage
+import showdown.web.ui.onboarding.OnboardingClass
 import kotlin.reflect.KClass
 
 class Application {
@@ -28,7 +27,7 @@ class Application {
     private val rootElement = "root"
 
     private val routeList = listOf(
-        Route("/", OnboardingPage::class, true),
+        Route("/", OnboardingClass::class, true),
         Route("/room", GameView::class, false)
 
     )
