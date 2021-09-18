@@ -11,6 +11,7 @@ import react.RBuilder
 import react.RComponent
 import react.RProps
 import react.RState
+import react.State
 import react.child
 import react.dom.a
 import react.dom.attrs
@@ -26,11 +27,9 @@ import react.fc
 import react.useState
 
 
-class OnboardingClass : RComponent<RProps, RState>() {
+class OnboardingClass : RComponent<RProps, State>() {
     override fun RBuilder.render() {
-        child(onboardingScreen) {
-
-        }
+        child(onboardingScreen()) {}
     }
 }
 
@@ -38,7 +37,7 @@ class OnboardingClass : RComponent<RProps, RState>() {
  * On this view, the user can see an explanation
  * on how to use Showdown and can select a room name
  */
-val onboardingScreen = fc<RProps> { props ->
+fun onboardingScreen() = fc<RProps> { props ->
 
     val (roomName, setRoomName) = useState("")
 

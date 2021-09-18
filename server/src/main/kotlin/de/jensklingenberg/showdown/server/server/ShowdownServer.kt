@@ -131,6 +131,8 @@ class ShowdownServer : GameServer {
                     ?.let { joinGame ->
                         if (gameMap.none { it.key == room.name }) {
                             gameSource = createNewRoom(room.name)
+                            println("Create new Room"+room.name)
+
                         }
 
                         if (joinGame.roomPassword == gameSource?.gameConfig?.room?.password) {

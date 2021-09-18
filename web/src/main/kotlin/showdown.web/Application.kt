@@ -41,9 +41,9 @@ class Application {
 
                 hashRouter {
                     switch {
-                        routeList.forEach {
-                            route(path= arrayOf(it.path), component = it.kClass as KClass<out Component<RProps, *>>, exact = it.exact)
-                        }
+                        route(path= arrayOf("/"), component = OnboardingClass::class, exact = true)
+                        route(path= arrayOf("/room"), component = GameView::class, exact = false)
+
                     }
                 }
                 // game()
