@@ -8,7 +8,7 @@ import de.jensklingenberg.showdown.model.powerOf2
 import de.jensklingenberg.showdown.model.tshirtSizesList
 import showdown.web.game.GameDataSource
 
-class ToolbarPresenter(view: ToolContract.View) : ToolContract.Presenter {
+class ToolbarViewModel() : ToolContract.ViewModel {
     private val gameDataSource: GameDataSource = Application.gameDataSource
 
     override fun reset() {

@@ -7,8 +7,6 @@ import materialui.components.appbar.enums.AppBarPosition
 import react.RBuilder
 import react.RComponent
 import react.RProps
-import react.RState
-import react.ReactElement
 import react.State
 import react.dom.RDOMBuilder
 import react.dom.attrs
@@ -39,10 +37,10 @@ interface ToolbarProps : RProps {
 
 }
 
-private class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(props), ToolContract.View {
+private class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(props) {
 
-    private val presenter: ToolContract.Presenter by lazy {
-        ToolbarPresenter(this)
+    private val viewModel: ToolContract.ViewModel by lazy {
+        ToolbarViewModel()
     }
 
     override fun ToolbarState.init(props: ToolbarProps) {
@@ -69,7 +67,7 @@ private class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarSta
                     this.showShareDialog = false
                 }
             }, state.gameModeId, onSave = { gameModeId, gameOptions ->
-                presenter.changeConfig(gameModeId, gameOptions)
+                viewModel.changeConfig(gameModeId, gameOptions)
             }, state.shareDialogDataHolder)
         }
 
@@ -89,13 +87,13 @@ private class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarSta
 
     private fun RDOMBuilder<DIV>.newGameButton() {
         toolbarButton("New Game", AddCircleIcon, onClick = {
-            presenter.reset()
+            viewModel.reset()
         })
     }
 
     private fun RDOMBuilder<DIV>.showVotesButton() {
         toolbarButton("Show Votes", VisibilityIcon, onClick = {
-            presenter.showVotes()
+            viewModel.showVotes()
         })
     }
 
