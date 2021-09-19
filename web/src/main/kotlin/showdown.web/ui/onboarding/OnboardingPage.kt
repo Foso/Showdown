@@ -40,7 +40,7 @@ class OnboardingClass : RComponent<Props, State>() {
  * On this view, the user can see an explanation
  * on how to use Showdown and can select a room name
  */
-fun onboardingScreen() = fc<RProps> { props ->
+fun onboardingScreen() = fc<Props> { props ->
 
     val (roomName, setRoomName) = useState("")
 
@@ -172,7 +172,7 @@ fun onboardingScreen() = fc<RProps> { props ->
         }
 
         +" by "
-        a(href = "http://www.jensklingenberg.de") {
+        a(href = "http://jensklingenberg.de") {
             +"Jens Klingenberg"
         }
         +". The source code is licensed under "

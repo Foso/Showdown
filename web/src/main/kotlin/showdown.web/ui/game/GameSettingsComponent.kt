@@ -34,7 +34,7 @@ external interface SettingsProps : RProps {
     var gameModeId: Int
 }
 
-interface SettingsState : State {
+external interface SettingsState : State {
     var onClick: (Int, String) -> Unit
     var gameModeId: Int
     var customOptions: String

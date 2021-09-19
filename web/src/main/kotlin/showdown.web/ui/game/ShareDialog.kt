@@ -44,7 +44,7 @@ fun RBuilder.shareDialog(
             }
 
             div {
-                //TODO gameModeSettings(gameModeId, onSave)
+                gameModeSettings(gameModeId, onSave)
             }
 
             div {
