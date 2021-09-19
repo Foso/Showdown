@@ -15,51 +15,21 @@ class GamePresenter(private val view: GameContract.View) : GameContract.Presente
     private val gameDataSource: GameDataSource = Application.gameDataSource
     private val compositeDisposable = CompositeDisposable()
     override fun onCreate() {
-        gameDataSource.connectToServer().subscribe(
-            onComplete = {
-                view.newState {
-                    this.showEntryPopup = true
-                }
-            },
-            onError = {
-                view.newState {
-                    this.showConnectionError = true
-                }
-            }
-        ).addTo(compositeDisposable)
+        connectToServer()
 
-        gameDataSource.observeErrors().subscribe(onNext = { error ->
-            if (error is ShowdownError.NotAuthorizedError) {
-                view.newState {
-                    this.requestRoomPassword = true
-                }
-            } else if (error is ShowdownError.NoConnectionError) {
-                view.newState {
-                    this.showConnectionError = true
-                }
-            }
-        }).addTo(compositeDisposable)
+        observeErrors()
 
-        gameDataSource.observeMessage().subscribe(onNext = {
-            view.showInfoPopup(it)
-        }).addTo(compositeDisposable)
+        observeMessage()
 
-        gameDataSource.observeSpectatorStatus().subscribe(onNext = {
-            view.setSpectatorStatus(it)
-        }).addTo(compositeDisposable)
+        observeSpectatorStatus()
 
-        gameDataSource.observeRoomConfig().subscribe(onNext = { conf ->
-            console.log("ROOM: "+conf?.anonymResults)
-            conf?.let {
-                view.newState {
-                    this.anonymResults=conf.anonymResults
-                    this.autoReveal = conf.autoReveal
-                }
-            }
+        observeRoomConfig()
 
+        observeGameState()
 
-        }).addTo(compositeDisposable)
+    }
 
+    private fun observeGameState() {
         gameDataSource.observeGameState().subscribe(onNext = { gameState ->
             when (gameState) {
                 GameState.NotStarted -> {
@@ -95,7 +65,61 @@ class GamePresenter(private val view: GameContract.View) : GameContract.Presente
 
             }
         }).addTo(compositeDisposable)
+    }
 
+    private fun observeRoomConfig() {
+        gameDataSource.observeRoomConfig().subscribe(onNext = { conf ->
+            console.log("ROOM: " + conf?.anonymResults)
+            conf?.let {
+                view.newState {
+                    this.anonymResults = conf.anonymResults
+                    this.autoReveal = conf.autoReveal
+                }
+            }
+
+
+        }).addTo(compositeDisposable)
+    }
+
+    private fun observeSpectatorStatus() {
+        gameDataSource.observeSpectatorStatus().subscribe(onNext = {
+            view.setSpectatorStatus(it)
+        }).addTo(compositeDisposable)
+    }
+
+    private fun observeMessage() {
+        gameDataSource.observeMessage().subscribe(onNext = {
+            view.showInfoPopup(it)
+        }).addTo(compositeDisposable)
+    }
+
+    private fun observeErrors() {
+        gameDataSource.observeErrors().subscribe(onNext = { error ->
+            if (error is ShowdownError.NotAuthorizedError) {
+                view.newState {
+                    this.requestRoomPassword = true
+                }
+            } else if (error is ShowdownError.NoConnectionError) {
+                view.newState {
+                    this.showConnectionError = true
+                }
+            }
+        }).addTo(compositeDisposable)
+    }
+
+    private fun connectToServer() {
+        gameDataSource.connectToServer().subscribe(
+            onComplete = {
+                view.newState {
+                    this.showEntryPopup = true
+                }
+            },
+            onError = {
+                view.newState {
+                    this.showConnectionError = true
+                }
+            }
+        ).addTo(compositeDisposable)
     }
 
     override fun onDestroy() {
@@ -106,6 +130,7 @@ class GamePresenter(private val view: GameContract.View) : GameContract.Presente
     override fun joinGame(playerName: String) {
         val password = view.getState().roomPassword
         gameDataSource.joinRoom(playerName, password)
+        println("JoinGame")
     }
 
 

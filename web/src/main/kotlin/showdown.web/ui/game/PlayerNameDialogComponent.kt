@@ -18,12 +18,12 @@ import react.dom.attrs
 import react.dom.div
 import react.setState
 
-interface PlayerNameDialogComponentState : State {
+external interface PlayerNameDialogComponentState : State {
     var playerName: String
     var onJoinClicked: (String) -> Unit
 }
 
-interface PlayerNameDialogComponentProps : RProps {
+external interface PlayerNameDialogComponentProps : RProps {
     var onJoinClicked: (String) -> Unit
 }
 

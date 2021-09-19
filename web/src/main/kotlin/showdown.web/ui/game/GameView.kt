@@ -108,7 +108,7 @@ class GameView : RComponent<MyProps, HomeViewState>(), GameContract.View {
         }
         resultsList(state.results)
         playersList(state.players)
-        myfooter()
+        //myfooter()
         if (state.snackbarMessage.isNotEmpty()) {
             mySnackbar(state.snackbarMessage) {
                 setState {

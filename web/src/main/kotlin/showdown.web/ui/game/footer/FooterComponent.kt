@@ -24,6 +24,7 @@ import materialui.components.iconbutton.iconButton
 import materialui.components.textfield.textField
 import materialui.components.tooltip.tooltip
 import org.w3c.dom.HTMLInputElement
+import react.Props
 import react.RBuilder
 import react.RComponent
 import react.RProps
@@ -40,7 +41,7 @@ import styled.styledDiv
 
 
 
-external interface FooterProps : RProps
+external interface FooterProps : Props
 
 external interface RoomPasswordDialogState : State {
     var roomPassword: String
@@ -65,7 +66,7 @@ interface FooterContract {
     }
 }
 
-@JsExport
+
 class FooterComponent(prps: FooterProps) : RComponent<FooterProps, FooterState>(prps),
     FooterContract.View {
 
@@ -91,9 +92,8 @@ class FooterComponent(prps: FooterProps) : RComponent<FooterProps, FooterState>(
     private fun RBuilder.setRoomPasswordDialog(open: Boolean) {
 
         dialog {
-            attrs {
-                this.open = open
-            }
+            attrs.open = open
+
 
             div {
                 textField {

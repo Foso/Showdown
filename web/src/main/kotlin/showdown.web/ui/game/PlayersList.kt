@@ -55,7 +55,7 @@ fun RBuilder.playersList(members: List<Member>) {
             }
             circularProgress {
                 this.attrs {
-                    variant = CircularProgressVariant.static
+                    variant = CircularProgressVariant.determinate
                     val progressPercent = (players.filter { it.voted }.size.toDouble() / players.size.toDouble()) * 100
 
                     value = round(progressPercent)

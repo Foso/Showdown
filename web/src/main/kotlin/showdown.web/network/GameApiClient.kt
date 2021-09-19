@@ -100,6 +100,7 @@ class GameApiClient {
     }
 
     fun sendMessage(message: String) {
+        println("Message" + message)
         socket?.send(message)
     }
 }

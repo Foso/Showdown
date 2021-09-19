@@ -60,6 +60,8 @@ external interface ToolbarProps : RProps {
         }
     }
 
+
+
     override fun RBuilder.render() {
         if (state.showShareDialog) {
             shareDialog(onCloseFunction = {

@@ -18,6 +18,8 @@ import de.jensklingenberg.showdown.model.ShowdownError
 import de.jensklingenberg.showdown.model.VOTEPATH
 import de.jensklingenberg.showdown.model.api.clientrequest.JoinGame
 import de.jensklingenberg.showdown.model.api.clientrequest.NewGameConfig
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import showdown.web.common.stringify
 import showdown.web.network.GameApiClient
 import showdown.web.network.NetworkApiObserver
@@ -101,6 +103,7 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
                 password
             ).stringify()
         )
+
         gameApiClient.sendMessage(JSON.stringify(req))
     }
 
