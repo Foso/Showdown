@@ -18,7 +18,6 @@ import react.dom.div
 import react.fc
 import react.setState
 import showdown.web.ui.common.mySnackbar
-import showdown.web.ui.game.footer.myfooter
 import showdown.web.ui.game.toolbar.myToolbar
 import kotlin.js.Date
 
@@ -60,7 +59,7 @@ class GameView : RComponent<MyProps, HomeViewState>(), GameContract.View {
         autoReveal = false
         snackbarMessage = ""
         isSpectator = false
-        anonymResults=false
+        anonymResults = false
     }
 
     override fun componentWillUnmount() {
@@ -85,27 +84,17 @@ class GameView : RComponent<MyProps, HomeViewState>(), GameContract.View {
             startTimer = state.startEstimationTimer,
             diffSecs = state.diffSecs,
             gameModeId = state.gameModeId,
-            shareDialogDataHolder = ShareDialogDataHolder(state.autoReveal,state.anonymResults)
+            shareDialogDataHolder = ShareDialogDataHolder(state.autoReveal, state.anonymResults)
         )
 
         setupDialogs()
-        optionsList(state.options, state.selectedOptionId, onOptionClicked = { index: Int ->
+        optionsList(state, onOptionClicked = { index: Int ->
             setState {
                 this.selectedOptionId = index
             }
             presenter.onSelectedVote(index)
         })
-        div {
-            checkbox {
-                attrs {
-                    checked = state.isSpectator
-                    onClickFunction = {
-                        presenter.setSpectatorStatus(!state.isSpectator)
-                    }
-                }
-            }
-            +"I'm a spectator"
-        }
+        spectatorCheckbox()
         resultsList(state.results)
         playersList(state.players)
         //myfooter()
@@ -129,6 +118,20 @@ class GameView : RComponent<MyProps, HomeViewState>(), GameContract.View {
         }
     }
 
+    private fun RBuilder.spectatorCheckbox() {
+        div {
+            checkbox {
+                attrs {
+                    checked = state.isSpectator
+                    onClickFunction = {
+                        presenter.setSpectatorStatus(!state.isSpectator)
+                    }
+                }
+            }
+            +"I'm a spectator"
+        }
+    }
+
     private fun RBuilder.setupDialogs() {
         if (state.showEntryPopup) {
             playerNameDialog(onJoinClicked = { playerName ->
@@ -146,7 +149,7 @@ class GameView : RComponent<MyProps, HomeViewState>(), GameContract.View {
     }
 
 
-    private fun RBuilder.insertPasswordDialog(homeViewState: HomeViewState) {
+    fun RBuilder.insertPasswordDialog(homeViewState: HomeViewState) {
         dialog {
             attrs {
                 this.open = homeViewState.requestRoomPassword

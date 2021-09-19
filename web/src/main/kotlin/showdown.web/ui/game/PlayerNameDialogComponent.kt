@@ -11,12 +11,13 @@ import materialui.components.formcontrol.enums.FormControlVariant
 import materialui.components.textfield.textField
 import org.w3c.dom.HTMLInputElement
 import react.RBuilder
-import react.RComponent
 import react.RProps
 import react.State
 import react.dom.attrs
 import react.dom.div
+import react.fc
 import react.setState
+import react.useState
 
 external interface PlayerNameDialogComponentState : State {
     var playerName: String
@@ -43,25 +44,17 @@ fun DialogElementBuilder.joinGameButton(onClick: () -> Unit) {
 /**
  * On this dialog the user has to choose a player name
  */
-class PlayerNameDialogComponent(props: PlayerNameDialogComponentProps) :
-    RComponent<PlayerNameDialogComponentProps, PlayerNameDialogComponentState>(props) {
+val PlayerNameDialogComponent = fc<PlayerNameDialogComponentProps> { props ->
 
-    override fun PlayerNameDialogComponentState.init(props: PlayerNameDialogComponentProps) {
-        this.playerName = "User" + (0..1000).random().toString()
-        this.onJoinClicked = props.onJoinClicked
-    }
+    val (playerName, setplayerName) = useState("User" + (0..1000).random().toString())
 
-    override fun RBuilder.render() {
-        dialog {
-            attrs {
-                this.open = true
-            }
-            playerNameDialogContent()
+
+    println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+    dialog {
+        attrs {
+            this.open = true
         }
-    }
 
-
-    private fun DialogElementBuilder.playerNameDialogContent() {
         div {
             textField {
                 attrs {
@@ -69,13 +62,12 @@ class PlayerNameDialogComponent(props: PlayerNameDialogComponentProps) :
                     label {
                         +"Insert a Name"
                     }
-                    value(state.playerName)
+                    value(playerName)
                     onChangeFunction = {
                         val target = it.target as HTMLInputElement
 
-                        setState {
-                            this.playerName = target.value
-                        }
+                        setplayerName(target.value)
+
                     }
                 }
 
@@ -84,13 +76,15 @@ class PlayerNameDialogComponent(props: PlayerNameDialogComponentProps) :
         }
 
         joinGameButton(onClick = {
-            state.onJoinClicked(state.playerName)
+            props.onJoinClicked(playerName)
         })
+
     }
 }
 
+
 fun RBuilder.playerNameDialog(onJoinClicked: (String) -> Unit) {
-    child(PlayerNameDialogComponent::class) {
+    child(PlayerNameDialogComponent) {
         attrs {
             this.onJoinClicked = onJoinClicked
         }

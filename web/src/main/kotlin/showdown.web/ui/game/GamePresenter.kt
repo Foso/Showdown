@@ -1,19 +1,20 @@
 package showdown.web.ui.game
 
-import showdown.web.Application
 import com.badoo.reaktive.completable.subscribe
 import com.badoo.reaktive.disposable.CompositeDisposable
 import com.badoo.reaktive.disposable.addTo
 import com.badoo.reaktive.observable.subscribe
 import de.jensklingenberg.showdown.model.GameState
 import de.jensklingenberg.showdown.model.ShowdownError
+import showdown.web.Application
 import showdown.web.game.GameDataSource
 import kotlin.js.Date
 
-class GamePresenter(private val view: GameContract.View) : GameContract.Presenter {
+class GamePresenter(private val view: GameContract.View, private val gameDataSource: GameDataSource = Application.gameDataSource) : GameContract.Presenter {
 
-    private val gameDataSource: GameDataSource = Application.gameDataSource
     private val compositeDisposable = CompositeDisposable()
+
+
     override fun onCreate() {
         connectToServer()
 

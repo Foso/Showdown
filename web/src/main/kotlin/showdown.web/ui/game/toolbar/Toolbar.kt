@@ -37,7 +37,7 @@ external interface ToolbarProps : RProps {
 
 }
 
- class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(props) {
+class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(props) {
 
     private val viewModel: ToolContract.ViewModel by lazy {
         ToolbarViewModel()
@@ -61,7 +61,6 @@ external interface ToolbarProps : RProps {
     }
 
 
-
     override fun RBuilder.render() {
         if (state.showShareDialog) {
             shareDialog(onCloseFunction = {
@@ -79,33 +78,23 @@ external interface ToolbarProps : RProps {
                 color = AppBarColor.primary
             }
             div {
-                newGameButton()
-                showVotesButton()
-                settingsButton()
+                toolbarButton("New Game", AddCircleIcon, onClick = {
+                    viewModel.reset()
+                })
+
+                toolbarButton("Show Votes", VisibilityIcon, onClick = {
+                    viewModel.showVotes()
+                })
+                toolbarButton("Settings", SettingsIcon, onClick = {
+                    setState {
+                        showShareDialog = true
+                    }
+                })
                 +"Estimation time: ${getTimerText()} seconds."
             }
         }
     }
 
-    private fun RDOMBuilder<DIV>.newGameButton() {
-        toolbarButton("New Game", AddCircleIcon, onClick = {
-            viewModel.reset()
-        })
-    }
-
-    private fun RDOMBuilder<DIV>.showVotesButton() {
-        toolbarButton("Show Votes", VisibilityIcon, onClick = {
-            viewModel.showVotes()
-        })
-    }
-
-    private fun RDOMBuilder<DIV>.settingsButton() {
-        toolbarButton("Settings", SettingsIcon, onClick = {
-            setState {
-                this.showShareDialog = true
-            }
-        })
-    }
 
     private fun getTimerText(): String {
         return if (state.startTimer) {
@@ -117,6 +106,7 @@ external interface ToolbarProps : RProps {
 
 
 }
+
 
 
 fun RBuilder.myToolbar(
