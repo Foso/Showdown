@@ -1,7 +1,7 @@
 package showdown.web.wrapper.material
 
 import react.ComponentClass
-import react.RClass
+
 import react.RProps
 
 @JsModule("react-qr-code")

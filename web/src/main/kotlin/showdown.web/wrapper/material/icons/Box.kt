@@ -1,7 +1,7 @@
 package showdown.web.wrapper.material.icons
 
 import react.ComponentClass
-import react.RClass
+
 import react.RProps
 
 @JsModule("@material-ui/core/Box")

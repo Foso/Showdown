@@ -16,7 +16,7 @@ buildscript {
 
 }
 plugins {
-    id "org.jetbrains.kotlin.js"
+    id 'org.jetbrains.kotlin.js'
     id 'org.jetbrains.kotlin.plugin.serialization'
 }
 
@@ -37,14 +37,15 @@ allprojects {
 
 
 kotlin {
-    js() {
+    js(IR) {
+        binaries.executable()
         useCommonJs()
         browser {
 
         }
     }
 }
-def kotlinWrappersVersion = "0.0.1-pre.224-kotlin-1.5.21"
+def kotlinWrappersVersion = "0.0.1-pre.246-kotlin-1.5.30"
 
 dependencies {
     implementation project(":shared")
@@ -53,23 +54,23 @@ dependencies {
     implementation(enforcedPlatform("org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:${kotlinWrappersVersion}"))
     implementation("org.jetbrains.kotlin-wrappers:kotlin-react")
     implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom")
-    implementation("org.jetbrains.kotlin-wrappers:kotlin-react-router-dom")
+    implementation("org.jetbrains.kotlin-wrappers:kotlin-react-router-dom:5.2.0-pre.246-kotlin-1.5.30")
 
     implementation("org.jetbrains.kotlin-wrappers:kotlin-styled")
     implementation 'org.jetbrains.kotlin:kotlin-source-map-loader:1.3.72'
-
+    implementation("org.jetbrains.kotlin-wrappers:kotlin-csstype:3.0.9-pre.246-kotlin-1.5.30")
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:0.20.0"
-    implementation("net.subroh0508.kotlinmaterialui:core:0.6.0")
-    implementation("net.subroh0508.kotlinmaterialui:lab:0.6.0")
+    implementation("net.subroh0508.kotlinmaterialui:core:0.7.0")
+    implementation("net.subroh0508.kotlinmaterialui:lab:0.7.0")
     implementation 'com.badoo.reaktive:reaktive-js:1.2.0'
     implementation(npm('react', libs.react_version))
-    implementation(npm('@material-ui/core', libs.material_ui_core))
+    implementation(npm('@material-ui/core', '4.12.1'))
     implementation(npm('core-js', ''))
     implementation(npm('react-qr-code', ''))
     implementation(npm('@material-ui/icons', '4.11.2'))
     implementation(npm('inline-style-prefixer', ''))
     implementation(npm('uglifyjs-webpack-plugin', ''))
-    implementation(npm('react-dom', libs.react_version))
+   // implementation(npm('react-dom', libs.react_version))
     testImplementation 'org.jetbrains.kotlin:kotlin-test-js'
 
 }

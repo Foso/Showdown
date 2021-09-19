@@ -13,7 +13,6 @@ import react.RProps
 import react.child
 import react.dom.attrs
 import react.fc
-import react.functionalComponent
 import react.useState
 
 
@@ -29,7 +28,7 @@ external interface MySnackbarProps : RProps {
     var onClose: () -> Unit
 }
 
-@JsExport
+
 val mySnackbar = fc<MySnackbarProps> { props ->
     val text = props.snackbarMessage
     val (visible, setVisibility) = useState(true)

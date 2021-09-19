@@ -7,10 +7,12 @@ import kotlinx.html.js.onKeyDownFunction
 import materialui.components.formcontrol.enums.FormControlVariant
 import materialui.components.textfield.textField
 import org.w3c.dom.HTMLInputElement
+import react.Props
+import react.PropsWithChildren
 import react.RBuilder
 import react.RComponent
 import react.RProps
-import react.RState
+
 import react.State
 import react.child
 import react.dom.a
@@ -27,7 +29,8 @@ import react.fc
 import react.useState
 
 
-class OnboardingClass : RComponent<RProps, State>() {
+
+class OnboardingClass : RComponent<Props, State>() {
     override fun RBuilder.render() {
         child(onboardingScreen()) {}
     }
@@ -40,33 +43,6 @@ class OnboardingClass : RComponent<RProps, State>() {
 fun onboardingScreen() = fc<RProps> { props ->
 
     val (roomName, setRoomName) = useState("")
-
-    h2 { +"How to: $roomName" }
-
-    textField {
-        attrs {
-            variant = FormControlVariant.filled
-            value(roomName)
-            label {
-                +"Choose new room name:"
-            }
-            onChangeFunction = {
-                val target = it.target as HTMLInputElement
-
-
-                setRoomName(target.value)
-            }
-            onKeyDownFunction = {
-                if (it.type == "keydown" && it.asDynamic()["key"] == "Enter") {
-
-                    window.location.href = "/#/room/${roomName}";
-
-                }
-
-            }
-        }
-    }
-
 
     h1 {
         +"Showdown - Scrum Poker Web App"

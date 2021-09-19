@@ -20,7 +20,7 @@ import showdown.web.wrapper.material.icons.AddCircleIcon
 import kotlin.math.floor
 
 
-interface ToolbarState : State {
+external interface ToolbarState : State {
     var diffSecs: Double
     var startTimer: Boolean
     var showShareDialog: Boolean
@@ -29,7 +29,7 @@ interface ToolbarState : State {
 }
 
 
-interface ToolbarProps : RProps {
+external interface ToolbarProps : RProps {
     var startTimer: Boolean
     var diffSecs: Double
     var gameModeId: Int
@@ -37,7 +37,7 @@ interface ToolbarProps : RProps {
 
 }
 
-private class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(props) {
+ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(props) {
 
     private val viewModel: ToolContract.ViewModel by lazy {
         ToolbarViewModel()

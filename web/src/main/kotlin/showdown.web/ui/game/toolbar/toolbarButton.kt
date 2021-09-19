@@ -6,7 +6,7 @@ import materialui.components.button.button
 import materialui.components.button.enums.ButtonColor
 import materialui.components.button.enums.ButtonVariant
 import react.ComponentClass
-import react.RClass
+
 import react.dom.RDOMBuilder
 import react.dom.attrs
 

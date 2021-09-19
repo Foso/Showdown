@@ -9,11 +9,13 @@ import materialui.components.dialog.dialog
 import materialui.components.formcontrol.enums.FormControlVariant
 import materialui.components.textfield.textField
 import org.w3c.dom.HTMLInputElement
+import react.Props
 import react.RBuilder
 import react.RComponent
 import react.RProps
 import react.dom.attrs
 import react.dom.div
+import react.fc
 import react.setState
 import showdown.web.ui.common.mySnackbar
 import showdown.web.ui.game.footer.myfooter
@@ -21,13 +23,20 @@ import showdown.web.ui.game.toolbar.myToolbar
 import kotlin.js.Date
 
 
-class GameView : RComponent<RProps, GameContract.HomeViewState>(), GameContract.View {
+external interface MyProps : Props
+
+fun routegame() = fc<RProps> { props ->
+    GameView()
+
+}
+
+class GameView : RComponent<MyProps, HomeViewState>(), GameContract.View {
 
     private val presenter: GameContract.Presenter by lazy {
         GamePresenter(this)
     }
 
-    override fun GameContract.HomeViewState.init() {
+    override fun HomeViewState.init() {
         showSnackbar = false
         players = emptyList()
         options = listOf()
@@ -137,7 +146,7 @@ class GameView : RComponent<RProps, GameContract.HomeViewState>(), GameContract.
     }
 
 
-    private fun RBuilder.insertPasswordDialog(homeViewState: GameContract.HomeViewState) {
+    private fun RBuilder.insertPasswordDialog(homeViewState: HomeViewState) {
         dialog {
             attrs {
                 this.open = homeViewState.requestRoomPassword
@@ -186,13 +195,13 @@ class GameView : RComponent<RProps, GameContract.HomeViewState>(), GameContract.
     }
 
 
-    override fun newState(buildState: GameContract.HomeViewState.(GameContract.HomeViewState) -> Unit) {
+    override fun newState(buildState: HomeViewState.(HomeViewState) -> Unit) {
         setState {
             buildState(this)
         }
     }
 
-    override fun getState(): GameContract.HomeViewState = state
+    override fun getState(): HomeViewState = state
 }
 
 

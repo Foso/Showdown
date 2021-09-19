@@ -13,8 +13,6 @@ import org.w3c.dom.HTMLInputElement
 import react.RBuilder
 import react.RComponent
 import react.RProps
-import react.RState
-import react.ReactElement
 import react.State
 import react.dom.attrs
 import react.dom.div

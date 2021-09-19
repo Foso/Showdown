@@ -27,8 +27,6 @@ import org.w3c.dom.HTMLInputElement
 import react.RBuilder
 import react.RComponent
 import react.RProps
-import react.RState
-import react.ReactElement
 import react.State
 import react.dom.attrs
 import react.dom.div
@@ -42,16 +40,16 @@ import styled.styledDiv
 
 
 
-interface FooterProps : RProps
+external interface FooterProps : RProps
 
-interface RoomPasswordDialogState : RState {
+external interface RoomPasswordDialogState : State {
     var roomPassword: String
     var roomHasPassword: Boolean
     var showChangePassword: Boolean
 
 }
 
-interface FooterState : State, RoomPasswordDialogState
+external interface FooterState : State, RoomPasswordDialogState
 
 interface FooterContract {
     interface View :
@@ -67,6 +65,7 @@ interface FooterContract {
     }
 }
 
+@JsExport
 class FooterComponent(prps: FooterProps) : RComponent<FooterProps, FooterState>(prps),
     FooterContract.View {
 
