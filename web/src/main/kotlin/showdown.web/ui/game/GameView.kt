@@ -1,16 +1,9 @@
 package showdown.web.ui.game
 
 
-import de.jensklingenberg.showdown.model.PATHS
-import de.jensklingenberg.showdown.model.Response
-import de.jensklingenberg.showdown.model.WebSocketResourceType
-import de.jensklingenberg.showdown.model.WebsocketResource
 import kotlinx.browser.window
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import materialui.components.checkbox.checkbox
 import materialui.components.dialog.dialog
 import materialui.components.formcontrol.enums.FormControlVariant
@@ -23,11 +16,11 @@ import react.RComponent
 import react.dom.attrs
 import react.dom.div
 import react.setState
-import showdown.web.common.stringify
 import showdown.web.ui.common.mySnackbar
 import showdown.web.ui.game.toolbar.myToolbar
 import kotlin.js.Date
 
+val PARAM_UNAME = "uname"
 
 external interface MyProps : Props
 
@@ -94,23 +87,15 @@ class GameView : RComponent<MyProps, HomeViewState>(), GameContract.View {
         )
 
         //OPTIONS
-        optionsList(state, onOptionClicked = { index: Int ->
-            setState {
-                this.selectedOptionId = index
-            }
-            presenter.onSelectedVote(index)
-        })
-        div {
-            checkbox {
-                attrs {
-                    checked = state.isSpectator
-                    onClickFunction = {
-                        presenter.setSpectatorStatus(!state.isSpectator)
-                    }
+        if(!state.isSpectator){
+            optionsList(state, onOptionClicked = { index: Int ->
+                setState {
+                    this.selectedOptionId = index
                 }
-            }
-            +"I'm a spectator"
+                presenter.onSelectedVote(index)
+            })
         }
+        spectatorCheckbox()
 
 
         //RESULTS
@@ -142,13 +127,27 @@ class GameView : RComponent<MyProps, HomeViewState>(), GameContract.View {
         }
     }
 
+    private fun RBuilder.spectatorCheckbox() {
+        div {
+            checkbox {
+                attrs {
+                    checked = state.isSpectator
+                    onClickFunction = {
+                        presenter.setSpectatorStatus(!state.isSpectator)
+                    }
+                }
+            }
+            +"I'm a spectator"
+        }
+    }
+
 
     private fun RBuilder.setupDialogs() {
         if (state.showEntryPopup) {
             val test = URLSearchParams(window.location.hash.substringAfter("?"))
 
-            if(test.has("uname")){
-                val uname = test.get("uname")?:""
+            if(test.has(PARAM_UNAME)){
+                val uname = test.get(PARAM_UNAME)?:""
                 presenter.joinGame(uname)
                 setState {
                     this.playerName = uname
