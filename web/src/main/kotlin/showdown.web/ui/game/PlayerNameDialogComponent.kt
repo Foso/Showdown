@@ -41,9 +41,6 @@ fun DialogElementBuilder.joinGameButton(onClick: () -> Unit) {
 val PlayerNameDialogComponent = fc<PlayerNameDialogComponentProps> { props ->
 
     val (playerName, setplayerName) = useState("User" + (0..1000).random().toString())
-
-
-    println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
     dialog {
         attrs {
             this.open = true

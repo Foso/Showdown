@@ -3,6 +3,7 @@ package de.jensklingenberg.showdown.server.game
 
 import com.soywiz.klock.DateTime
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import de.jensklingenberg.showdown.model.ClientGameConfig
 import de.jensklingenberg.showdown.model.GameState
 import de.jensklingenberg.showdown.model.Member
@@ -31,7 +32,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
     private var gameState: GameState = GameState.NotStarted
     private val inactivePlayerIds = mutableSetOf<String>()
     private val spectatorIds = mutableSetOf<String>()
-    private val moshi = Moshi.Builder().build()
+    val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
 
     fun changeRoomPassword(sessionId: String, password: String) {
         val newRoomData = gameConfig.room.copy(password = password)
@@ -63,12 +64,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
         sendRoomConfigUpdate(gameConfig.toClient())
     }
 
-    private fun sendRoomConfigUpdate(clientGameConfig: ClientGameConfig) {
-        val configJson = moshi.toJson(clientGameConfig)
-        val response = Response(PATHS.ROOMCONFIGUPDATE.path, configJson)
-        val websocketResource = WebsocketResource(WebSocketResourceType.RESPONSE, response)
-        sendBroadcast(websocketResource.toJson())
-    }
+
 
     fun restart() {
         gameState =
@@ -151,6 +147,13 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
 
         server.sendData(sessionId, websocketResource.toJson())
         sendPlayerList()
+    }
+
+    private fun sendRoomConfigUpdate(clientGameConfig: ClientGameConfig) {
+        val configJson = moshi.toJson(clientGameConfig)
+        val response = Response(PATHS.ROOMCONFIGUPDATE.path, configJson)
+        val websocketResource = WebsocketResource(WebSocketResourceType.RESPONSE, response)
+        sendBroadcast(websocketResource.toJson())
     }
 
     fun onPlayerVoted(sessionId: String, voteId: Int) {
@@ -244,7 +247,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
 
     private fun sendBroadcast(json: String) {
         playerList.forEach {
-            println("${it.name} $json")
+            println("sendBroadcast: ${it.name} $json")
             server.sendData(it.sessionId, json)
         }
     }

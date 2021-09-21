@@ -84,6 +84,7 @@ class GamePresenter(private val view: GameContract.View, private val gameDataSou
 
     private fun observeSpectatorStatus() {
         gameDataSource.observeSpectatorStatus().subscribe(onNext = {
+            
             view.setSpectatorStatus(it)
         }).addTo(compositeDisposable)
     }

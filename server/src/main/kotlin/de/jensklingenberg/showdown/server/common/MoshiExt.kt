@@ -27,8 +27,13 @@ inline fun <reified T> Moshi.toJson(any: WebsocketResource<T>): String {
 }
 
 fun Moshi.toJson(any: Any): String {
-    val jsonAdapter = this.adapter(Any::class.java)
-    return jsonAdapter?.toJson(any) ?: ""
+    return try {
+        val jsonAdapter = this.adapter(Any::class.java)
+        jsonAdapter?.toJson(any) ?: ""
+    }catch (ex: Exception){
+        ""
+    }
+
 }
 
 
@@ -48,9 +53,15 @@ inline fun <reified T> fromJson(json:String) : T?{
 }
 
 inline fun <reified T> WebsocketResource<T>.toJson(): String {
-    val moshi = Moshi.Builder().build()
-    val parameterizedType =
-        Types.newParameterizedType(WebsocketResource::class.java, T::class.java)
-    val adapter = moshi.adapter<WebsocketResource<T>>(parameterizedType)
-    return adapter.toJson(this)?:""
+   try {
+       val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
+
+       val parameterizedType =
+           Types.newParameterizedType(WebsocketResource::class.java, T::class.java)
+       val adapter = moshi.adapter<WebsocketResource<T>>(parameterizedType)
+       return adapter.toJson(this)?:""
+   }catch (ex:Exception){
+       println("Exception: $ex")
+       return ""
+   }
 }

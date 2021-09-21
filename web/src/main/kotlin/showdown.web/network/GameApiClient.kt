@@ -10,6 +10,8 @@ import de.jensklingenberg.showdown.model.WebSocketResourceType
 import de.jensklingenberg.showdown.model.WebsocketResource
 import de.jensklingenberg.showdown.model.getServerResponse
 import de.jensklingenberg.showdown.model.getWebsocketType
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import org.w3c.dom.MessageEvent
 import org.w3c.dom.WebSocket
 import org.w3c.dom.events.Event
@@ -25,20 +27,18 @@ class GameApiClient {
         socket = org.w3c.dom.WebSocket(NetworkPreferences().websocketUrl())
 
         socket?.apply {
-            onopen = { event: Event ->
+            onopen = {
                 emitter.onComplete()
             }
             onmessage = { event: Event ->
-                println("EVENT $event")
                 onMessage((event as MessageEvent))
             }
 
-            onerror = { event: Event ->
-                println("EVENTErrror $event")
+            onerror = {
                 observer.onError(ServerResponse.ErrorEvent(ShowdownError.NoConnectionError()))
                 emitter.onError(Throwable("NO Connection"))
             }
-            onclose = { event: Event ->
+            onclose = {
                 observer.onError(ServerResponse.ErrorEvent(ShowdownError.NoConnectionError()))
             }
         }
@@ -46,31 +46,40 @@ class GameApiClient {
 
 
     private fun getPath(path: String): PATHS {
-        return PATHS.values().find { it.path == path } ?: PATHS.EMPTY
+        println("getPath:" +path)
+
+        val tt = PATHS.values().find { it.path == path } ?: PATHS.EMPTY
+        println("getPath:" +tt)
+        return tt
     }
 
     private fun <T> fromJson(json: String): T? {
-        return JSON.parse<T>(json)
+        val tt = JSON.parse<T>(json)
+        println("tt $tt")
+        return tt
     }
 
     private fun onMessage(messageEvent: MessageEvent) {
-        println("ONMessa")
+        println("ONMessa: "+messageEvent.data.toString())
         val json = messageEvent.data.toString()
 
         when (getWebsocketType(json)) {
-            WebSocketResourceType.GameEvent, WebSocketResourceType.Notification, WebSocketResourceType.MESSAGE, WebSocketResourceType.UNKNOWN -> {
 
-            }
             WebSocketResourceType.RESPONSE -> {
-                val resource2 = JSON.parse<WebsocketResource<Response>>(json)
-                val response = resource2.data!!
-                when (getPath(response.path)) {
+                println("WebSocketResourceType.RESPONSE $json")
+
+                val resource2 = Json.decodeFromString<WebsocketResource<Response>>(json)//JSON.parse<WebsocketResource<Response>>(json)
+                val response =                  resource2.data!!//JSON.parse<WebsocketResource<Response>>(json)
+                println("resource:: ${response.path}")
+
+                when (val path =getPath(response.path)) {
                     PATHS.MESSAGE -> {
                         observer.onMessageEvent(response.body)
                         // console.log("RESPONSE"+response.body)
                     }
 
                     PATHS.ROOMCONFIGUPDATE -> {
+                        println("ROOMCONFIGUPDATE ${resource2.data!!}")
                         fromJson<ClientGameConfig>(response.body)?.let {
                             observer.onConfigUpdated(it)
                         }
@@ -78,12 +87,14 @@ class GameApiClient {
 
 
                     PATHS.SPECTATORPATH -> {
+                        println("Repo: ${response.body}")
                         fromJson<Boolean>(response.body)?.let {
-                            observer.onSpectatorStatusChanged(it)
+                            println("Repo: $it")
+                            observer.onSpectatorStatusChanged(it )
                         }
                     }
                     PATHS.SETROOMPASSSWORDPATH, PATHS.EMPTY, PATHS.ROOMUPDATE -> {
-
+                        println("PATH: $path $json")
                     }
                 }
             }
@@ -105,7 +116,7 @@ class GameApiClient {
     }
 
     fun sendMessage(message: String) {
-        println("Message" + message)
+        println("sendMessageToServer: " + message)
         socket?.send(message)
     }
 }

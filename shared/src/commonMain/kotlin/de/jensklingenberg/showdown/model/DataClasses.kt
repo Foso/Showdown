@@ -11,7 +11,9 @@ enum class PATHS(val path:String){
     ROOMUPDATE("/room/update"),
     EMPTY(""),
     ROOMCONFIGUPDATE("/room/config"),
-    SPECTATORPATH("/spectator")
+    SPECTATORPATH("/spectator"),
+    SHOWVOTESPATH("/room/showvotes"),
+    JOINROOMPATH("/room/join")
 
 }
 val SETROOMPASSSWORDPATH= "/room/password/set"
@@ -19,9 +21,8 @@ val SETAUTOREVEALPATH= "/room/autoreveal/set"
 val SETANONYMVOTES= "/room/config/anonymvote/set"
 
 
-val SHOWVOTESPATH= "/room/showvotes"
+
 val RESTARTPATH= "/room/restart"
-val JOINROOMPATH= "/room/join"
 val VOTEPATH= "/vote"
 
 val GAMEEVENTPATH = "/event"

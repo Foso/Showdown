@@ -1,9 +1,16 @@
 package showdown.web.ui.game
 
 
+import de.jensklingenberg.showdown.model.PATHS
+import de.jensklingenberg.showdown.model.Response
+import de.jensklingenberg.showdown.model.WebSocketResourceType
+import de.jensklingenberg.showdown.model.WebsocketResource
 import kotlinx.browser.window
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import materialui.components.checkbox.checkbox
 import materialui.components.dialog.dialog
 import materialui.components.formcontrol.enums.FormControlVariant
@@ -12,11 +19,10 @@ import org.w3c.dom.HTMLInputElement
 import react.Props
 import react.RBuilder
 import react.RComponent
-import react.RProps
 import react.dom.attrs
 import react.dom.div
-import react.fc
 import react.setState
+import showdown.web.common.stringify
 import showdown.web.ui.common.mySnackbar
 import showdown.web.ui.game.toolbar.myToolbar
 import kotlin.js.Date
@@ -31,6 +37,7 @@ class GameView : RComponent<MyProps, HomeViewState>(), GameContract.View {
     private val presenter: GameContract.Presenter by lazy {
         GamePresenter(this)
     }
+
 
     override fun HomeViewState.init() {
         showSnackbar = false
@@ -57,6 +64,15 @@ class GameView : RComponent<MyProps, HomeViewState>(), GameContract.View {
         snackbarMessage = ""
         isSpectator = false
         anonymResults = false
+        val test = "{\"type\":\"RESPONSE\",\"data\":{\"path\":\"/spectator\",\"body\":\"true\"},\"message\":\"\"}"
+        val response = Response(PATHS.SPECTATORPATH.path, "true")
+        val res =Json.encodeToString(response)
+        val web =WebsocketResource(WebSocketResourceType.RESPONSE, res)
+        val websocketResource = Json.encodeToString(web)
+        println("RES: $res")
+
+        val resource2 = Json.decodeFromString<Response>(res)
+        println("RES: "+resource2.body)
     }
 
     override fun componentWillUnmount() {
@@ -93,7 +109,17 @@ class GameView : RComponent<MyProps, HomeViewState>(), GameContract.View {
             }
             presenter.onSelectedVote(index)
         })
-        spectatorCheckbox()
+        div {
+            checkbox {
+                attrs {
+                    checked = state.isSpectator
+                    onClickFunction = {
+                        presenter.setSpectatorStatus(!state.isSpectator)
+                    }
+                }
+            }
+            +"I'm a spectator"
+        }
 
 
         //RESULTS
@@ -127,17 +153,7 @@ class GameView : RComponent<MyProps, HomeViewState>(), GameContract.View {
     }
 
     private fun RBuilder.spectatorCheckbox() {
-        div {
-            checkbox {
-                attrs {
-                    checked = state.isSpectator
-                    onClickFunction = {
-                        presenter.setSpectatorStatus(!state.isSpectator)
-                    }
-                }
-            }
-            +"I'm a spectator"
-        }
+
     }
 
     private fun RBuilder.setupDialogs() {
@@ -178,6 +194,7 @@ class GameView : RComponent<MyProps, HomeViewState>(), GameContract.View {
     }
 
     override fun setSpectatorStatus(it: Boolean) {
+        println("setSpectatorStatus $it")
         setState {
             this.isSpectator = it
         }

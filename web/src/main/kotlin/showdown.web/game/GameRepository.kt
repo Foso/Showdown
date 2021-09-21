@@ -3,23 +3,9 @@ package showdown.web.game
 import com.badoo.reaktive.completable.Completable
 import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.subject.behavior.BehaviorSubject
-import de.jensklingenberg.showdown.model.ClientGameConfig
-import de.jensklingenberg.showdown.model.GameState
-import de.jensklingenberg.showdown.model.JOINROOMPATH
-import de.jensklingenberg.showdown.model.PATHS
-import de.jensklingenberg.showdown.model.RESTARTPATH
-import de.jensklingenberg.showdown.model.Request
-import de.jensklingenberg.showdown.model.SETANONYMVOTES
-import de.jensklingenberg.showdown.model.SETAUTOREVEALPATH
-import de.jensklingenberg.showdown.model.SETROOMPASSSWORDPATH
-import de.jensklingenberg.showdown.model.SHOWVOTESPATH
-import de.jensklingenberg.showdown.model.ServerResponse
-import de.jensklingenberg.showdown.model.ShowdownError
-import de.jensklingenberg.showdown.model.VOTEPATH
+import de.jensklingenberg.showdown.model.*
 import de.jensklingenberg.showdown.model.api.clientrequest.JoinGame
 import de.jensklingenberg.showdown.model.api.clientrequest.NewGameConfig
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import showdown.web.common.stringify
 import showdown.web.network.GameApiClient
 import showdown.web.network.NetworkApiObserver
@@ -41,7 +27,7 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
     }
 
     override fun showVotes() {
-        val req = Request(SHOWVOTESPATH).stringify()
+        val req = Request(PATHS.SHOWVOTESPATH.path).stringify()
         gameApiClient.sendMessage(req)
     }
 
@@ -98,7 +84,7 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
         playerName = name
         roomPassword = password
         val req = Request(
-            JOINROOMPATH, JoinGame(
+            PATHS.JOINROOMPATH.path, JoinGame(
                 name,
                 password
             ).stringify()
@@ -121,7 +107,7 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
 
 
     override fun onError(errorEvent: ServerResponse.ErrorEvent) {
-        println("HIer ${errorEvent.error}")
+
         errorSubject.onNext(errorEvent.error)
     }
 

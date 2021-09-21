@@ -102,7 +102,7 @@ class ShowdownServer : GameServer {
             SETROOMPASSSWORDPATH -> {
                 gameSource?.changeRoomPassword(sessionId, request.body)
             }
-            SHOWVOTESPATH -> {
+            PATHS.SHOWVOTESPATH.path -> {
                 gameSource?.showVotes(sessionId)
             }
             RESTARTPATH -> {
@@ -126,7 +126,7 @@ class ShowdownServer : GameServer {
                     }
 
             }
-            JOINROOMPATH -> {
+            PATHS.JOINROOMPATH.path -> {
                 fromJson<JoinGame>(request.body)
                     ?.let { joinGame ->
                         if (gameMap.none { it.key == room.name }) {
@@ -192,7 +192,8 @@ class ShowdownServer : GameServer {
     }
 
     suspend fun sendMessage(recipient: String, message: String) {
-        members[recipient]?.send(Frame.Text("$message"))
+        println("sendMessageToClient: $message")
+        members[recipient]?.send(Frame.Text(message))
     }
 
 

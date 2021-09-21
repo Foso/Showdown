@@ -15,6 +15,7 @@ class ServerResponseParser {
         }
 
 
+
         fun getErrorCommand(jsonStr: String): ServerResponse.ErrorEvent {
             return json.decodeFromString(
                 ServerResponse.ErrorEvent.serializer(), jsonStr

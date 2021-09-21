@@ -23,7 +23,7 @@ sealed class ServerResponse(val id: Int) {
 }
 
 
-private val json = Json
+private val json = Json{ allowStructuredMapKeys = true }
 
 @OptIn(ExperimentalSerializationApi::class)
 fun ServerResponse.ErrorEvent.toJson(): String {
