@@ -96,6 +96,7 @@ class GamePresenter(private val view: GameContract.View, private val gameDataSou
 
     private fun observeErrors() {
         gameDataSource.observeErrors().subscribe(onNext = { error ->
+            println("ERROR ${error?.message}")
             if (error is ShowdownError.NotAuthorizedError) {
                 view.newState {
                     this.requestRoomPassword = true

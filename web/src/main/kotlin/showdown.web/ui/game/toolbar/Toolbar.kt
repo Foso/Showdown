@@ -1,19 +1,18 @@
 package showdown.web.ui.game.toolbar
 
-import kotlinx.html.DIV
 import materialui.components.appbar.appBar
 import materialui.components.appbar.enums.AppBarColor
 import materialui.components.appbar.enums.AppBarPosition
 import react.RBuilder
 import react.RComponent
 import react.RProps
+import react.RStatics
 import react.State
-import react.dom.RDOMBuilder
 import react.dom.attrs
 import react.dom.div
 import react.setState
 import showdown.web.ui.game.ShareDialogDataHolder
-import showdown.web.ui.game.shareDialog
+import showdown.web.ui.game.settingsDialog
 import showdown.web.wrapper.material.SettingsIcon
 import showdown.web.wrapper.material.VisibilityIcon
 import showdown.web.wrapper.material.icons.AddCircleIcon
@@ -43,6 +42,8 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
         ToolbarViewModel()
     }
 
+
+
     override fun ToolbarState.init(props: ToolbarProps) {
         this.startTimer = props.startTimer
         this.showShareDialog = false
@@ -61,9 +62,12 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
     }
 
 
+
+
+
     override fun RBuilder.render() {
         if (state.showShareDialog) {
-            shareDialog(onCloseFunction = {
+            settingsDialog(onCloseFunction = {
                 setState {
                     this.showShareDialog = false
                 }
@@ -72,13 +76,17 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
             }, state.shareDialogDataHolder)
         }
 
+        myAppBar()
+    }
+
+    private fun RBuilder.myAppBar() {
         appBar {
             attrs {
                 position = AppBarPosition.static
                 color = AppBarColor.primary
             }
             div {
-                toolbarButton("New Game", AddCircleIcon, onClick = {
+                toolbarButton("New Voting", AddCircleIcon, onClick = {
                     viewModel.reset()
                 })
 

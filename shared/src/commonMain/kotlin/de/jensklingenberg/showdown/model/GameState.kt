@@ -30,9 +30,3 @@ enum class GameEventType(val kClass: KClass<*>) {
 
 open class GameEvent(val eventId: Int)
 data class MyGameEvent(val name:String):GameEvent(GameEventType.Normal.ordinal)
-
-enum class EnGameState{
-    NOTSTARTED,STARTED,MEMBERSUDPATE,SHOWVOTES
-}
-
-class MyGameState(val enGameState: EnGameState,val body:Any)

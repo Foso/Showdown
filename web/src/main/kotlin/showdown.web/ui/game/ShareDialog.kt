@@ -24,7 +24,7 @@ data class ShareDialogDataHolder(val autoReveal: Boolean, val anonymResults:Bool
 /**
  * Shows a dialog with a QR Code of the link to the room
  */
-fun RBuilder.shareDialog(
+fun RBuilder.settingsDialog(
     onCloseFunction: (Event) -> Unit,
     gameModeId: Int,
     onSave: (Int, String) -> Unit,
@@ -52,7 +52,7 @@ fun RBuilder.shareDialog(
                     attrs {
                         checked = shareDialogDataHolder.autoReveal
                         onClickFunction = {
-                            Application.gameDataSource.setAutoReveal(!shareDialogDataHolder.autoReveal)
+                           // Application.gameDataSource.setAutoReveal(!shareDialogDataHolder.autoReveal)
                         }
                     }
                 }

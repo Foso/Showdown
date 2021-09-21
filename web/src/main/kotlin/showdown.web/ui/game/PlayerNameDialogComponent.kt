@@ -10,21 +10,15 @@ import materialui.components.dialog.dialog
 import materialui.components.formcontrol.enums.FormControlVariant
 import materialui.components.textfield.textField
 import org.w3c.dom.HTMLInputElement
+import react.Props
 import react.RBuilder
-import react.RProps
-import react.State
 import react.dom.attrs
 import react.dom.div
 import react.fc
-import react.setState
 import react.useState
 
-external interface PlayerNameDialogComponentState : State {
-    var playerName: String
-    var onJoinClicked: (String) -> Unit
-}
 
-external interface PlayerNameDialogComponentProps : RProps {
+external interface PlayerNameDialogComponentProps : Props {
     var onJoinClicked: (String) -> Unit
 }
 

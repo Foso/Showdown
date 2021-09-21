@@ -121,6 +121,7 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
 
 
     override fun onError(errorEvent: ServerResponse.ErrorEvent) {
+        println("HIer ${errorEvent.error}")
         errorSubject.onNext(errorEvent.error)
     }
 

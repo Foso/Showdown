@@ -244,6 +244,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
 
     private fun sendBroadcast(json: String) {
         playerList.forEach {
+            println("${it.name} $json")
             server.sendData(it.sessionId, json)
         }
     }

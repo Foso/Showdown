@@ -178,6 +178,7 @@ class ShowdownServer : GameServer {
     }
 
     override fun closeRoom(roomName: String) {
+        println("Close Room $roomName")
         gameMap.remove(roomName)
     }
 

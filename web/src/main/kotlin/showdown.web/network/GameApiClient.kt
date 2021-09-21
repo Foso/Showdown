@@ -29,10 +29,12 @@ class GameApiClient {
                 emitter.onComplete()
             }
             onmessage = { event: Event ->
+                println("EVENT $event")
                 onMessage((event as MessageEvent))
             }
 
             onerror = { event: Event ->
+                println("EVENTErrror $event")
                 observer.onError(ServerResponse.ErrorEvent(ShowdownError.NoConnectionError()))
                 emitter.onError(Throwable("NO Connection"))
             }
@@ -52,7 +54,9 @@ class GameApiClient {
     }
 
     private fun onMessage(messageEvent: MessageEvent) {
+        println("ONMessa")
         val json = messageEvent.data.toString()
+
         when (getWebsocketType(json)) {
             WebSocketResourceType.GameEvent, WebSocketResourceType.Notification, WebSocketResourceType.MESSAGE, WebSocketResourceType.UNKNOWN -> {
 
@@ -79,7 +83,7 @@ class GameApiClient {
                         }
                     }
                     PATHS.SETROOMPASSSWORDPATH, PATHS.EMPTY, PATHS.ROOMUPDATE -> {
-                        //TODO()
+
                     }
                 }
             }
@@ -91,6 +95,7 @@ class GameApiClient {
                 observer.onGameStateChanged(type.state)
             }
             is ServerResponse.ErrorEvent -> {
+                println("SERv  ${type.error}" )
                 observer.onError(type)
             }
 

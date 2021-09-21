@@ -1,6 +1,8 @@
 package de.jensklingenberg.showdown.model
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 
@@ -21,11 +23,15 @@ sealed class ServerResponse(val id: Int) {
 }
 
 
+private val json = Json
+
+@OptIn(ExperimentalSerializationApi::class)
 fun ServerResponse.ErrorEvent.toJson(): String {
-    return Json { allowStructuredMapKeys = true }.encodeToString(ServerResponse.ErrorEvent.serializer(), this)
+    return json.encodeToString( this)
 }
 
+@OptIn(ExperimentalSerializationApi::class)
 fun ServerResponse.GameStateChanged.toJson(): String {
-    return Json { allowStructuredMapKeys = true }.encodeToString(ServerResponse.GameStateChanged.serializer(), this)
+    return json.encodeToString( this)
 }
 

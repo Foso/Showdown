@@ -9,7 +9,6 @@ import react.dom.p
 
 fun RBuilder.resultsList(results: List<Result>) {
 
-    if (results.isNotEmpty()) {
         h2 {
             +"Result:"
         }
@@ -33,8 +32,5 @@ fun RBuilder.resultsList(results: List<Result>) {
             }
         }
         hr { }
-
-    }
-
 
 }

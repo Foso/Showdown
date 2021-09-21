@@ -5,6 +5,7 @@ import de.jensklingenberg.showdown.server.model.Session
 import io.ktor.application.ApplicationCallPipeline
 import io.ktor.application.call
 import io.ktor.application.install
+import io.ktor.features.AutoHeadResponse.install
 import io.ktor.features.Compression
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.gzip
@@ -17,12 +18,13 @@ import io.ktor.response.respondBytes
 import io.ktor.response.respondRedirect
 import io.ktor.routing.get
 import io.ktor.routing.routing
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
 import io.ktor.sessions.*
 import io.ktor.util.generateNonce
 import io.ktor.websocket.WebSockets
 import io.ktor.websocket.webSocket
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.consumeEach
 import java.time.Duration
 
@@ -43,7 +45,8 @@ class ShowdownApplication {
         println("SERVER STARTED on port: " + port)
         println("http://localhost:$port/")
 
-        embeddedServer(Netty, port) {
+
+        embeddedServer( Netty, port=port) {
             install(Compression) {
                 gzip()
             }
@@ -131,6 +134,8 @@ class ShowdownApplication {
             }
         }.start(wait = true)
     }
+
+
 
 
 }

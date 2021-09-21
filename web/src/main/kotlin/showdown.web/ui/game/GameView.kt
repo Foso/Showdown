@@ -24,10 +24,7 @@ import kotlin.js.Date
 
 external interface MyProps : Props
 
-fun routegame() = fc<RProps> { props ->
-    GameView()
 
-}
 
 class GameView : RComponent<MyProps, HomeViewState>(), GameContract.View {
 
@@ -79,7 +76,9 @@ class GameView : RComponent<MyProps, HomeViewState>(), GameContract.View {
     }
 
     override fun RBuilder.render() {
+        setupDialogs()
 
+        //TOOLBAR
         myToolbar(
             startTimer = state.startEstimationTimer,
             diffSecs = state.diffSecs,
@@ -87,7 +86,7 @@ class GameView : RComponent<MyProps, HomeViewState>(), GameContract.View {
             shareDialogDataHolder = ShareDialogDataHolder(state.autoReveal, state.anonymResults)
         )
 
-        setupDialogs()
+        //OPTIONS
         optionsList(state, onOptionClicked = { index: Int ->
             setState {
                 this.selectedOptionId = index
@@ -95,7 +94,16 @@ class GameView : RComponent<MyProps, HomeViewState>(), GameContract.View {
             presenter.onSelectedVote(index)
         })
         spectatorCheckbox()
-        resultsList(state.results)
+
+
+        //RESULTS
+        if (state.results.isNotEmpty()) {
+            resultsList(state.results)
+        }
+
+
+
+        //PLAYERS
         playersList(state.players)
         //myfooter()
         if (state.snackbarMessage.isNotEmpty()) {
@@ -143,47 +151,25 @@ class GameView : RComponent<MyProps, HomeViewState>(), GameContract.View {
             })
         }
 
-        insertPasswordDialog(state)
-
-
-    }
-
-
-    fun RBuilder.insertPasswordDialog(homeViewState: HomeViewState) {
-        dialog {
-            attrs {
-                this.open = homeViewState.requestRoomPassword
-            }
-
-            div {
-                textField {
-                    attrs {
-                        variant = FormControlVariant.filled
-                        value(homeViewState.roomPassword)
-                        label {
-                            +"A room password is required"
-                        }
-                        onChangeFunction = {
-                            val target = it.target as HTMLInputElement
-
-                            setState {
-                                this.roomPassword = target.value
-                            }
-                        }
-                    }
-
-                }
-            }
-
-            joinGameButton {
+        if(state.requestRoomPassword){
+            insertPasswordDialog(state.roomPassword, onJoinClicked = {
                 setState {
                     this.requestRoomPassword = false
                 }
                 presenter.joinGame(state.playerName)
-            }
-
+            },onTextChanged = {
+                setState {
+                    this.roomPassword = it
+                }
+            })
         }
+
+
+
     }
+
+
+
 
     override fun showInfoPopup(it: String) {
         setState {
@@ -215,4 +201,33 @@ fun RBuilder.home() = child(GameView::class) {
 }
 
 
+fun RBuilder.insertPasswordDialog(roomPassword:String,onJoinClicked:()->Unit,onTextChanged:(String)->Unit) {
+    dialog {
+        attrs {
+            this.open = true
+        }
 
+        div {
+            textField {
+                attrs {
+                    variant = FormControlVariant.filled
+                    value(roomPassword)
+                    label {
+                        +"A room password is required"
+                    }
+                    onChangeFunction = {
+                        val target = it.target as HTMLInputElement
+
+                       onTextChanged(target.value)
+                    }
+                }
+
+            }
+        }
+
+        joinGameButton {
+            onJoinClicked()
+        }
+
+    }
+}
