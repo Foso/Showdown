@@ -79,7 +79,6 @@ class GameApiClient {
                     }
 
                     PATHS.ROOMCONFIGUPDATE -> {
-                        println("ROOMCONFIGUPDATE ${resource2.data!!}")
                         fromJson<ClientGameConfig>(response.body)?.let {
                             observer.onConfigUpdated(it)
                         }
@@ -87,7 +86,6 @@ class GameApiClient {
 
 
                     PATHS.SPECTATORPATH -> {
-                        println("Repo: ${response.body}")
                         fromJson<Boolean>(response.body)?.let {
                             println("Repo: $it")
                             observer.onSpectatorStatusChanged(it )

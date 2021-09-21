@@ -16,6 +16,7 @@ import materialui.components.dialog.dialog
 import materialui.components.formcontrol.enums.FormControlVariant
 import materialui.components.textfield.textField
 import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.url.URLSearchParams
 import react.Props
 import react.RBuilder
 import react.RComponent
@@ -29,7 +30,6 @@ import kotlin.js.Date
 
 
 external interface MyProps : Props
-
 
 
 class GameView : RComponent<MyProps, HomeViewState>(), GameContract.View {
@@ -64,15 +64,6 @@ class GameView : RComponent<MyProps, HomeViewState>(), GameContract.View {
         snackbarMessage = ""
         isSpectator = false
         anonymResults = false
-        val test = "{\"type\":\"RESPONSE\",\"data\":{\"path\":\"/spectator\",\"body\":\"true\"},\"message\":\"\"}"
-        val response = Response(PATHS.SPECTATORPATH.path, "true")
-        val res =Json.encodeToString(response)
-        val web =WebsocketResource(WebSocketResourceType.RESPONSE, res)
-        val websocketResource = Json.encodeToString(web)
-        println("RES: $res")
-
-        val resource2 = Json.decodeFromString<Response>(res)
-        println("RES: "+resource2.body)
     }
 
     override fun componentWillUnmount() {
@@ -128,7 +119,6 @@ class GameView : RComponent<MyProps, HomeViewState>(), GameContract.View {
         }
 
 
-
         //PLAYERS
         playersList(state.players)
         //myfooter()
@@ -152,28 +142,37 @@ class GameView : RComponent<MyProps, HomeViewState>(), GameContract.View {
         }
     }
 
-    private fun RBuilder.spectatorCheckbox() {
-
-    }
 
     private fun RBuilder.setupDialogs() {
         if (state.showEntryPopup) {
-            playerNameDialog(onJoinClicked = { playerName ->
+            val test = URLSearchParams(window.location.hash.substringAfter("?"))
+
+            if(test.has("uname")){
+                val uname = test.get("uname")?:""
+                presenter.joinGame(uname)
                 setState {
-                    this.playerName = playerName
+                    this.playerName = uname
                     this.showEntryPopup = false
                 }
-                presenter.joinGame(playerName)
-            })
+            }else{
+                playerNameDialog(onJoinClicked = { playerName ->
+                    setState {
+                        this.playerName = playerName
+                        this.showEntryPopup = false
+                    }
+                    presenter.joinGame(playerName)
+                })
+            }
+
         }
 
-        if(state.requestRoomPassword){
+        if (state.requestRoomPassword) {
             insertPasswordDialog(state.roomPassword, onJoinClicked = {
                 setState {
                     this.requestRoomPassword = false
                 }
                 presenter.joinGame(state.playerName)
-            },onTextChanged = {
+            }, onTextChanged = {
                 setState {
                     this.roomPassword = it
                 }
@@ -181,10 +180,7 @@ class GameView : RComponent<MyProps, HomeViewState>(), GameContract.View {
         }
 
 
-
     }
-
-
 
 
     override fun showInfoPopup(it: String) {
@@ -218,7 +214,7 @@ fun RBuilder.home() = child(GameView::class) {
 }
 
 
-fun RBuilder.insertPasswordDialog(roomPassword:String,onJoinClicked:()->Unit,onTextChanged:(String)->Unit) {
+fun RBuilder.insertPasswordDialog(roomPassword: String, onJoinClicked: () -> Unit, onTextChanged: (String) -> Unit) {
     dialog {
         attrs {
             this.open = true
@@ -235,7 +231,7 @@ fun RBuilder.insertPasswordDialog(roomPassword:String,onJoinClicked:()->Unit,onT
                     onChangeFunction = {
                         val target = it.target as HTMLInputElement
 
-                       onTextChanged(target.value)
+                        onTextChanged(target.value)
                     }
                 }
 
