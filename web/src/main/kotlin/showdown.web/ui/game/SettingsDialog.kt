@@ -52,7 +52,7 @@ fun RBuilder.settingsDialog(
                     attrs {
                         checked = shareDialogDataHolder.autoReveal
                         onClickFunction = {
-                           // Application.gameDataSource.setAutoReveal(!shareDialogDataHolder.autoReveal)
+                            Application.gameDataSource.setAutoReveal(!shareDialogDataHolder.autoReveal)
                         }
                     }
                 }

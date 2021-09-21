@@ -32,7 +32,8 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
     private var gameState: GameState = GameState.NotStarted
     private val inactivePlayerIds = mutableSetOf<String>()
     private val spectatorIds = mutableSetOf<String>()
-    val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
+    private val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
+    private var round = 0
 
     fun changeRoomPassword(sessionId: String, password: String) {
         val newRoomData = gameConfig.room.copy(password = password)
@@ -67,6 +68,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
 
 
     fun restart() {
+        round += 1
         gameState =
             GameState.Started(gameConfig.toClient().copy(createdAt = DateTime.now().unixMillisDouble.toString()))
         inactivePlayerIds.forEach { inactivePlayerId ->
@@ -143,26 +145,22 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
             spectatorIds.remove(sessionId)
         }
         val response = Response(PATHS.SPECTATORPATH.path, moshi.toJson(spectate))
-        val websocketResource = WebsocketResource(WebSocketResourceType.RESPONSE, response)
 
-        server.sendData(sessionId, websocketResource.toJson())
+        server.sendData(sessionId, moshi.toJson(response))
         sendPlayerList()
     }
 
     private fun sendRoomConfigUpdate(clientGameConfig: ClientGameConfig) {
         val configJson = moshi.toJson(clientGameConfig)
         val response = Response(PATHS.ROOMCONFIGUPDATE.path, configJson)
-        val websocketResource = WebsocketResource(WebSocketResourceType.RESPONSE, response)
-        sendBroadcast(websocketResource.toJson())
+
+        sendBroadcast( moshi.toJson(response))
     }
 
     fun onPlayerVoted(sessionId: String, voteId: Int) {
-        if (gameState is GameState.ShowVotes) {
-            return
-        }
-        if (spectatorIds.any { it == sessionId }) {
-            return
-        }
+        if (gameState is GameState.ShowVotes) return
+        if (spectatorIds.any { it == sessionId })  return
+
         playerList.replaceAll { player ->
             if (player.sessionId == sessionId) {
                 player.copy(vote = Vote(voteId, sessionId))

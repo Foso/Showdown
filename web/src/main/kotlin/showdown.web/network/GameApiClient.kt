@@ -46,22 +46,43 @@ class GameApiClient {
 
 
     private fun getPath(path: String): PATHS {
-        println("getPath:" +path)
-
-        val tt = PATHS.values().find { it.path == path } ?: PATHS.EMPTY
-        println("getPath:" +tt)
-        return tt
+        return PATHS.values().find { it.path == path } ?: PATHS.EMPTY
     }
 
     private fun <T> fromJson(json: String): T? {
-        val tt = JSON.parse<T>(json)
-        println("tt $tt")
-        return tt
+        return JSON.parse<T>(json)
     }
 
     private fun onMessage(messageEvent: MessageEvent) {
-        println("ONMessa: "+messageEvent.data.toString())
         val json = messageEvent.data.toString()
+
+        var response3 : Response? = null
+        try {
+            response3 = Json.decodeFromString<Response>(json)
+        }
+        catch (ex:Exception){
+            println(ex)
+        }
+
+        response3?.let {
+            when (val path =getPath(it.path)) {
+                PATHS.SPECTATORPATH -> {
+                    fromJson<Boolean>(response3.body)?.let {
+                        println("Repo: $it")
+                        observer.onSpectatorStatusChanged(it )
+                    }
+                }
+                PATHS.ROOMCONFIGUPDATE -> {
+                    fromJson<ClientGameConfig>(response3.body)?.let {
+                        observer.onConfigUpdated(it)
+                    }
+                }
+
+                else -> {
+                    println("DOnt Care about $path")
+                }
+            }
+        }
 
         when (getWebsocketType(json)) {
 
@@ -78,20 +99,7 @@ class GameApiClient {
                         // console.log("RESPONSE"+response.body)
                     }
 
-                    PATHS.ROOMCONFIGUPDATE -> {
-                        fromJson<ClientGameConfig>(response.body)?.let {
-                            observer.onConfigUpdated(it)
-                        }
-                    }
-
-
-                    PATHS.SPECTATORPATH -> {
-                        fromJson<Boolean>(response.body)?.let {
-                            println("Repo: $it")
-                            observer.onSpectatorStatusChanged(it )
-                        }
-                    }
-                    PATHS.SETROOMPASSSWORDPATH, PATHS.EMPTY, PATHS.ROOMUPDATE -> {
+                    PATHS.SETROOMPASSSWORDPATH, PATHS.EMPTY -> {
                         println("PATH: $path $json")
                     }
                 }

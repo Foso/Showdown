@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 enum class PATHS(val path:String){
     SETROOMPASSSWORDPATH( "/room/password/set"),
     MESSAGE("/event"),
-    ROOMUPDATE("/room/update"),
+
     EMPTY(""),
     ROOMCONFIGUPDATE("/room/config"),
     SPECTATORPATH("/spectator"),
