@@ -86,29 +86,29 @@ class ShowdownServer : GameServer {
             ?: Request("", "")
 
         when (request.path) {
-            SETAUTOREVEALPATH -> {
+            PATHS.SETAUTOREVEALPATH.path -> {
                 fromJson<Boolean>(request.body)
                     ?.let { config ->
                         gameSource?.setAutoReveal(config)
                     }
 
             }
-            SETANONYMVOTES->{
+            PATHS.SETANONYMVOTES.path ->{
                 fromJson<Boolean>(request.body)
                     ?.let { config ->
                         gameSource?.setAnonymResults(config)
                     }
             }
-            SETROOMPASSSWORDPATH -> {
+            PATHS.SETROOMPASSSWORDPATH.path -> {
                 gameSource?.changeRoomPassword(sessionId, request.body)
             }
-            PATHS.SHOWVOTESPATH.path -> {
+            PATHS.SHOWVOTES.path -> {
                 gameSource?.showVotes(sessionId)
             }
-            RESTARTPATH -> {
+            PATHS.RESTARTPATH.path -> {
                 gameSource?.restart()
             }
-            VOTEPATH -> {
+            PATHS.VOTEPATH.path -> {
                 fromJson<Int>(request.body)?.let { voteId ->
                     gameSource?.onPlayerVoted(sessionId, voteId)
                 }
@@ -126,7 +126,7 @@ class ShowdownServer : GameServer {
                     }
 
             }
-            PATHS.JOINROOMPATH.path -> {
+            PATHS.JOINROOM.path -> {
                 fromJson<JoinGame>(request.body)
                     ?.let { joinGame ->
                         if (gameMap.none { it.key == room.name }) {

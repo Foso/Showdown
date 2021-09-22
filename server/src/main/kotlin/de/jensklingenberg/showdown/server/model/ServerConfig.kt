@@ -19,7 +19,8 @@ data class ServerConfig(
     override var voteOptions: List<String> = fibo,
     override val autoReveal: Boolean = false,
     override var createdAt: String,
-    var room: Room, override var anonymResults: Boolean=false
+    var room: Room,
+    override var anonymResults: Boolean = false
 ) :
     GameConfig
 
@@ -28,5 +29,5 @@ data class ServerConfig(
  */
 fun getDefaultConfig(roomName: String) = ServerConfig(
     fibo, autoReveal = false, createdAt = DateTime.now().unixMillisDouble.toString(),
-    room = Room(roomName, ""),anonymResults = false
+    room = Room(roomName, ""), anonymResults = false
 )

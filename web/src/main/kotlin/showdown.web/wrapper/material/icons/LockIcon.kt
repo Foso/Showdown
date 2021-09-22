@@ -2,15 +2,13 @@ package showdown.web.wrapper.material.icons
 
 import org.w3c.dom.events.Event
 import react.ComponentClass
-
-import react.RProps
-import showdown.web.wrapper.material.ShareIconProps
+import react.Props
 
 @JsModule("@material-ui/icons/Lock")
 external val LockIconImport: dynamic
 
-external interface LockIconProps : RProps {
+external interface LockIconProps : Props {
     var onClick: (Event) -> Unit
 }
 
-var LockIcon: ComponentClass<ShareIconProps> = LockIconImport.default
+var LockIcon: ComponentClass<LockIconProps> = LockIconImport.default

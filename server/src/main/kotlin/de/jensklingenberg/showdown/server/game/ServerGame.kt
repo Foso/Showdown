@@ -11,8 +11,6 @@ import de.jensklingenberg.showdown.model.PATHS
 import de.jensklingenberg.showdown.model.Response
 import de.jensklingenberg.showdown.model.Result
 import de.jensklingenberg.showdown.model.ServerResponse
-import de.jensklingenberg.showdown.model.WebSocketResourceType
-import de.jensklingenberg.showdown.model.WebsocketResource
 import de.jensklingenberg.showdown.model.api.clientrequest.NewGameConfig
 import de.jensklingenberg.showdown.model.toJson
 import de.jensklingenberg.showdown.server.common.toJson
@@ -50,8 +48,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
             "Room password was $keyword by: " + playerList.find { it.sessionId == sessionId }?.name
         )
 
-        val websocketResource = WebsocketResource(WebSocketResourceType.RESPONSE, response)
-        sendBroadcast(websocketResource.toJson())
+        sendBroadcast(moshi.toJson(response))
         sendRoomConfigUpdate(gameConfig.toClient())
     }
 

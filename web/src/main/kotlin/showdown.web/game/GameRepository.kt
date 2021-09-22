@@ -27,12 +27,12 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
     }
 
     override fun showVotes() {
-        val req = Request(PATHS.SHOWVOTESPATH.path).stringify()
+        val req = Request(PATHS.SHOWVOTES.path).stringify()
         gameApiClient.sendMessage(req)
     }
 
     override fun onSelectedVote(voteId: Int) {
-        val req = Request(VOTEPATH, voteId.toString()).stringify()
+        val req = Request(PATHS.VOTEPATH.path, voteId.toString()).stringify()
         gameApiClient.sendMessage(req)
     }
 
@@ -42,7 +42,7 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
     }
 
     override fun changeRoomPassword(password: String) {
-        val req = Request(SETROOMPASSSWORDPATH, password).stringify()
+        val req = Request(PATHS.SETROOMPASSSWORDPATH.path, password).stringify()
         gameApiClient.sendMessage(req)
     }
 
@@ -55,7 +55,7 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
     }
 
     override fun setAutoReveal(enabled: Boolean) {
-        val req = Request(SETAUTOREVEALPATH, enabled.stringify()).stringify()
+        val req = Request(PATHS.SETAUTOREVEALPATH.path, enabled.stringify()).stringify()
         gameApiClient.sendMessage(req)
     }
 
@@ -65,7 +65,7 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
     }
 
     override fun setAnonymVote(enabled: Boolean) {
-        val req = Request(SETANONYMVOTES, enabled.stringify()).stringify()
+        val req = Request(PATHS.SETANONYMVOTES.path, enabled.stringify()).stringify()
         gameApiClient.sendMessage(req)
     }
 
@@ -84,7 +84,7 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
         playerName = name
         roomPassword = password
         val req = Request(
-            PATHS.JOINROOMPATH.path, JoinGame(
+            PATHS.JOINROOM.path, JoinGame(
                 name,
                 password
             ).stringify()
@@ -94,7 +94,7 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
     }
 
     override fun requestReset() {
-        val req = Request(RESTARTPATH).stringify()
+        val req = Request(PATHS.RESTARTPATH.path).stringify()
         gameApiClient.sendMessage(req)
     }
 

@@ -25,7 +25,7 @@ val PARAM_UNAME = "uname"
 external interface MyProps : Props
 
 
-class GameView : RComponent<MyProps, HomeViewState>(), GameContract.View {
+class GameView : RComponent<Props, HomeViewState>(), GameContract.View {
 
     private val presenter: GameContract.Presenter by lazy {
         GamePresenter(this)

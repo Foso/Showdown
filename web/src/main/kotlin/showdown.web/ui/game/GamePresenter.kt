@@ -70,7 +70,6 @@ class GamePresenter(private val view: GameContract.View, private val gameDataSou
 
     private fun observeRoomConfig() {
         gameDataSource.observeRoomConfig().subscribe(onNext = { conf ->
-            println("CONF ${conf?.anonymResults}")
             conf?.let {
                 view.newState {
                     this.anonymResults = conf.anonymResults

@@ -3,13 +3,13 @@ package showdown.web.wrapper.material
 import org.w3c.dom.events.Event
 import react.ComponentClass
 
-import react.RProps
+import react.Props
 
 @JsModule("@material-ui/icons/Settings")
 external val SettingsIconImport: dynamic
 
-external interface SettingsIconProps : RProps {
+external interface SettingsIconProps : Props {
     var onClick: (Event) -> Unit
 }
 
-var SettingsIcon: ComponentClass<ShareIconProps> = SettingsIconImport.default
+var SettingsIcon: ComponentClass<SettingsIconProps> = SettingsIconImport.default

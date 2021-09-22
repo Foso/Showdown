@@ -2,12 +2,12 @@ package showdown.web.wrapper.material.icons
 
 import react.ComponentClass
 
-import react.RProps
+import react.Props
 
 @JsModule("@material-ui/core/Box")
 external val BoxIconImport: dynamic
 
-external interface BoxIconProps : RProps {
+external interface BoxIconProps : Props {
     var top: Int
     var bottom: Int
     var left: Int

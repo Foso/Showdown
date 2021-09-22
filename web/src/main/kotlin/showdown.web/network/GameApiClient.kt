@@ -6,10 +6,7 @@ import de.jensklingenberg.showdown.model.PATHS
 import de.jensklingenberg.showdown.model.Response
 import de.jensklingenberg.showdown.model.ServerResponse
 import de.jensklingenberg.showdown.model.ShowdownError
-import de.jensklingenberg.showdown.model.WebSocketResourceType
-import de.jensklingenberg.showdown.model.WebsocketResource
 import de.jensklingenberg.showdown.model.getServerResponse
-import de.jensklingenberg.showdown.model.getWebsocketType
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.w3c.dom.MessageEvent
@@ -53,57 +50,49 @@ class GameApiClient {
         return JSON.parse<T>(json)
     }
 
+    private inline fun <reified T> decodeFromString(json: String): T? = try {
+        Json.decodeFromString<T>(json)
+    } catch (ex:Exception){
+        println("TT"+ex+"     "+json)
+        null
+    }
+
     private fun onMessage(messageEvent: MessageEvent) {
 
         val json = messageEvent.data.toString()
         println("onMessage $json")
-        var response3 : Response? = null
+        var response : Response? = null
         try {
-            response3 = Json.decodeFromString<Response>(json)
+            response = Json.decodeFromString<Response>(json)
         }
         catch (ex:Exception){
             println("TT"+ex+"     "+json)
         }
 
-        response3?.let {
+        response?.let { it ->
             when (val path =getPath(it.path)) {
                 PATHS.SPECTATORPATH -> {
-                    fromJson<Boolean>(response3.body)?.let {
-                        println("Repo: $it")
+                    fromJson<Boolean>(response.body)?.let {
                         observer.onSpectatorStatusChanged(it )
                     }
                 }
                 PATHS.ROOMCONFIGUPDATE -> {
-                  val tt =  Json{}.decodeFromString<ClientGameConfig>(it.body)
+                    decodeFromString<ClientGameConfig>(it.body)?.let {
+                        observer.onConfigUpdated(it)
+                    }
+                }
 
-                        observer.onConfigUpdated(tt)
+                PATHS.MESSAGE -> {
+                    observer.onMessageEvent(response.body)
+                    // console.log("RESPONSE"+response.body)
+                }
 
+                PATHS.SETROOMPASSSWORDPATH, PATHS.EMPTY -> {
+                    println("PATH: $path $json")
                 }
 
                 else -> {
                     println("DOnt Care about $path")
-                }
-            }
-        }
-
-        when (getWebsocketType(json)) {
-
-            WebSocketResourceType.RESPONSE -> {
-                println("WebSocketResourceType.RESPONSE $json")
-
-                val resource2 = Json.decodeFromString<WebsocketResource<Response>>(json)//JSON.parse<WebsocketResource<Response>>(json)
-                val response =                  resource2.data!!//JSON.parse<WebsocketResource<Response>>(json)
-                println("resource:: ${response.path}")
-
-                when (val path =getPath(response.path)) {
-                    PATHS.MESSAGE -> {
-                        observer.onMessageEvent(response.body)
-                        // console.log("RESPONSE"+response.body)
-                    }
-
-                    PATHS.SETROOMPASSSWORDPATH, PATHS.EMPTY -> {
-                        println("PATH: $path $json")
-                    }
                 }
             }
         }

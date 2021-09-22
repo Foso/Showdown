@@ -1,7 +1,9 @@
 package showdown.web.ui.game
 
+import kotlinx.browser.window
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
+import kotlinx.html.js.onKeyDownFunction
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonColor
 import materialui.components.button.enums.ButtonVariant
@@ -54,6 +56,12 @@ val PlayerNameDialogComponent = fc<PlayerNameDialogComponentProps> { props ->
                         +"Insert a Name"
                     }
                     value(playerName)
+                    onKeyDownFunction = {
+                        if (it.type == "keydown" && it.asDynamic()["key"] == "Enter") {
+                            props.onJoinClicked(playerName)
+                        }
+
+                    }
                     onChangeFunction = {
                         val target = it.target as HTMLInputElement
 
