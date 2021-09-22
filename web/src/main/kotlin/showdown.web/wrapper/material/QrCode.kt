@@ -2,12 +2,12 @@ package showdown.web.wrapper.material
 
 import react.ComponentClass
 
-import react.RProps
+import react.Props
 
 @JsModule("react-qr-code")
 external val QrCodeImport: dynamic
 
-external interface QrCodeProps : RProps {
+external interface QrCodeProps : Props {
     var value: String? get() = definedExternally; set(value) = definedExternally
 
 }

@@ -54,14 +54,15 @@ class GameApiClient {
     }
 
     private fun onMessage(messageEvent: MessageEvent) {
-        val json = messageEvent.data.toString()
 
+        val json = messageEvent.data.toString()
+        println("onMessage $json")
         var response3 : Response? = null
         try {
             response3 = Json.decodeFromString<Response>(json)
         }
         catch (ex:Exception){
-            println(ex)
+            println("TT"+ex+"     "+json)
         }
 
         response3?.let {
@@ -73,9 +74,10 @@ class GameApiClient {
                     }
                 }
                 PATHS.ROOMCONFIGUPDATE -> {
-                    fromJson<ClientGameConfig>(response3.body)?.let {
-                        observer.onConfigUpdated(it)
-                    }
+                  val tt =  Json{}.decodeFromString<ClientGameConfig>(it.body)
+
+                        observer.onConfigUpdated(tt)
+
                 }
 
                 else -> {

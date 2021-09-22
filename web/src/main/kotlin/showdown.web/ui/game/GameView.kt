@@ -64,14 +64,16 @@ class GameView : RComponent<MyProps, HomeViewState>(), GameContract.View {
     }
 
     override fun componentDidMount() {
-        window.setInterval({
-            setState {
-                val startDate = state.gameStartTime
-                val endDate = Date()
+        /**
+         *  window.setInterval({
+        setState {
+        val startDate = state.gameStartTime
+        val endDate = Date()
 
-                diffSecs = (endDate.getTime() - startDate.getTime()) / 1000
-            }
+        diffSecs = (endDate.getTime() - startDate.getTime()) / 1000
+        }
         }, 1000)
+         */
         presenter.onCreate()
     }
 

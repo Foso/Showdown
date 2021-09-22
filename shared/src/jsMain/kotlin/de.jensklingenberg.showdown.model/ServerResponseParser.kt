@@ -6,14 +6,16 @@ import kotlinx.serialization.json.Json
 class ServerResponseParser {
     companion object {
         private val json =
-            Json { allowStructuredMapKeys = true }
+            Json {
+                allowStructuredMapKeys = true
+                ignoreUnknownKeys = true
+            }
 
         fun getGameStateChangedCommand(jsonStr: String): ServerResponse.GameStateChanged {
             return json.decodeFromString(
                 ServerResponse.GameStateChanged.serializer(), jsonStr
             )
         }
-
 
 
         fun getErrorCommand(jsonStr: String): ServerResponse.ErrorEvent {

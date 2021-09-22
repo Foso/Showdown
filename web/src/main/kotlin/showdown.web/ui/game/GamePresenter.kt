@@ -70,7 +70,7 @@ class GamePresenter(private val view: GameContract.View, private val gameDataSou
 
     private fun observeRoomConfig() {
         gameDataSource.observeRoomConfig().subscribe(onNext = { conf ->
-
+            println("CONF ${conf?.anonymResults}")
             conf?.let {
                 view.newState {
                     this.anonymResults = conf.anonymResults
@@ -103,6 +103,7 @@ class GamePresenter(private val view: GameContract.View, private val gameDataSou
                     this.requestRoomPassword = true
                 }
             } else if (error is ShowdownError.NoConnectionError) {
+                connectToServer()
                 view.newState {
                     this.showConnectionError = true
                 }
@@ -115,9 +116,11 @@ class GamePresenter(private val view: GameContract.View, private val gameDataSou
             onComplete = {
                 view.newState {
                     this.showEntryPopup = true
+                    this.showConnectionError =false
                 }
             },
             onError = {
+                connectToServer()
                 view.newState {
                     this.showConnectionError = true
                 }

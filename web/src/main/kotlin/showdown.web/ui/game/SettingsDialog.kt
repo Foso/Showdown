@@ -48,6 +48,7 @@ fun RBuilder.settingsDialog(
             }
 
             div {
+                println("HHHHH ${shareDialogDataHolder.autoReveal}")
                 checkbox {
                     attrs {
                         checked = shareDialogDataHolder.autoReveal

@@ -5,8 +5,7 @@ import materialui.components.appbar.enums.AppBarColor
 import materialui.components.appbar.enums.AppBarPosition
 import react.RBuilder
 import react.RComponent
-import react.RProps
-import react.RStatics
+import react.Props
 import react.State
 import react.dom.attrs
 import react.dom.div
@@ -28,7 +27,7 @@ external interface ToolbarState : State {
 }
 
 
-external interface ToolbarProps : RProps {
+external interface ToolbarProps : Props {
     var startTimer: Boolean
     var diffSecs: Double
     var gameModeId: Int
@@ -53,11 +52,12 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
     }
 
     override fun componentWillReceiveProps(nextProps: ToolbarProps) {
+        println("NextProps ${props.shareDialogDataHolder} == ${nextProps.shareDialogDataHolder}")
         setState {
-            this.diffSecs = props.diffSecs
-            this.startTimer = props.startTimer
-            this.gameModeId = props.gameModeId
-            this.shareDialogDataHolder = props.shareDialogDataHolder
+            this.diffSecs = nextProps.diffSecs
+            this.startTimer = nextProps.startTimer
+            this.gameModeId = nextProps.gameModeId
+            this.shareDialogDataHolder = nextProps.shareDialogDataHolder
         }
     }
 
