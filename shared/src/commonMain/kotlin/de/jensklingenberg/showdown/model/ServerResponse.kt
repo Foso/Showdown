@@ -7,7 +7,7 @@ import kotlinx.serialization.json.Json
 
 
 enum class ServerResponseTypes {
-     ERROR,  STATE_CHANGED, MESSAGE, UNKNOWN
+    ERROR, STATE_CHANGED, MESSAGE, UNKNOWN
 }
 
 
@@ -23,15 +23,15 @@ sealed class ServerResponse(val id: Int) {
 }
 
 
-private val json = Json{ allowStructuredMapKeys = true }
+private val json = Json { allowStructuredMapKeys = true }
 
 @OptIn(ExperimentalSerializationApi::class)
 fun ServerResponse.ErrorEvent.toJson(): String {
-    return json.encodeToString( this)
+    return json.encodeToString(this)
 }
 
 @OptIn(ExperimentalSerializationApi::class)
 fun ServerResponse.GameStateChanged.toJson(): String {
-    return json.encodeToString( this)
+    return json.encodeToString(this)
 }
 

@@ -1,8 +1,11 @@
 package showdown.web.ui.game
 
+import csstype.AlignItems
+import csstype.JustifyContent
 import de.jensklingenberg.showdown.model.Member
 import kotlinx.css.Color
 import kotlinx.css.Display
+import kotlinx.css.Position
 import kotlinx.css.TextAlign
 import kotlinx.css.color
 import kotlinx.css.display
@@ -18,6 +21,7 @@ import materialui.components.typography.typography
 import react.RBuilder
 import react.dom.attrs
 import react.dom.h2
+import showdown.web.ui.game.Strings.Companion.CONNECTION_LOST
 import showdown.web.wrapper.material.icons.Box
 import showdown.web.wrapper.material.icons.CancelIcon
 import showdown.web.wrapper.material.icons.CheckCircleIcon
@@ -46,31 +50,30 @@ fun RBuilder.playersList(members: List<Member>) {
     h2 {
         GroupIcon {}
 
-        +"Players (${players.size}) Voted:"
+        +"Voters (${players.size}) Voted:"
 
         Box {
             attrs {
-                this.display = "inline-flex"
-                this.position = "relative"
+                this.display = "${Display.inlineFlex}"
+                this.position = "${Position.relative}"
             }
             circularProgress {
                 this.attrs {
                     variant = CircularProgressVariant.determinate
                     val progressPercent = (players.filter { it.voted }.size.toDouble() / players.size.toDouble()) * 100
-
                     value = round(progressPercent)
                 }
             }
             Box {
                 attrs {
-                    this.display = "flex"
-                    this.alignItems = "center"
+                    this.display = "${Display.flex}"
+                    this.alignItems = "${AlignItems.center}"
                     this.top = 0
                     left = 0
                     right = 0
                     bottom = 0
-                    justifyContent = "center"
-                    this.position = "absolute"
+                    justifyContent = "${JustifyContent.center}"
+                    this.position = "${Position.absolute}"
                 }
                 typography {
                     attrs {
@@ -121,7 +124,7 @@ fun RBuilder.playersList(members: List<Member>) {
                         }
                     }
                     if (!it.isConnected) {
-                        +" Connection lost"
+                        +" $CONNECTION_LOST"
                     }
                 }
 
@@ -151,7 +154,7 @@ fun RBuilder.playersList(members: List<Member>) {
                         +("" + it.playerName + " ")
 
                         if (!it.isConnected) {
-                            +" Connection lost"
+                            +" $CONNECTION_LOST"
                         }
                     }
 
@@ -165,3 +168,4 @@ fun RBuilder.playersList(members: List<Member>) {
     }
 
 }
+

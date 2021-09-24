@@ -12,6 +12,3 @@ val powerOf2 = (listOf("0", "1", "2", "4", "8", "16", "32", "64", "?"))
 //Values of T-Shirt sizes
 val tshirtSizesList = (listOf("xxs", "xs", "s", "m", "l", "xl", "xxl", "?"))
 
-enum class GameModeValues(val options:List<String>){
-
-}

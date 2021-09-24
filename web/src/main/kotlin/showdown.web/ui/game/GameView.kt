@@ -2,46 +2,31 @@ package showdown.web.ui.game
 
 
 import kotlinx.browser.window
-import kotlinx.html.js.onChangeFunction
-import kotlinx.html.js.onClickFunction
-import materialui.components.checkbox.checkbox
-import materialui.components.dialog.dialog
-import materialui.components.formcontrol.enums.FormControlVariant
-import materialui.components.textfield.textField
-import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.url.URLSearchParams
 import react.Props
 import react.RBuilder
 import react.RComponent
-import react.dom.attrs
-import react.dom.div
 import react.setState
+import showdown.web.Application.Companion.PARAM_UNAME
 import showdown.web.ui.common.mySnackbar
+import showdown.web.ui.game.field.gameFieldComponent
+import showdown.web.ui.game.footer.myfooter
 import showdown.web.ui.game.toolbar.myToolbar
 import kotlin.js.Date
 
-val PARAM_UNAME = "uname"
 
-external interface MyProps : Props
-
-
-class GameView : RComponent<Props, HomeViewState>(), GameContract.View {
+class GameView : RComponent<Props, GameViewState>(), GameContract.View {
 
     private val presenter: GameContract.Presenter by lazy {
         GamePresenter(this)
     }
 
 
-    override fun HomeViewState.init() {
+    override fun GameViewState.init() {
         showSnackbar = false
-        players = emptyList()
-        options = listOf()
-        results = emptyList()
         gameModeId = 0
         playerName = "Jens"
-        customOptions = ""
         showEntryPopup = false
-        selectedOptionId = -1
         roomPassword = ""
         showSettings = false
         startEstimationTimer = false
@@ -49,31 +34,18 @@ class GameView : RComponent<Props, HomeViewState>(), GameContract.View {
 
         //TOOLBAR
         gameStartTime = Date()
-        diffSecs = 0.0
+
 
         //MESSAGE
         showConnectionError = false
         autoReveal = false
         snackbarMessage = ""
-        isSpectator = false
+
         anonymResults = false
     }
 
-    override fun componentWillUnmount() {
-        //presenter.onDestroy()
-    }
 
     override fun componentDidMount() {
-        /**
-         *  window.setInterval({
-        setState {
-        val startDate = state.gameStartTime
-        val endDate = Date()
-
-        diffSecs = (endDate.getTime() - startDate.getTime()) / 1000
-        }
-        }, 1000)
-         */
         presenter.onCreate()
     }
 
@@ -83,31 +55,14 @@ class GameView : RComponent<Props, HomeViewState>(), GameContract.View {
         //TOOLBAR
         myToolbar(
             startTimer = state.startEstimationTimer,
-            diffSecs = state.diffSecs,
             gameModeId = state.gameModeId,
-            shareDialogDataHolder = ShareDialogDataHolder(state.autoReveal, state.anonymResults)
+            shareDialogDataHolder = ShareDialogDataHolder(state.autoReveal, state.anonymResults),
+            gameStartTime = state.gameStartTime
         )
 
-        //OPTIONS
-        if(!state.isSpectator){
-            optionsList(state, onOptionClicked = { index: Int ->
-                setState {
-                    this.selectedOptionId = index
-                }
-                presenter.onSelectedVote(index)
-            })
-        }
-        spectatorCheckbox()
+        gameFieldComponent()
 
 
-        //RESULTS
-        if (state.results.isNotEmpty()) {
-            resultsList(state.results)
-        }
-
-
-        //PLAYERS
-        playersList(state.players)
         //myfooter()
         if (state.snackbarMessage.isNotEmpty()) {
             mySnackbar(state.snackbarMessage) {
@@ -115,7 +70,6 @@ class GameView : RComponent<Props, HomeViewState>(), GameContract.View {
                     this.snackbarMessage = ""
                 }
             }
-
         }
 
         if (state.showConnectionError) {
@@ -127,35 +81,23 @@ class GameView : RComponent<Props, HomeViewState>(), GameContract.View {
                 }
             })
         }
-    }
 
-    private fun RBuilder.spectatorCheckbox() {
-        div {
-            checkbox {
-                attrs {
-                    checked = state.isSpectator
-                    onClickFunction = {
-                        presenter.setSpectatorStatus(!state.isSpectator)
-                    }
-                }
-            }
-            +"I'm a spectator"
-        }
+        myfooter()
     }
 
 
     private fun RBuilder.setupDialogs() {
         if (state.showEntryPopup) {
-            val test = URLSearchParams(window.location.hash.substringAfter("?"))
+            val urlSearchParams = URLSearchParams(window.location.hash.substringAfter("?"))
 
-            if(test.has(PARAM_UNAME)){
-                val uname = test.get(PARAM_UNAME)?:""
+            if (urlSearchParams.has(PARAM_UNAME)) {
+                val uname = urlSearchParams.get(PARAM_UNAME) ?: ""
                 presenter.joinGame(uname)
                 setState {
                     this.playerName = uname
                     this.showEntryPopup = false
                 }
-            }else{
+            } else {
                 playerNameDialog(onJoinClicked = { playerName ->
                     setState {
                         this.playerName = playerName
@@ -190,58 +132,12 @@ class GameView : RComponent<Props, HomeViewState>(), GameContract.View {
         }
     }
 
-    override fun setSpectatorStatus(it: Boolean) {
-        println("setSpectatorStatus $it")
-        setState {
-            this.isSpectator = it
-        }
-    }
-
-
-    override fun newState(buildState: HomeViewState.(HomeViewState) -> Unit) {
+    override fun newState(buildState: GameViewState.(GameViewState) -> Unit) {
         setState {
             buildState(this)
         }
     }
 
-    override fun getState(): HomeViewState = state
+    override fun getState(): GameViewState = state
 }
 
-
-fun RBuilder.home() = child(GameView::class) {
-    this.attrs {
-
-    }
-}
-
-
-fun RBuilder.insertPasswordDialog(roomPassword: String, onJoinClicked: () -> Unit, onTextChanged: (String) -> Unit) {
-    dialog {
-        attrs {
-            this.open = true
-        }
-
-        div {
-            textField {
-                attrs {
-                    variant = FormControlVariant.filled
-                    value(roomPassword)
-                    label {
-                        +"A room password is required"
-                    }
-                    onChangeFunction = {
-                        val target = it.target as HTMLInputElement
-
-                        onTextChanged(target.value)
-                    }
-                }
-
-            }
-        }
-
-        joinGameButton {
-            onJoinClicked()
-        }
-
-    }
-}

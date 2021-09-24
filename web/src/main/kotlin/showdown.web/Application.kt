@@ -21,6 +21,7 @@ class Application {
     companion object {
         private val gameApiHandler = GameApiClient()
         val gameDataSource: GameDataSource = GameRepository(gameApiHandler)
+        val PARAM_UNAME = "uname"
 
     }
 

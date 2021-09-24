@@ -13,15 +13,15 @@ import showdown.web.wrapper.material.icons.TouchAppIcon
 /**
  * Shows the list with options, that the use can vote
  */
-fun RBuilder.optionsList(state: HomeViewState, onOptionClicked: (Int) -> Unit) {
+fun RBuilder.optionsList(selectedOptionId:Int,options:List<String>, onOptionClicked: (Int) -> Unit) {
     h2 {
         TouchAppIcon {}
 
         +"Select an option:"
     }
-    state.options.forEachIndexed { index, option ->
+    options.forEachIndexed { index, option ->
 
-        OptionsButton(index, state.selectedOptionId, onOptionClicked, option)
+        OptionsButton(index, selectedOptionId, onOptionClicked, option)
 
         button {
             attrs {

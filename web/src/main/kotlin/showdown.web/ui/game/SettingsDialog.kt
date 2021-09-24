@@ -16,6 +16,7 @@ import react.dom.a
 import react.dom.attrs
 import react.dom.div
 import react.dom.h1
+import showdown.web.ui.game.Strings.Companion.GAME_SETTINGS
 import showdown.web.wrapper.material.QrCode
 
 
@@ -40,7 +41,7 @@ fun RBuilder.settingsDialog(
         dialogContent {
 
             h1 {
-                +"Game Settings"
+                +GAME_SETTINGS
             }
 
             div {
@@ -48,7 +49,6 @@ fun RBuilder.settingsDialog(
             }
 
             div {
-                println("HHHHH ${shareDialogDataHolder.autoReveal}")
                 checkbox {
                     attrs {
                         checked = shareDialogDataHolder.autoReveal

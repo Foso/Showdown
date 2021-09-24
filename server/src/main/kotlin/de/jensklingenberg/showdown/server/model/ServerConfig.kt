@@ -11,16 +11,18 @@ fun ServerConfig.toClient(): ClientGameConfig {
         this.autoReveal,
         this.createdAt,
         roomHasPassword = this.room.password.isNotEmpty(),
-        this.anonymResults
+        this.anonymResults,
+        this.votingName
     )
 }
 
 data class ServerConfig(
     override var voteOptions: List<String> = fibo,
     override val autoReveal: Boolean = false,
-    override var createdAt: String,
-    var room: Room,
-    override var anonymResults: Boolean = false
+    override val createdAt: String,
+    val room: Room,
+    override var anonymResults: Boolean = false,
+    override val votingName: String = ""
 ) :
     GameConfig
 

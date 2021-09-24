@@ -22,8 +22,6 @@ class GamePresenter(private val view: GameContract.View, private val gameDataSou
 
         observeMessage()
 
-        observeSpectatorStatus()
-
         observeRoomConfig()
 
         observeGameState()
@@ -40,11 +38,9 @@ class GamePresenter(private val view: GameContract.View, private val gameDataSou
                         val conf = gameState.clientGameConfig
 
                         this.gameStartTime = Date(conf.createdAt.toDouble())
-                        this.results = emptyList()
-                        this.selectedOptionId = -1
+
                         this.startEstimationTimer = true
                         this.requestRoomPassword = false
-                        this.options = conf.voteOptions
                         this.autoReveal = conf.autoReveal
                         this.anonymResults = conf.anonymResults
 
@@ -52,15 +48,12 @@ class GamePresenter(private val view: GameContract.View, private val gameDataSou
 
                 }
                 is GameState.PlayerListUpdate -> {
-                    view.newState {
-                        this.players = gameState.members
-                    }
+
                 }
 
                 is GameState.ShowVotes -> {
                     view.newState {
                         this.startEstimationTimer = false
-                        this.results = gameState.results
                     }
                 }
 
@@ -81,12 +74,8 @@ class GamePresenter(private val view: GameContract.View, private val gameDataSou
         }).addTo(compositeDisposable)
     }
 
-    private fun observeSpectatorStatus() {
-        gameDataSource.observeSpectatorStatus().subscribe(onNext = {
-            
-            view.setSpectatorStatus(it)
-        }).addTo(compositeDisposable)
-    }
+
+
 
     private fun observeMessage() {
         gameDataSource.observeMessage().subscribe(onNext = {
@@ -96,7 +85,6 @@ class GamePresenter(private val view: GameContract.View, private val gameDataSou
 
     private fun observeErrors() {
         gameDataSource.observeErrors().subscribe(onNext = { error ->
-            println("ERROR ${error?.message}")
             if (error is ShowdownError.NotAuthorizedError) {
                 view.newState {
                     this.requestRoomPassword = true
@@ -135,7 +123,6 @@ class GamePresenter(private val view: GameContract.View, private val gameDataSou
     override fun joinGame(playerName: String) {
         val password = view.getState().roomPassword
         gameDataSource.joinRoom(playerName, password)
-        println("JoinGame")
     }
 
 
@@ -144,9 +131,7 @@ class GamePresenter(private val view: GameContract.View, private val gameDataSou
     }
 
     override fun setSpectatorStatus(b: Boolean) {
-
         gameDataSource.setSpectatorStatus(b)
-
     }
 
 

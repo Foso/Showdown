@@ -9,14 +9,19 @@ import materialui.components.formcontrol.enums.FormControlVariant
 import materialui.components.menuitem.menuItem
 import materialui.components.textfield.textField
 import org.w3c.dom.HTMLInputElement
-
 import react.RBuilder
 import react.RComponent
-import react.RProps
-
+import react.Props
 import react.State
-import react.dom.*
+import react.dom.attrs
+import react.dom.br
+import react.dom.div
+import react.dom.key
+import react.dom.p
+import react.dom.setProp
 import react.setState
+import showdown.web.ui.game.Strings.Companion.CHANGE_MODE
+import showdown.web.ui.game.Strings.Companion.GAME_MODE
 
 
 val gameModeOptions: List<Pair<String, Int>>
@@ -29,7 +34,7 @@ val gameModeOptions: List<Pair<String, Int>>
         "Custom" to 4
     )
 
-external interface SettingsProps : RProps {
+external interface SettingsProps : Props {
     var onSave: (Int, String) -> Unit
     var gameModeId: Int
 }
@@ -59,7 +64,7 @@ class GameSettingsComponent(prps: SettingsProps) : RComponent<SettingsProps, Set
             textField {
                 attrs {
                     select = true
-                    label { +"GameMode" }
+                    label { +GAME_MODE }
                     inputProps {}
                     value(state.gameModeId)
                     onChangeFunction = { event ->
@@ -110,7 +115,7 @@ class GameSettingsComponent(prps: SettingsProps) : RComponent<SettingsProps, Set
                 attrs {
                     variant = ButtonVariant.contained
                     color = ButtonColor.primary
-                    text("Change Mode")
+                    text(CHANGE_MODE)
                     onClickFunction = {
                         state.onClick(state.gameModeId, state.customOptions)
                     }

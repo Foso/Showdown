@@ -9,8 +9,7 @@ import materialui.lab.components.alert.alert
 import materialui.lab.components.alert.enums.AlertSeverity
 import materialui.lab.components.alert.enums.AlertVariant
 import react.RBuilder
-import react.RProps
-import react.child
+import react.Props
 import react.dom.attrs
 import react.fc
 import react.useState
@@ -23,7 +22,7 @@ fun RBuilder.mySnackbar(message: String, onClose: () -> Unit) {
     }
 }
 
-external interface MySnackbarProps : RProps {
+external interface MySnackbarProps : Props {
     var snackbarMessage: String
     var onClose: () -> Unit
 }

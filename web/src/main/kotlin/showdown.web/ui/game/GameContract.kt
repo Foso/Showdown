@@ -6,9 +6,8 @@ interface StateView<T> {
 }
 
 interface GameContract {
-    interface View : StateView<HomeViewState> {
+    interface View : StateView<GameViewState> {
         fun showInfoPopup(it: String)
-        fun setSpectatorStatus(it: Boolean)
     }
 
     interface Presenter {

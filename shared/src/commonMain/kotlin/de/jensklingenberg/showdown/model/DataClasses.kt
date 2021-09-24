@@ -2,30 +2,6 @@ package de.jensklingenberg.showdown.model
 
 import kotlinx.serialization.Serializable
 
-/**
- * Contains the path for a request/response between Server and Client
- */
-enum class PATHS(val path: String) {
-    SETROOMPASSSWORDPATH("/room/password/set"),
-    MESSAGE("/event"),
-    EMPTY(""),
-    ROOMCONFIGUPDATE("/room/config"),
-    SPECTATORPATH("/spectator"),
-    SHOWVOTES("/room/showvotes"),
-    JOINROOM("/room/join"),
-    RESTARTPATH("/room/restart"),
-    VOTEPATH("/vote"),
-
-    SETAUTOREVEALPATH( "/room/autoreveal/set"),
-    SETANONYMVOTES ("/room/config/anonymvote/set")
-
-
-}
-
-
-
-val GAMEEVENTPATH = "/event"
-
 
 interface GameConfig {
     var voteOptions: List<String>
@@ -39,8 +15,9 @@ interface GameConfig {
     /**
      * The time when a game was created
      */
-    var createdAt: String
-    var anonymResults: Boolean
+    val createdAt: String
+    val anonymResults: Boolean
+    val votingName :String
 }
 
 @Serializable
@@ -49,7 +26,8 @@ data class ClientGameConfig(
     override val autoReveal: Boolean = false,
     override var createdAt: String,
     val roomHasPassword: Boolean = false,
-    override var anonymResults: Boolean = false
+    override var anonymResults: Boolean = false,
+    override val votingName: String =""
 ) : GameConfig
 
 @Serializable
@@ -57,3 +35,6 @@ data class Member(val playerName: String, val voted: Boolean, val isConnected: B
 
 @Serializable
 data class Result(val optionName: String, val voterName: String)
+
+@Serializable
+data class History(val name: String, val answer: String)

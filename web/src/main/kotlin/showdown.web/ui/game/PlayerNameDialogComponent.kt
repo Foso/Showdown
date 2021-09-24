@@ -18,6 +18,7 @@ import react.dom.attrs
 import react.dom.div
 import react.fc
 import react.useState
+import showdown.web.ui.game.Strings.Companion.JOIN_GAME
 
 
 external interface PlayerNameDialogComponentProps : Props {
@@ -27,7 +28,7 @@ external interface PlayerNameDialogComponentProps : Props {
 fun DialogElementBuilder.joinGameButton(onClick: () -> Unit) {
     button {
         attrs {
-            text("Join Game")
+            text(JOIN_GAME)
             variant = ButtonVariant.contained
             color = ButtonColor.primary
             onClickFunction = {

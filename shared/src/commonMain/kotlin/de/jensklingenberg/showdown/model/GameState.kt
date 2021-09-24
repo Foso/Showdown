@@ -1,7 +1,6 @@
 package de.jensklingenberg.showdown.model
 
 import kotlinx.serialization.Serializable
-import kotlin.reflect.KClass
 
 
 @Serializable
@@ -20,13 +19,9 @@ sealed class GameState {
     class PlayerListUpdate(val members: List<Member>) : GameState()
 
     @Serializable
-    class ShowVotes(val results:List<Result>) : GameState()
+    class ShowVotes(val results: List<Result>) : GameState()
 
 }
 
-enum class GameEventType(val kClass: KClass<*>) {
-    Normal(MyGameEvent::class)
-}
 
-open class GameEvent(val eventId: Int)
-data class MyGameEvent(val name:String):GameEvent(GameEventType.Normal.ordinal)
+

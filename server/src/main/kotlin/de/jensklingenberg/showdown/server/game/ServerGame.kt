@@ -67,7 +67,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
     fun restart() {
         round += 1
         gameState =
-            GameState.Started(gameConfig.toClient().copy(createdAt = DateTime.now().unixMillisDouble.toString()))
+            GameState.Started(gameConfig.toClient().copy(createdAt = DateTime.now().unixMillisDouble.toString(),votingName = "Round $round"))
         inactivePlayerIds.forEach { inactivePlayerId ->
             playerList.removeIf { it.sessionId == inactivePlayerId }
             spectatorIds.removeIf { it == inactivePlayerId }

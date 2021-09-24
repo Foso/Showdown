@@ -3,7 +3,7 @@ package de.jensklingenberg.showdown.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class ShowdownError(var message: String)  {
+sealed class ShowdownError(var message: String) {
 
     @Serializable
     class NotAuthorizedError : ShowdownError("NotAuthorizedError")

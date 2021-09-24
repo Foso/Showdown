@@ -1,11 +1,12 @@
 package showdown.web.ui.game.toolbar
 
+import kotlinx.browser.window
 import materialui.components.appbar.appBar
 import materialui.components.appbar.enums.AppBarColor
 import materialui.components.appbar.enums.AppBarPosition
+import react.Props
 import react.RBuilder
 import react.RComponent
-import react.Props
 import react.State
 import react.dom.attrs
 import react.dom.div
@@ -15,6 +16,7 @@ import showdown.web.ui.game.settingsDialog
 import showdown.web.wrapper.material.SettingsIcon
 import showdown.web.wrapper.material.VisibilityIcon
 import showdown.web.wrapper.material.icons.AddCircleIcon
+import kotlin.js.Date
 import kotlin.math.floor
 
 
@@ -24,14 +26,16 @@ external interface ToolbarState : State {
     var showShareDialog: Boolean
     var gameModeId: Int
     var shareDialogDataHolder: ShareDialogDataHolder
+    var gameStartTime: Date
 }
 
 
 external interface ToolbarProps : Props {
     var startTimer: Boolean
-    var diffSecs: Double
+
     var gameModeId: Int
     var shareDialogDataHolder: ShareDialogDataHolder
+    var gameStartTime: Date
 
 }
 
@@ -42,28 +46,38 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
     }
 
 
-
     override fun ToolbarState.init(props: ToolbarProps) {
         this.startTimer = props.startTimer
         this.showShareDialog = false
-        this.diffSecs = props.diffSecs
+
         this.gameModeId = props.gameModeId
         this.shareDialogDataHolder = props.shareDialogDataHolder
+        this.gameStartTime = props.gameStartTime
     }
 
     override fun componentWillReceiveProps(nextProps: ToolbarProps) {
         println("NextProps ${props.shareDialogDataHolder} == ${nextProps.shareDialogDataHolder}")
         setState {
-            this.diffSecs = nextProps.diffSecs
+
             this.startTimer = nextProps.startTimer
             this.gameModeId = nextProps.gameModeId
             this.shareDialogDataHolder = nextProps.shareDialogDataHolder
+            this.gameStartTime = nextProps.gameStartTime
         }
     }
 
+    override fun componentDidMount() {
+        window.setInterval({
+            setState {
+                val startDate = state.gameStartTime
+                val endDate = Date()
+
+                diffSecs = (endDate.getTime() - startDate.getTime()) / 1000
+            }
+        }, 1000)
 
 
-
+    }
 
     override fun RBuilder.render() {
         if (state.showShareDialog) {
@@ -116,19 +130,19 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
 }
 
 
-
 fun RBuilder.myToolbar(
     startTimer: Boolean,
-    diffSecs: Double,
+
     gameModeId: Int,
     shareDialogDataHolder: ShareDialogDataHolder,
+    gameStartTime: Date,
 ) {
     child(Toolbar::class) {
         attrs {
             this.startTimer = startTimer
-            this.diffSecs = diffSecs
             this.gameModeId = gameModeId
             this.shareDialogDataHolder = shareDialogDataHolder
+            this.gameStartTime = gameStartTime
         }
     }
 }
