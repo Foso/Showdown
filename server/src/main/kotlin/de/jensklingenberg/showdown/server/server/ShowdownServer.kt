@@ -170,7 +170,7 @@ class ShowdownServer : GameServer {
         playersSessions[sessionId] = player
     }
 
-    fun createNewRoom(roomName: String): ServerGame {
+    private fun createNewRoom(roomName: String): ServerGame {
         val game = ServerGame(
             this,
             getDefaultConfig(roomName)
