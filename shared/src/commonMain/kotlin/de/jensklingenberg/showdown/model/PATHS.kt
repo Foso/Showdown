@@ -14,5 +14,7 @@ enum class PATHS(val path: String) {
     RESTARTPATH("/room/restart"),
     VOTEPATH("/vote"),
     SETAUTOREVEALPATH("/room/autoreveal/set"),
-    SETANONYMVOTES("/room/config/anonymvote/set")
+    SETANONYMVOTES("/room/config/anonymvote/set"),
+    ERROR("/error"),
+    STATECHANGED("/statechanged"),
 }

@@ -1,18 +1,18 @@
 package de.jensklingenberg.showdown.server.server
 
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import de.jensklingenberg.showdown.model.*
 import de.jensklingenberg.showdown.model.api.clientrequest.JoinGame
 import de.jensklingenberg.showdown.model.api.clientrequest.NewGameConfig
 import de.jensklingenberg.showdown.server.common.fromJson
+import de.jensklingenberg.showdown.server.common.toJson
 import de.jensklingenberg.showdown.server.game.GameServer
 import de.jensklingenberg.showdown.server.game.ServerGame
 import de.jensklingenberg.showdown.server.model.Player
 import de.jensklingenberg.showdown.server.model.Room
 import de.jensklingenberg.showdown.server.model.getDefaultConfig
-import io.ktor.http.cio.websocket.CloseReason
-import io.ktor.http.cio.websocket.Frame
-import io.ktor.http.cio.websocket.WebSocketSession
-import io.ktor.http.cio.websocket.close
+import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.ClosedSendChannelException
 import kotlinx.coroutines.launch
@@ -29,6 +29,7 @@ class ShowdownServer : GameServer {
     private val gameMap = mutableMapOf<String, ServerGame>()
 
     private val playersSessions = ConcurrentHashMap<String, Any>()
+    private val moshi: Moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
 
     /**
      * Associates a session-id to a set of websockets.
@@ -93,7 +94,7 @@ class ShowdownServer : GameServer {
                     }
 
             }
-            PATHS.SETANONYMVOTES.path ->{
+            PATHS.SETANONYMVOTES.path -> {
                 fromJson<Boolean>(request.body)
                     ?.let { config ->
                         gameSource?.setAnonymResults(config)
@@ -131,14 +132,16 @@ class ShowdownServer : GameServer {
                     ?.let { joinGame ->
                         if (gameMap.none { it.key == room.name }) {
                             gameSource = createNewRoom(room.name)
-                            println("Create new Room"+room.name)
+                            println("Create new Room" + room.name)
 
                         }
 
                         if (joinGame.roomPassword == gameSource?.gameConfig?.room?.password) {
                             gameSource?.playerJoined(Player(sessionId, joinGame.playerName))
                         } else {
-                            sendTo(sessionId, ServerResponse.ErrorEvent(ShowdownError.NotAuthorizedError()).toJson())
+
+                            val response = Response(PATHS.ERROR.path, moshi.toJson(ShowdownError.NotAuthorizedError()))
+                            sendTo(sessionId, moshi.toJson(response))
                         }
                     }
 

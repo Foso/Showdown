@@ -2,11 +2,12 @@ package showdown.web.network
 
 import com.badoo.reaktive.completable.completable
 import de.jensklingenberg.showdown.model.ClientGameConfig
+import de.jensklingenberg.showdown.model.GameState
 import de.jensklingenberg.showdown.model.PATHS
 import de.jensklingenberg.showdown.model.Response
-import de.jensklingenberg.showdown.model.ServerResponse
+
 import de.jensklingenberg.showdown.model.ShowdownError
-import de.jensklingenberg.showdown.model.getServerResponse
+
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.w3c.dom.MessageEvent
@@ -21,7 +22,7 @@ class GameApiClient {
 
     fun start(observer: NetworkApiObserver) = completable { emitter ->
         this.observer = observer
-        socket = org.w3c.dom.WebSocket(NetworkPreferences().websocketUrl())
+        socket = WebSocket(NetworkPreferences().websocketUrl())
 
         socket?.apply {
             onopen = {
@@ -32,11 +33,11 @@ class GameApiClient {
             }
 
             onerror = {
-                observer.onError(ServerResponse.ErrorEvent(ShowdownError.NoConnectionError()))
+                observer.onError(ShowdownError.NoConnectionError())
                 emitter.onError(Throwable("NO Connection"))
             }
             onclose = {
-                observer.onError(ServerResponse.ErrorEvent(ShowdownError.NoConnectionError()))
+                observer.onError(ShowdownError.NoConnectionError())
             }
         }
     }
@@ -52,8 +53,8 @@ class GameApiClient {
 
     private inline fun <reified T> decodeFromString(json: String): T? = try {
         Json.decodeFromString<T>(json)
-    } catch (ex:Exception){
-        println("TT"+ex+"     "+json)
+    } catch (ex: Exception) {
+        println("TT" + ex + "     " + json)
         null
     }
 
@@ -61,19 +62,18 @@ class GameApiClient {
 
         val json = messageEvent.data.toString()
         println("onMessage $json")
-        var response : Response? = null
+        var response: Response? = null
         try {
             response = Json.decodeFromString<Response>(json)
-        }
-        catch (ex:Exception){
-            println("TT"+ex+"     "+json)
+        } catch (ex: Exception) {
+            println("TT" + ex + "     " + json)
         }
 
         response?.let { it ->
-            when (val path =getPath(it.path)) {
+            when (val path = getPath(it.path)) {
                 PATHS.SPECTATORPATH -> {
                     fromJson<Boolean>(response.body)?.let {
-                        observer.onSpectatorStatusChanged(it )
+                        observer.onSpectatorStatusChanged(it)
                     }
                 }
                 PATHS.ROOMCONFIGUPDATE -> {
@@ -90,24 +90,24 @@ class GameApiClient {
                 PATHS.SETROOMPASSSWORDPATH, PATHS.EMPTY -> {
                     println("PATH: $path $json")
                 }
+                PATHS.ERROR -> {
+                    decodeFromString<ShowdownError>(it.body)?.let {
+                        observer.onError(it)
+                    }
 
+                }
+
+                PATHS.STATECHANGED -> {
+                    decodeFromString<GameState>(it.body)?.let {
+                        observer.onGameStateChanged(it)
+                    }
+                }
                 else -> {
                     println("DOnt Care about $path")
                 }
             }
         }
 
-        when (val type = getServerResponse(json)) {
-
-            is ServerResponse.GameStateChanged -> {
-                observer.onGameStateChanged(type.state)
-            }
-            is ServerResponse.ErrorEvent -> {
-                println("SERv  ${type.error}" )
-                observer.onError(type)
-            }
-
-        }
 
 
     }

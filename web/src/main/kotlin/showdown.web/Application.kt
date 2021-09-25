@@ -5,6 +5,8 @@ import kotlinx.browser.document
 import kotlinx.browser.window
 import react.Component
 import react.Props
+import react.PropsWithChildren
+import react.RElementBuilder
 import react.dom.render
 import react.react
 import react.router.dom.HashRouter
@@ -27,37 +29,48 @@ class Application {
 
     private val rootElement = "root"
 
-
-
-
     init {
         window.onload = {
 
             requireAll(kotlinext.js.require.context("kotlin", true, js("/\\.css$/")))
             render(document.getElementById(rootElement)) {
                 HashRouter {
-                        Switch {
+                    Switch {
 
-                            Route {
-                                attrs {
-                                    this.path = arrayOf("/room")
-                                    this.strict=false
-                                    this.exact = false
-                                    this.component = (GameView::class as KClass<out Component<Props, *>>).react
-                                }
-                            }
-                            Route {
-                                attrs {
-                                    this.path = arrayOf("/")
-                                    this.strict=true
-                                    this.exact = true
-                                    this.component = onboardingScreen()
-                                }
-                            }
+                        roomRoute()
+                        homeRoute()
+
                     }
                 }
+            }
+        }
+    }
 
-                // game()
+}
+
+private fun RElementBuilder<PropsWithChildren>.homeRoute() {
+    with(this) {
+        Route {
+            attrs {
+                this.path = arrayOf("/")
+                this.strict = true
+                this.exact = true
+                this.component = onboardingScreen()
+            }
+        }
+    }
+
+}
+
+
+private fun RElementBuilder<PropsWithChildren>.roomRoute() {
+    with(this) {
+        Route {
+            attrs {
+                this.path = arrayOf("/room")
+                this.strict = false
+                this.exact = false
+                this.component = (GameView::class as KClass<out Component<Props, *>>).react
             }
         }
     }

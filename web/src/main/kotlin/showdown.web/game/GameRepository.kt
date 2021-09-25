@@ -106,9 +106,9 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
     }
 
 
-    override fun onError(errorEvent: ServerResponse.ErrorEvent) {
+    override fun onError(errorEvent: ShowdownError) {
 
-        errorSubject.onNext(errorEvent.error)
+        errorSubject.onNext(errorEvent)
     }
 
     override fun onMessageEvent(message: String) {

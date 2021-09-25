@@ -10,7 +10,6 @@ import de.jensklingenberg.showdown.model.Member
 import de.jensklingenberg.showdown.model.PATHS
 import de.jensklingenberg.showdown.model.Response
 import de.jensklingenberg.showdown.model.Result
-import de.jensklingenberg.showdown.model.ServerResponse
 import de.jensklingenberg.showdown.model.api.clientrequest.NewGameConfig
 import de.jensklingenberg.showdown.model.toJson
 import de.jensklingenberg.showdown.server.common.toJson
@@ -232,12 +231,14 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
 
 
     private fun sendGameStateChanged(sessionId: String, gameState: GameState) {
-        val json = ServerResponse.GameStateChanged(gameState).toJson()
-        server.sendData(sessionId, json)
+        val res = Response(PATHS.STATECHANGED.path,gameState.toJson())
+        //val json = ServerResponse.GameStateChanged(gameState).toJson()
+        server.sendData(sessionId, moshi.toJson(res))
     }
 
     private fun sendGameStateChanged(gameState: GameState) {
-        sendBroadcast(ServerResponse.GameStateChanged(gameState).toJson())
+        val res = Response(PATHS.STATECHANGED.path,gameState.toJson())
+        sendBroadcast(moshi.toJson(res))
     }
 
     private fun sendBroadcast(json: String) {
