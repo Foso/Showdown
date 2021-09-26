@@ -54,19 +54,17 @@ class GameApiClient {
     private inline fun <reified T> decodeFromString(json: String): T? = try {
         Json.decodeFromString<T>(json)
     } catch (ex: Exception) {
-        println("TT" + ex + "     " + json)
         null
     }
 
     private fun onMessage(messageEvent: MessageEvent) {
 
         val json = messageEvent.data.toString()
-        println("onMessage $json")
         var response: Response? = null
         try {
             response = Json.decodeFromString<Response>(json)
         } catch (ex: Exception) {
-            println("TT" + ex + "     " + json)
+            println("onMessage" + ex + "     " + json)
         }
 
         response?.let { it ->
@@ -84,12 +82,8 @@ class GameApiClient {
 
                 PATHS.MESSAGE -> {
                     observer.onMessageEvent(response.body)
-                    // console.log("RESPONSE"+response.body)
                 }
 
-                PATHS.SETROOMPASSSWORDPATH, PATHS.EMPTY -> {
-                    println("PATH: $path $json")
-                }
                 PATHS.ERROR -> {
                     decodeFromString<ShowdownError>(it.body)?.let {
                         observer.onError(it)
@@ -103,7 +97,7 @@ class GameApiClient {
                     }
                 }
                 else -> {
-                    println("DOnt Care about $path")
+                    // println("DOnt Care about $path")
                 }
             }
         }
@@ -112,7 +106,6 @@ class GameApiClient {
     }
 
     fun sendMessage(message: String) {
-        println("sendMessageToServer: " + message)
         socket?.send(message)
     }
 }

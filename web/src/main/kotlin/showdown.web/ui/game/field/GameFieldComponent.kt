@@ -78,14 +78,14 @@ class GameFieldComponent : RComponent<Props, GameFieldState>() {
     override fun RBuilder.render() {
 
         //OPTIONS
-        if (!state.isSpectator) {
-            optionsList(state.selectedOptionId, state.options, onOptionClicked = { index: Int ->
-                setState {
-                    this.selectedOptionId = index
-                }
-                viewmodel.onSelectedVote(index)
-            })
-        }
+
+        optionsList(state.selectedOptionId, state.options, onOptionClicked = { index: Int ->
+            setState {
+                this.selectedOptionId = index
+            }
+            viewmodel.onSelectedVote(index)
+        })
+
         spectatorCheckbox()
 
 

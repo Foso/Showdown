@@ -72,7 +72,6 @@ class ShowdownApplication {
 
                 get("room/{roomName}/{param...}") {
                     val roomName = call.parameters["roomName"]?.substringBeforeLast("?") ?: ""
-                    println("ROOMM: $roomName")
                     if (!call.request.uri.endsWith("/")) {
                         call.respondRedirect("/room/$roomName/")
                     }
@@ -89,7 +88,7 @@ class ShowdownApplication {
                     val roomName = call.parameters["room"]?.substringBeforeLast("?") ?: ""
                     val password = call.parameters["pw"] ?: ""
                     val session = call.sessions.get<Session>()
-                    println("Web $roomName")
+
                     // We check that we actually have a session. We should always have one,
                     // since we have defined an interceptor before to set one.
                     if (session == null) {

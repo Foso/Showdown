@@ -53,7 +53,6 @@ class ShowdownServer : GameServer {
         val socketList = members.computeIfAbsent(memberId) { CopyOnWriteArrayList<WebSocketSession>() }
 
         socketList.add(socket)
-        println("JOINED: $memberId ${socketList.size}")
 
     }
 
@@ -135,7 +134,6 @@ class ShowdownServer : GameServer {
                     ?.let { joinGame ->
                         if (gameMap.none { it.key == room.name }) {
                             gameSource = createNewRoom(room.name)
-                            println("Create new Room" + room.name)
 
                         }
 
@@ -184,7 +182,6 @@ class ShowdownServer : GameServer {
     }
 
     override fun closeRoom(roomName: String) {
-        println("Close Room $roomName")
         gameMap.remove(roomName)
     }
 
@@ -198,7 +195,6 @@ class ShowdownServer : GameServer {
     }
 
     suspend fun sendMessage(recipient: String, message: String) {
-        println("sendMessageToClient: $message")
         members[recipient]?.send(Frame.Text(message))
     }
 

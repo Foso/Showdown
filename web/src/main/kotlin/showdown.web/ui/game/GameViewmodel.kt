@@ -64,7 +64,6 @@ class GameViewmodel(
                     }
                 }
                 ShowdownError.NoConnectionError -> {
-                    println("observeErrors")
                     connectToServer()
                     view.newState {
                         this.showConnectionError = true
@@ -87,7 +86,6 @@ class GameViewmodel(
                 wasConnected = true
             },
             onError = {
-                println("HIER: ${it.message}")
 
                 view.newState {
                     this.showConnectionError = true
