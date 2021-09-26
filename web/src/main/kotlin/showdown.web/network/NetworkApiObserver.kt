@@ -2,7 +2,7 @@ package showdown.web.network
 
 import de.jensklingenberg.showdown.model.ClientGameConfig
 import de.jensklingenberg.showdown.model.GameState
-import de.jensklingenberg.showdown.model.ServerResponse
+
 import de.jensklingenberg.showdown.model.ShowdownError
 
 interface NetworkApiObserver {

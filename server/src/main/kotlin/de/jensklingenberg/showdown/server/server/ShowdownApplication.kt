@@ -1,30 +1,21 @@
 package de.jensklingenberg.showdown.server.server
 
+import de.jensklingenberg.showdown.debugPort
 import de.jensklingenberg.showdown.server.model.Room
 import de.jensklingenberg.showdown.server.model.Session
-import io.ktor.application.ApplicationCallPipeline
-import io.ktor.application.call
-import io.ktor.application.install
-import io.ktor.features.AutoHeadResponse.install
-import io.ktor.features.Compression
-import io.ktor.features.ContentNegotiation
-import io.ktor.features.gzip
-import io.ktor.gson.gson
+import io.ktor.application.*
+import io.ktor.features.*
+import io.ktor.gson.*
 import io.ktor.http.cio.websocket.*
-import io.ktor.http.content.resources
-import io.ktor.http.content.static
-import io.ktor.request.uri
-import io.ktor.response.respondBytes
-import io.ktor.response.respondRedirect
-import io.ktor.routing.get
-import io.ktor.routing.routing
+import io.ktor.http.content.*
+import io.ktor.request.*
+import io.ktor.response.*
+import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.sessions.*
-import io.ktor.util.generateNonce
-import io.ktor.websocket.WebSockets
-import io.ktor.websocket.webSocket
-import kotlinx.coroutines.GlobalScope
+import io.ktor.util.*
+import io.ktor.websocket.*
 import kotlinx.coroutines.channels.consumeEach
 import java.time.Duration
 
@@ -41,7 +32,7 @@ class ShowdownApplication {
     }
 
     private fun start() {
-        val port = System.getenv("PORT")?.toInt() ?: 23567
+        val port = System.getenv("PORT")?.toInt() ?: debugPort
         println("SERVER STARTED on port: " + port)
         println("http://localhost:$port/")
 
@@ -80,8 +71,8 @@ class ShowdownApplication {
                 }
 
                 get("room/{roomName}/{param...}") {
-                    val roomName = call.parameters["roomName"] ?: ""
-
+                    val roomName = call.parameters["roomName"]?.substringBeforeLast("?") ?: ""
+                    println("ROOMM: $roomName")
                     if (!call.request.uri.endsWith("/")) {
                         call.respondRedirect("/room/$roomName/")
                     }
@@ -95,10 +86,10 @@ class ShowdownApplication {
 
 
                 webSocket("showdown") {
-                    val roomName = call.parameters["room"] ?: ""
+                    val roomName = call.parameters["room"]?.substringBeforeLast("?") ?: ""
                     val password = call.parameters["pw"] ?: ""
                     val session = call.sessions.get<Session>()
-
+                    println("Web $roomName")
                     // We check that we actually have a session. We should always have one,
                     // since we have defined an interceptor before to set one.
                     if (session == null) {

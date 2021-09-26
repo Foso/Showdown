@@ -23,7 +23,7 @@ import kotlin.math.floor
 external interface ToolbarState : State {
     var diffSecs: Double
     var startTimer: Boolean
-    var showShareDialog: Boolean
+    var showSettingsDialog: Boolean
     var gameModeId: Int
     var shareDialogDataHolder: ShareDialogDataHolder
     var gameStartTime: Date
@@ -48,7 +48,7 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
 
     override fun ToolbarState.init(props: ToolbarProps) {
         this.startTimer = props.startTimer
-        this.showShareDialog = false
+        this.showSettingsDialog = false
 
         this.gameModeId = props.gameModeId
         this.shareDialogDataHolder = props.shareDialogDataHolder
@@ -80,10 +80,10 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
     }
 
     override fun RBuilder.render() {
-        if (state.showShareDialog) {
+        if (state.showSettingsDialog) {
             settingsDialog(onCloseFunction = {
                 setState {
-                    this.showShareDialog = false
+                    this.showSettingsDialog = false
                 }
             }, state.gameModeId, onSave = { gameModeId, gameOptions ->
                 viewModel.changeConfig(gameModeId, gameOptions)
@@ -109,7 +109,7 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
                 })
                 toolbarButton("Settings", SettingsIcon, onClick = {
                     setState {
-                        showShareDialog = true
+                        showSettingsDialog = true
                     }
                 })
                 +"Estimation time: ${getTimerText()} seconds."

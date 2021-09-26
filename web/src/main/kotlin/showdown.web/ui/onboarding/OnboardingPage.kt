@@ -40,7 +40,7 @@ class OnboardingClass : RComponent<Props, State>() {
  * On this view, the user can see an explanation
  * on how to use Showdown and can select a room name
  */
-fun onboardingScreen() = fc<Props> { props ->
+fun onboardingScreen() = fc<Props> {
 
     val (roomName, setRoomName) = useState("")
 

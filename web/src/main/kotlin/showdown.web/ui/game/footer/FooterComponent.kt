@@ -56,6 +56,7 @@ interface FooterContract {
     interface View :
         StateView<FooterState> {
         fun showRoomPasswordDialogClicked()
+        fun getState(): FooterState
     }
 
     interface Presenter {

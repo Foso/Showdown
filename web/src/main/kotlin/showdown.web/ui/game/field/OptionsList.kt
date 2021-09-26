@@ -1,4 +1,4 @@
-package showdown.web.ui.game
+package showdown.web.ui.game.field
 
 import kotlinx.html.js.onClickFunction
 import materialui.components.button.button

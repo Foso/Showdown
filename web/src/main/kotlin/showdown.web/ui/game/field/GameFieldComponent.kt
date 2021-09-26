@@ -14,9 +14,6 @@ import react.dom.attrs
 import react.dom.div
 import react.setState
 import showdown.web.ui.game.Strings
-import showdown.web.ui.game.optionsList
-import showdown.web.ui.game.playersList
-import showdown.web.ui.game.resultsList
 
 fun RBuilder.gameFieldComponent() {
     child(GameFieldComponent::class) {}

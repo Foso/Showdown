@@ -12,7 +12,7 @@ import java.lang.reflect.ParameterizedType
 fun Moshi.toJson(list: List<Any>): String {
     val myData: ParameterizedType =
         Types.newParameterizedType(List::class.java, Any::class.java)
-    val adapter = this.adapter<kotlin.collections.List<Any>>(myData)
+    val adapter = this.adapter<List<Any>>(myData)
     return adapter?.toJson(list) ?: ""
 }
 

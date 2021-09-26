@@ -84,7 +84,7 @@ class ShowdownServer : GameServer {
     ) {
         var gameSource = gameMap[room.name]
         val request: Request = fromJson<Request>(command)
-            ?: Request("", "")
+            ?: return
 
         when (request.path) {
             PATHS.SETAUTOREVEALPATH.path -> {

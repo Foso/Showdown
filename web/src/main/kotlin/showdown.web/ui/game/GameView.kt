@@ -17,24 +17,23 @@ import kotlin.js.Date
 
 class GameView : RComponent<Props, GameViewState>(), GameContract.View {
 
-    private val presenter: GameContract.Presenter by lazy {
-        GamePresenter(this)
+    private val viewmodel: GameContract.Viewmodel by lazy {
+        GameViewmodel(this)
     }
 
 
     override fun GameViewState.init() {
         showSnackbar = false
         gameModeId = 0
-        playerName = "Jens"
+        playerName = ""
         showEntryPopup = false
         roomPassword = ""
-        showSettings = false
+
         startEstimationTimer = false
         requestRoomPassword = false
 
         //TOOLBAR
         gameStartTime = Date()
-
 
         //MESSAGE
         showConnectionError = false
@@ -46,7 +45,7 @@ class GameView : RComponent<Props, GameViewState>(), GameContract.View {
 
 
     override fun componentDidMount() {
-        presenter.onCreate()
+        viewmodel.onCreate()
     }
 
     override fun RBuilder.render() {
@@ -74,7 +73,7 @@ class GameView : RComponent<Props, GameViewState>(), GameContract.View {
 
         if (state.showConnectionError) {
             connectionErrorSnackbar(onActionClick = {
-                presenter.onCreate()
+                viewmodel.onCreate()
 
                 setState {
                     this.showConnectionError = false
@@ -92,7 +91,7 @@ class GameView : RComponent<Props, GameViewState>(), GameContract.View {
 
             if (urlSearchParams.has(PARAM_UNAME)) {
                 val uname = urlSearchParams.get(PARAM_UNAME) ?: ""
-                presenter.joinGame(uname)
+                viewmodel.joinGame(uname)
                 setState {
                     this.playerName = uname
                     this.showEntryPopup = false
@@ -103,7 +102,7 @@ class GameView : RComponent<Props, GameViewState>(), GameContract.View {
                         this.playerName = playerName
                         this.showEntryPopup = false
                     }
-                    presenter.joinGame(playerName)
+                    viewmodel.joinGame(playerName)
                 })
             }
 
@@ -111,10 +110,11 @@ class GameView : RComponent<Props, GameViewState>(), GameContract.View {
 
         if (state.requestRoomPassword) {
             insertPasswordDialog(state.roomPassword, onJoinClicked = {
+
                 setState {
                     this.requestRoomPassword = false
                 }
-                presenter.joinGame(state.playerName)
+                viewmodel.joinGame(state.playerName,state.roomPassword)
             }, onTextChanged = {
                 setState {
                     this.roomPassword = it
@@ -138,6 +138,5 @@ class GameView : RComponent<Props, GameViewState>(), GameContract.View {
         }
     }
 
-    override fun getState(): GameViewState = state
 }
 

@@ -1,4 +1,4 @@
-package showdown.web.ui.game
+package showdown.web.ui.game.field
 
 import csstype.AlignItems
 import csstype.JustifyContent

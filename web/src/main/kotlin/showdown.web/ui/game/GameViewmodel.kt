@@ -10,10 +10,13 @@ import showdown.web.Application
 import showdown.web.game.GameDataSource
 import kotlin.js.Date
 
-class GamePresenter(private val view: GameContract.View, private val gameDataSource: GameDataSource = Application.gameDataSource) : GameContract.Presenter {
+class GameViewmodel(
+    private val view: GameContract.View,
+    private val gameDataSource: GameDataSource = Application.gameDataSource
+) : GameContract.Viewmodel {
 
     private val compositeDisposable = CompositeDisposable()
-
+    private var playerName: String = ""
 
     override fun onCreate() {
         connectToServer()
@@ -31,7 +34,7 @@ class GamePresenter(private val view: GameContract.View, private val gameDataSou
     private fun observeGameState() {
         gameDataSource.observeGameState().subscribe(onNext = { gameState ->
             when (gameState) {
-                GameState.NotStarted -> {
+                GameState.NotStarted, is GameState.PlayerListUpdate -> {
                 }
                 is GameState.Started -> {
                     view.newState {
@@ -45,9 +48,6 @@ class GamePresenter(private val view: GameContract.View, private val gameDataSou
                         this.anonymResults = conf.anonymResults
 
                     }
-
-                }
-                is GameState.PlayerListUpdate -> {
 
                 }
 
@@ -75,8 +75,6 @@ class GamePresenter(private val view: GameContract.View, private val gameDataSou
     }
 
 
-
-
     private fun observeMessage() {
         gameDataSource.observeMessage().subscribe(onNext = {
             view.showInfoPopup(it)
@@ -90,6 +88,7 @@ class GamePresenter(private val view: GameContract.View, private val gameDataSou
                     this.requestRoomPassword = true
                 }
             } else if (error is ShowdownError.NoConnectionError) {
+                println("observeErrors")
                 connectToServer()
                 view.newState {
                     this.showConnectionError = true
@@ -103,7 +102,7 @@ class GamePresenter(private val view: GameContract.View, private val gameDataSou
             onComplete = {
                 view.newState {
                     this.showEntryPopup = true
-                    this.showConnectionError =false
+                    this.showConnectionError = false
                 }
             },
             onError = {
@@ -120,8 +119,8 @@ class GamePresenter(private val view: GameContract.View, private val gameDataSou
     }
 
 
-    override fun joinGame(playerName: String) {
-        val password = view.getState().roomPassword
+    override fun joinGame(playerName: String, password: String) {
+        this.playerName = playerName
         gameDataSource.joinRoom(playerName, password)
     }
 
@@ -130,13 +129,5 @@ class GamePresenter(private val view: GameContract.View, private val gameDataSou
         gameDataSource.changeRoomPassword(password)
     }
 
-    override fun setSpectatorStatus(b: Boolean) {
-        gameDataSource.setSpectatorStatus(b)
-    }
-
-
-    override fun onSelectedVote(voteId: Int) {
-        gameDataSource.onSelectedVote(voteId)
-    }
 
 }
