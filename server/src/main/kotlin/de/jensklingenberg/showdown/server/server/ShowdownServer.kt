@@ -49,8 +49,11 @@ class ShowdownServer : GameServer {
         // we use a `CopyOnWriteArrayList`.
         // We could also control how many sockets we would allow per client here before appending it.
         // But since this is a sample we are not doing it.
+        if (members.any() { it.key == memberId }) return
         val socketList = members.computeIfAbsent(memberId) { CopyOnWriteArrayList<WebSocketSession>() }
+
         socketList.add(socket)
+        println("JOINED: $memberId ${socketList.size}")
 
     }
 
@@ -140,7 +143,7 @@ class ShowdownServer : GameServer {
                             gameSource?.playerJoined(Player(sessionId, joinGame.playerName))
                         } else {
 
-                            val response = Response(PATHS.ERROR.path, moshi.toJson(ShowdownError.NotAuthorizedError()))
+                            val response = Response(PATHS.ERROR.path, moshi.toJson(ShowdownError.NotAuthorizedError))
                             sendTo(sessionId, moshi.toJson(response))
                         }
                     }

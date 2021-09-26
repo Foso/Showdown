@@ -9,28 +9,28 @@ import react.dom.p
 
 fun RBuilder.resultsList(results: List<Result>) {
 
-        h2 {
-            +"Result:"
+    h2 {
+        +"Result:"
+    }
+
+    h2 {
+        val groupedResults = results.groupingBy { it.optionName }.eachCount()
+        val firsttopCount = groupedResults.entries.maxByOrNull { it.value }?.value
+        val tops = groupedResults.entries.filter { it.value == firsttopCount }
+
+        p {
+            +"Top Voted Answer: ${tops.joinToString(separator = " | ") { it.key }}"
         }
+    }
 
-        h2 {
-            val groupedResults = results.groupingBy { it.optionName }.eachCount()
-            val firsttopCount = groupedResults.entries.maxByOrNull { it.value }?.value
-            val tops = groupedResults.entries.filter { it.value == firsttopCount }
+    results.groupBy { it.optionName }.forEach {
+        val optionName = it.key
+        val optionVoters = it.value.joinToString(separator = ", ") { it.voterName }
 
-            p {
-                +"Top Voted Answer: ${tops.joinToString(separator = " | ") { it.key }}"
-            }
+        h3 {
+            +"$optionName: voted by: $optionVoters"
         }
-
-        results.groupBy { it.optionName }.forEach {
-            val optionName = it.key
-            val optionVoters = it.value.joinToString(separator = ", ") { it.voterName }
-
-            h3 {
-                +"$optionName: voted by: $optionVoters"
-            }
-        }
-        hr { }
+    }
+    hr { }
 
 }

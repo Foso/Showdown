@@ -1,6 +1,7 @@
 package showdown.web.ui.game
 
 import kotlinx.html.js.onChangeFunction
+import kotlinx.html.js.onKeyDownFunction
 import materialui.components.dialog.dialog
 import materialui.components.formcontrol.enums.FormControlVariant
 import materialui.components.textfield.textField
@@ -22,6 +23,12 @@ fun RBuilder.insertPasswordDialog(roomPassword: String, onJoinClicked: () -> Uni
                     value(roomPassword)
                     label {
                         +"A room password is required"
+                    }
+                    onKeyDownFunction = {
+                        if (it.type == "keydown" && it.asDynamic()["key"] == "Enter") {
+                            onJoinClicked()
+                        }
+
                     }
                     onChangeFunction = {
                         val target = it.target as HTMLInputElement

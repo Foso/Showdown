@@ -8,8 +8,8 @@ import materialui.components.snackbar.vertical
 import materialui.lab.components.alert.alert
 import materialui.lab.components.alert.enums.AlertSeverity
 import materialui.lab.components.alert.enums.AlertVariant
-import react.RBuilder
 import react.Props
+import react.RBuilder
 import react.dom.attrs
 import react.fc
 import react.useState
@@ -28,7 +28,7 @@ external interface MySnackbarProps : Props {
 }
 
 
-val mySnackbar = fc<MySnackbarProps> { props ->
+private val mySnackbar = fc<MySnackbarProps> { props ->
     val text = props.snackbarMessage
     val (visible, setVisibility) = useState(true)
 

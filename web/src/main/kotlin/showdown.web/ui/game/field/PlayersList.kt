@@ -100,7 +100,7 @@ fun RBuilder.playersList(members: List<Member>) {
                     css {
                         this.textAlign = TextAlign.center
                     }
-                    +("Player: " + it.playerName + " Voted:")
+                    +("Voter: " + it.playerName + " Voted:")
 
                     if (it.voted) {
                         styledDiv {

@@ -13,7 +13,7 @@ import showdown.web.wrapper.material.icons.TouchAppIcon
 /**
  * Shows the list with options, that the use can vote
  */
-fun RBuilder.optionsList(selectedOptionId:Int,options:List<String>, onOptionClicked: (Int) -> Unit) {
+fun RBuilder.optionsList(selectedOptionId: Int, options: List<String>, onOptionClicked: (Int) -> Unit) {
     h2 {
         TouchAppIcon {}
 

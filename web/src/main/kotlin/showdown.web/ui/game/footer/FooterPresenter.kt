@@ -1,10 +1,10 @@
 package showdown.web.ui.game.footer
 
-import showdown.web.Application
 import com.badoo.reaktive.disposable.CompositeDisposable
 import com.badoo.reaktive.disposable.addTo
 import com.badoo.reaktive.observable.subscribe
 import de.jensklingenberg.showdown.model.GameState
+import showdown.web.Application
 import showdown.web.game.GameDataSource
 
 class FooterPresenter(private val view: FooterContract.View) :

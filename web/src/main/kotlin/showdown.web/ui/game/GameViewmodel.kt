@@ -8,7 +8,6 @@ import de.jensklingenberg.showdown.model.GameState
 import de.jensklingenberg.showdown.model.ShowdownError
 import showdown.web.Application
 import showdown.web.game.GameDataSource
-import kotlin.js.Date
 
 class GameViewmodel(
     private val view: GameContract.View,
@@ -17,16 +16,11 @@ class GameViewmodel(
 
     private val compositeDisposable = CompositeDisposable()
     private var playerName: String = ""
-
+    private var wasConnected = false
     override fun onCreate() {
         connectToServer()
-
         observeErrors()
-
         observeMessage()
-
-        observeRoomConfig()
-
         observeGameState()
 
     }
@@ -38,15 +32,8 @@ class GameViewmodel(
                 }
                 is GameState.Started -> {
                     view.newState {
-                        val conf = gameState.clientGameConfig
-
-                        this.gameStartTime = Date(conf.createdAt.toDouble())
-
                         this.startEstimationTimer = true
                         this.requestRoomPassword = false
-                        this.autoReveal = conf.autoReveal
-                        this.anonymResults = conf.anonymResults
-
                     }
 
                 }
@@ -61,19 +48,6 @@ class GameViewmodel(
         }).addTo(compositeDisposable)
     }
 
-    private fun observeRoomConfig() {
-        gameDataSource.observeRoomConfig().subscribe(onNext = { conf ->
-            conf?.let {
-                view.newState {
-                    this.anonymResults = conf.anonymResults
-                    this.autoReveal = conf.autoReveal
-                }
-            }
-
-
-        }).addTo(compositeDisposable)
-    }
-
 
     private fun observeMessage() {
         gameDataSource.observeMessage().subscribe(onNext = {
@@ -83,15 +57,18 @@ class GameViewmodel(
 
     private fun observeErrors() {
         gameDataSource.observeErrors().subscribe(onNext = { error ->
-            if (error is ShowdownError.NotAuthorizedError) {
-                view.newState {
-                    this.requestRoomPassword = true
+            when (error) {
+                ShowdownError.NotAuthorizedError -> {
+                    view.newState {
+                        this.requestRoomPassword = true
+                    }
                 }
-            } else if (error is ShowdownError.NoConnectionError) {
-                println("observeErrors")
-                connectToServer()
-                view.newState {
-                    this.showConnectionError = true
+                ShowdownError.NoConnectionError -> {
+                    println("observeErrors")
+                    connectToServer()
+                    view.newState {
+                        this.showConnectionError = true
+                    }
                 }
             }
         }).addTo(compositeDisposable)
@@ -100,13 +77,18 @@ class GameViewmodel(
     private fun connectToServer() {
         gameDataSource.connectToServer().subscribe(
             onComplete = {
+                if (wasConnected) {
+                    joinGame(gameDataSource.getPlayerName())
+                }
                 view.newState {
-                    this.showEntryPopup = true
+                    this.showEntryPopup = !wasConnected
                     this.showConnectionError = false
                 }
+                wasConnected = true
             },
             onError = {
-                connectToServer()
+                println("HIER: ${it.message}")
+
                 view.newState {
                     this.showConnectionError = true
                 }

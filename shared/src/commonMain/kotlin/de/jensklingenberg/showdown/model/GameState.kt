@@ -27,11 +27,10 @@ sealed class GameState {
 }
 
 
-
 private val json = Json { allowStructuredMapKeys = true }
 
 
 @OptIn(ExperimentalSerializationApi::class)
-fun  GameState.toJson(): String {
+fun GameState.toJson(): String {
     return json.encodeToString(this)
 }

@@ -1,6 +1,8 @@
 package showdown.web.ui.game
 
-import showdown.web.Application
+import de.jensklingenberg.showdown.SHOWDOWN_ISSUES_URL
+import de.jensklingenberg.showdown.SHOWDOWN_REPO_URL
+import de.jensklingenberg.showdown.SHOWDOWN_VERSION
 import kotlinx.browser.window
 import kotlinx.html.js.onClickFunction
 import materialui.components.button.button
@@ -16,11 +18,12 @@ import react.dom.a
 import react.dom.attrs
 import react.dom.div
 import react.dom.h1
+import showdown.web.Application
 import showdown.web.ui.game.Strings.Companion.GAME_SETTINGS
 import showdown.web.wrapper.material.QrCode
 
 
-data class ShareDialogDataHolder(val autoReveal: Boolean, val anonymResults:Boolean)
+data class ShareDialogDataHolder(val autoReveal: Boolean, val anonymResults: Boolean)
 
 /**
  * Shows a dialog with a QR Code of the link to the room
@@ -94,7 +97,7 @@ fun RBuilder.settingsDialog(
             div {
                 a {
                     attrs {
-                        href = "https://github.com/Foso/Showdown/issues"
+                        href = SHOWDOWN_ISSUES_URL
                     }
                     +"Issues/Feature Requests"
 
@@ -104,9 +107,9 @@ fun RBuilder.settingsDialog(
             div {
                 a {
                     attrs {
-                        href = "https://github.com/Foso/Showdown"
+                        href = SHOWDOWN_REPO_URL
                     }
-                    +"Showdown v1.2 on Github"
+                    +"Showdown v$SHOWDOWN_VERSION on Github"
 
                 }
             }

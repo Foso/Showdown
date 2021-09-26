@@ -1,5 +1,7 @@
 package showdown.web.ui.onboarding
 
+
+import de.jensklingenberg.showdown.SHOWDOWN_REPO_URL
 import kotlinx.browser.window
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
@@ -8,13 +10,9 @@ import materialui.components.formcontrol.enums.FormControlVariant
 import materialui.components.textfield.textField
 import org.w3c.dom.HTMLInputElement
 import react.Props
-import react.PropsWithChildren
 import react.RBuilder
 import react.RComponent
-import react.RProps
-
 import react.State
-import react.child
 import react.dom.a
 import react.dom.attrs
 import react.dom.br
@@ -27,7 +25,6 @@ import react.dom.hr
 import react.dom.img
 import react.fc
 import react.useState
-
 
 
 class OnboardingClass : RComponent<Props, State>() {
@@ -167,7 +164,7 @@ fun onboardingScreen() = fc<Props> {
     br { }
     br { }
     div {
-        a(href = "https://github.com/Foso/Showdown") {
+        a(href = SHOWDOWN_REPO_URL) {
             +"Showdown"
         }
 

@@ -33,11 +33,11 @@ class GameApiClient {
             }
 
             onerror = {
-                observer.onError(ShowdownError.NoConnectionError())
+                observer.onError(ShowdownError.NoConnectionError)
                 emitter.onError(Throwable("NO Connection"))
             }
             onclose = {
-                observer.onError(ShowdownError.NoConnectionError())
+                observer.onError(ShowdownError.NoConnectionError)
             }
         }
     }
@@ -107,7 +107,6 @@ class GameApiClient {
                 }
             }
         }
-
 
 
     }

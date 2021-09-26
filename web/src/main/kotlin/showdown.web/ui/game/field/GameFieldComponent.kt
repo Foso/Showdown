@@ -96,8 +96,6 @@ class GameFieldComponent : RComponent<Props, GameFieldState>() {
 
         //PLAYERS
         playersList(state.players)
-        //
-
 
     }
 

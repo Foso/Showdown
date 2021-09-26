@@ -12,7 +12,6 @@ import showdown.web.ui.common.mySnackbar
 import showdown.web.ui.game.field.gameFieldComponent
 import showdown.web.ui.game.footer.myfooter
 import showdown.web.ui.game.toolbar.myToolbar
-import kotlin.js.Date
 
 
 class GameView : RComponent<Props, GameViewState>(), GameContract.View {
@@ -24,7 +23,7 @@ class GameView : RComponent<Props, GameViewState>(), GameContract.View {
 
     override fun GameViewState.init() {
         showSnackbar = false
-        gameModeId = 0
+
         playerName = ""
         showEntryPopup = false
         roomPassword = ""
@@ -32,15 +31,9 @@ class GameView : RComponent<Props, GameViewState>(), GameContract.View {
         startEstimationTimer = false
         requestRoomPassword = false
 
-        //TOOLBAR
-        gameStartTime = Date()
-
         //MESSAGE
         showConnectionError = false
-        autoReveal = false
         snackbarMessage = ""
-
-        anonymResults = false
     }
 
 
@@ -54,9 +47,6 @@ class GameView : RComponent<Props, GameViewState>(), GameContract.View {
         //TOOLBAR
         myToolbar(
             startTimer = state.startEstimationTimer,
-            gameModeId = state.gameModeId,
-            shareDialogDataHolder = ShareDialogDataHolder(state.autoReveal, state.anonymResults),
-            gameStartTime = state.gameStartTime
         )
 
         gameFieldComponent()
@@ -114,7 +104,7 @@ class GameView : RComponent<Props, GameViewState>(), GameContract.View {
                 setState {
                     this.requestRoomPassword = false
                 }
-                viewmodel.joinGame(state.playerName,state.roomPassword)
+                viewmodel.joinGame(state.playerName, state.roomPassword)
             }, onTextChanged = {
                 setState {
                     this.roomPassword = it

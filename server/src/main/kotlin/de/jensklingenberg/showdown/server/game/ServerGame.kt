@@ -62,11 +62,13 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
     }
 
 
-
     fun restart() {
         round += 1
         gameState =
-            GameState.Started(gameConfig.toClient().copy(createdAt = DateTime.now().unixMillisDouble.toString(),votingName = "Round $round"))
+            GameState.Started(
+                gameConfig.toClient()
+                    .copy(createdAt = DateTime.now().unixMillisDouble.toString(), votingName = "Round $round")
+            )
         inactivePlayerIds.forEach { inactivePlayerId ->
             playerList.removeIf { it.sessionId == inactivePlayerId }
             spectatorIds.removeIf { it == inactivePlayerId }
@@ -150,12 +152,12 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
         val configJson = moshi.toJson(clientGameConfig)
         val response = Response(PATHS.ROOMCONFIGUPDATE.path, configJson)
 
-        sendBroadcast( moshi.toJson(response))
+        sendBroadcast(moshi.toJson(response))
     }
 
     fun onPlayerVoted(sessionId: String, voteId: Int) {
         if (gameState is GameState.ShowVotes) return
-        if (spectatorIds.any { it == sessionId })  return
+        if (spectatorIds.any { it == sessionId }) return
 
         playerList.replaceAll { player ->
             if (player.sessionId == sessionId) {
@@ -231,13 +233,13 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
 
 
     private fun sendGameStateChanged(sessionId: String, gameState: GameState) {
-        val res = Response(PATHS.STATECHANGED.path,gameState.toJson())
+        val res = Response(PATHS.STATECHANGED.path, gameState.toJson())
         //val json = ServerResponse.GameStateChanged(gameState).toJson()
         server.sendData(sessionId, moshi.toJson(res))
     }
 
     private fun sendGameStateChanged(gameState: GameState) {
-        val res = Response(PATHS.STATECHANGED.path,gameState.toJson())
+        val res = Response(PATHS.STATECHANGED.path, gameState.toJson())
         sendBroadcast(moshi.toJson(res))
     }
 

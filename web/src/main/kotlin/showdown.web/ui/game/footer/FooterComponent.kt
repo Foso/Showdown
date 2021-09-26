@@ -40,7 +40,6 @@ import styled.css
 import styled.styledDiv
 
 
-
 external interface FooterProps : Props
 
 external interface RoomPasswordDialogState : State {

@@ -17,7 +17,7 @@ interface GameConfig {
      */
     val createdAt: String
     val anonymResults: Boolean
-    val votingName :String
+    val votingName: String
 }
 
 @Serializable
@@ -27,7 +27,7 @@ data class ClientGameConfig(
     override var createdAt: String,
     val roomHasPassword: Boolean = false,
     override var anonymResults: Boolean = false,
-    override val votingName: String =""
+    override val votingName: String = ""
 ) : GameConfig
 
 @Serializable

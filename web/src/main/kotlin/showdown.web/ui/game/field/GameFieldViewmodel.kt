@@ -8,7 +8,7 @@ import de.jensklingenberg.showdown.model.GameState
 import showdown.web.Application
 import showdown.web.game.GameDataSource
 
-class GameFieldViewmodel( private val gameDataSource: GameDataSource = Application.gameDataSource) :
+class GameFieldViewmodel(private val gameDataSource: GameDataSource = Application.gameDataSource) :
     GameFieldContract.Viewmodel {
 
     private val compositeDisposable = CompositeDisposable()
@@ -32,7 +32,6 @@ class GameFieldViewmodel( private val gameDataSource: GameDataSource = Applicati
     override fun onDestroy() {
         compositeDisposable.clear()
     }
-
 
 
     override fun setSpectatorStatus(b: Boolean) {

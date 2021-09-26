@@ -17,21 +17,20 @@ fun Moshi.toJson(list: List<Any>): String {
 }
 
 
-
 fun Moshi.toJson(any: Any): String {
     return try {
         val jsonAdapter = this.adapter(Any::class.java)
         jsonAdapter?.toJson(any) ?: ""
-    }catch (ex: Exception){
+    } catch (ex: Exception) {
         ""
     }
 
 }
 
 
-inline fun <reified T> fromJson(json:String) : T?{
+inline fun <reified T> fromJson(json: String): T? {
     //TODO clean json
-    val js = json.replace("\"_","\"").replace("_0","")
+    val js = json.replace("\"_", "\"").replace("_0", "")
     val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
     val jsonAdapter: JsonAdapter<T> = moshi.adapter(T::class.java)
 
@@ -39,7 +38,7 @@ inline fun <reified T> fromJson(json:String) : T?{
         jsonAdapter.failOnUnknown().fromJson(js)
     } catch (io: IOException) {
         null
-    }catch (jsonDataException: JsonDataException){
+    } catch (jsonDataException: JsonDataException) {
         null
     }
 }

@@ -37,7 +37,7 @@ class ShowdownApplication {
         println("http://localhost:$port/")
 
 
-        embeddedServer( Netty, port=port) {
+        embeddedServer(Netty, port = port) {
             install(Compression) {
                 gzip()
             }
@@ -125,8 +125,6 @@ class ShowdownApplication {
             }
         }.start(wait = true)
     }
-
-
 
 
 }

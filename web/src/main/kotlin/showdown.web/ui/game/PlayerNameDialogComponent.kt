@@ -1,6 +1,5 @@
 package showdown.web.ui.game
 
-import kotlinx.browser.window
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onKeyDownFunction

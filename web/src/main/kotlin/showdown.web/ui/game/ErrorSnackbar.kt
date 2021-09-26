@@ -10,7 +10,7 @@ import org.w3c.dom.events.Event
 import react.RBuilder
 import react.dom.attrs
 
-fun RBuilder.connectionErrorSnackbar( onActionClick: (Event) -> Unit) {
+fun RBuilder.connectionErrorSnackbar(onActionClick: (Event) -> Unit) {
 
     snackbar {
         attrs {
