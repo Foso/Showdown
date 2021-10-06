@@ -4,9 +4,11 @@ import com.badoo.reaktive.completable.subscribe
 import com.badoo.reaktive.disposable.CompositeDisposable
 import com.badoo.reaktive.disposable.addTo
 import com.badoo.reaktive.observable.subscribe
+import com.badoo.reaktive.subject.behavior.BehaviorSubject
 import de.jensklingenberg.showdown.model.GameState
 import de.jensklingenberg.showdown.model.ShowdownError
 import showdown.web.Application
+import showdown.web.debugLog
 import showdown.web.game.GameDataSource
 
 class GameViewmodel(
@@ -16,9 +18,10 @@ class GameViewmodel(
 
     private val compositeDisposable = CompositeDisposable()
     private var playerName: String = ""
-    private var wasConnected = false
+    override val starEstimationTimerSubject: BehaviorSubject<Boolean> = BehaviorSubject(false)
+
     override fun onCreate() {
-        connectToServer()
+
         observeErrors()
         observeMessage()
         observeGameState()
@@ -31,17 +34,15 @@ class GameViewmodel(
                 GameState.NotStarted, is GameState.PlayerListUpdate -> {
                 }
                 is GameState.Started -> {
+                    starEstimationTimerSubject.onNext(true)
                     view.newState {
-                        this.startEstimationTimer = true
                         this.requestRoomPassword = false
                     }
 
                 }
 
                 is GameState.ShowVotes -> {
-                    view.newState {
-                        this.startEstimationTimer = false
-                    }
+                    starEstimationTimerSubject.onNext(false)
                 }
 
             }
@@ -64,31 +65,31 @@ class GameViewmodel(
                     }
                 }
                 ShowdownError.NoConnectionError -> {
-                    connectToServer()
+                    debugLog("No Connection")
                     view.newState {
-                        this.showConnectionError = true
+                        this.showEntryPopup = true
+                        this.showConnectionError = false
                     }
                 }
             }
         }).addTo(compositeDisposable)
     }
 
-    private fun connectToServer() {
+    private fun connectToServer(playerName: String, password: String) {
         gameDataSource.connectToServer().subscribe(
             onComplete = {
-                if (wasConnected) {
-                    joinGame(gameDataSource.getPlayerName())
-                }
+                debugLog("ConnectToServer onComplete")
+                gameDataSource.joinRoom(playerName, password)
                 view.newState {
-                    this.showEntryPopup = !wasConnected
+                    this.showEntryPopup = false
                     this.showConnectionError = false
                 }
-                wasConnected = true
+
             },
             onError = {
-
+                debugLog("connectToServer: onError" + it.message)
                 view.newState {
-                    this.showConnectionError = true
+                    this.showEntryPopup = true
                 }
             }
         ).addTo(compositeDisposable)
@@ -100,8 +101,10 @@ class GameViewmodel(
 
 
     override fun joinGame(playerName: String, password: String) {
+        debugLog("JoinGame")
         this.playerName = playerName
-        gameDataSource.joinRoom(playerName, password)
+        connectToServer(playerName, password)
+
     }
 
 

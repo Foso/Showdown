@@ -24,7 +24,7 @@ class Application {
         private val gameApiHandler = GameApiClient()
         val gameDataSource: GameDataSource = GameRepository(gameApiHandler)
         val PARAM_UNAME = "uname"
-
+        const val DEBUG = false
     }
 
     private val rootElement = "root"
@@ -46,6 +46,13 @@ class Application {
         }
     }
 
+}
+
+
+fun debugLog(text: String) {
+    if (Application.DEBUG) {
+        println("DEBUG: $text")
+    }
 }
 
 private fun RElementBuilder<PropsWithChildren>.homeRoute() {

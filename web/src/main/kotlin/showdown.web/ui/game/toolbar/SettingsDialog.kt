@@ -1,4 +1,4 @@
-package showdown.web.ui.game
+package showdown.web.ui.game.toolbar
 
 import de.jensklingenberg.showdown.SHOWDOWN_ISSUES_URL
 import de.jensklingenberg.showdown.SHOWDOWN_REPO_URL
@@ -18,12 +18,12 @@ import react.dom.a
 import react.dom.attrs
 import react.dom.div
 import react.dom.h1
-import showdown.web.Application
+import showdown.web.game.GameDataSource
 import showdown.web.ui.game.Strings.Companion.GAME_SETTINGS
 import showdown.web.wrapper.material.QrCode
 
 
-data class ShareDialogDataHolder(val autoReveal: Boolean, val anonymResults: Boolean)
+data class SettingsDialogDataHolder(val autoReveal: Boolean, val anonymResults: Boolean)
 
 /**
  * Shows a dialog with a QR Code of the link to the room
@@ -32,7 +32,8 @@ fun RBuilder.settingsDialog(
     onCloseFunction: (Event) -> Unit,
     gameModeId: Int,
     onSave: (Int, String) -> Unit,
-    shareDialogDataHolder: ShareDialogDataHolder
+    settingsDialogDataHolder: SettingsDialogDataHolder,
+    gameDataSource: GameDataSource
 ) {
 
     dialog {
@@ -54,9 +55,9 @@ fun RBuilder.settingsDialog(
             div {
                 checkbox {
                     attrs {
-                        checked = shareDialogDataHolder.autoReveal
+                        checked = settingsDialogDataHolder.autoReveal
                         onClickFunction = {
-                            Application.gameDataSource.setAutoReveal(!shareDialogDataHolder.autoReveal)
+                            gameDataSource.setAutoReveal(!settingsDialogDataHolder.autoReveal)
                         }
                     }
                 }
@@ -66,9 +67,9 @@ fun RBuilder.settingsDialog(
             div {
                 checkbox {
                     attrs {
-                        checked = shareDialogDataHolder.anonymResults
+                        checked = settingsDialogDataHolder.anonymResults
                         onClickFunction = {
-                            Application.gameDataSource.setAnonymVote(!shareDialogDataHolder.anonymResults)
+                            gameDataSource.setAnonymVote(!settingsDialogDataHolder.anonymResults)
                         }
                     }
                 }

@@ -11,8 +11,7 @@ import react.State
 import react.dom.attrs
 import react.dom.div
 import react.setState
-import showdown.web.ui.game.ShareDialogDataHolder
-import showdown.web.ui.game.settingsDialog
+import showdown.web.Application
 import showdown.web.wrapper.material.SettingsIcon
 import showdown.web.wrapper.material.VisibilityIcon
 import showdown.web.wrapper.material.icons.AddCircleIcon
@@ -24,7 +23,7 @@ external interface ToolbarState : State {
     var startTimer: Boolean
     var showSettingsDialog: Boolean
     var gameModeId: Int
-    var shareDialogDataHolder: ShareDialogDataHolder
+    var settingsDialogDataHolder: SettingsDialogDataHolder
 
 }
 
@@ -47,7 +46,7 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
         this.startTimer = props.startTimer
         this.showSettingsDialog = false
         this.gameModeId = 0
-        this.shareDialogDataHolder = ShareDialogDataHolder(false, false)
+        this.settingsDialogDataHolder = SettingsDialogDataHolder(false, false)
 
     }
 
@@ -66,7 +65,7 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
         viewModel.roomConfigSubject.subscribe {
             it?.let {
                 setState {
-                    this.shareDialogDataHolder = ShareDialogDataHolder(it.autoReveal, it.anonymResults)
+                    this.settingsDialogDataHolder = SettingsDialogDataHolder(it.autoReveal, it.anonymResults)
 
                 }
             }
@@ -87,7 +86,7 @@ class Toolbar(props: ToolbarProps) : RComponent<ToolbarProps, ToolbarState>(prop
                 }
             }, state.gameModeId, onSave = { gameModeId, gameOptions ->
                 viewModel.changeConfig(gameModeId, gameOptions)
-            }, state.shareDialogDataHolder)
+            }, state.settingsDialogDataHolder, Application.gameDataSource)
         }
 
         myAppBar()

@@ -1,4 +1,4 @@
-package showdown.web.ui.game
+package showdown.web.ui.game.toolbar
 
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction

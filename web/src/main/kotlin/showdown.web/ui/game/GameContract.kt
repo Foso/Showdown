@@ -1,5 +1,7 @@
 package showdown.web.ui.game
 
+import com.badoo.reaktive.subject.behavior.BehaviorSubject
+
 interface StateView<T> {
     fun newState(buildState: T.(T) -> Unit)
 }
@@ -14,6 +16,7 @@ interface GameContract {
         fun onDestroy()
         fun joinGame(playerName: String, password: String = "")
         fun changeRoomPassword(password: String)
+        val starEstimationTimerSubject: BehaviorSubject<Boolean>
     }
 
 }

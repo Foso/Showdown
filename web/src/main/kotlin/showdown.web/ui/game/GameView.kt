@@ -1,6 +1,7 @@
 package showdown.web.ui.game
 
 
+import com.badoo.reaktive.observable.subscribe
 import kotlinx.browser.window
 import org.w3c.dom.url.URLSearchParams
 import react.Props
@@ -25,7 +26,7 @@ class GameView : RComponent<Props, GameViewState>(), GameContract.View {
         showSnackbar = false
 
         playerName = ""
-        showEntryPopup = false
+        showEntryPopup = true
         roomPassword = ""
 
         startEstimationTimer = false
@@ -39,6 +40,11 @@ class GameView : RComponent<Props, GameViewState>(), GameContract.View {
 
     override fun componentDidMount() {
         viewmodel.onCreate()
+        viewmodel.starEstimationTimerSubject.subscribe {
+            setState {
+                this.startEstimationTimer = it
+            }
+        }
     }
 
     override fun RBuilder.render() {
