@@ -51,7 +51,6 @@ class ShowdownServer : GameServer {
         // But since this is a sample we are not doing it.
         //if (members.any() { it.key == memberId }) return
         val socketList = members.computeIfAbsent(memberId) { CopyOnWriteArrayList<WebSocketSession>() }
-
         socketList.add(socket)
 
     }
