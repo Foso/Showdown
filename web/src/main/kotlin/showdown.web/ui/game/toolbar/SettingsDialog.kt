@@ -61,7 +61,7 @@ fun RBuilder.settingsDialog(
                         }
                     }
                 }
-                +"Auto Reveal votes when all voted"
+                +"Auto reveal votes when all voted"
             }
 
             div {
