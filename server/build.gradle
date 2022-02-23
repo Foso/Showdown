@@ -2,8 +2,8 @@ buildscript {
     apply from: './constants.gradle'
 }
 buildscript {
-    ext.kotlin_version = '1.5.31'
-    ext.ktor_version = '1.6.4'
+    ext.kotlin_version = '1.6.10'
+    ext.ktor_version = '1.6.7'
 
     repositories {
         mavenCentral()

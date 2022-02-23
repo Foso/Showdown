@@ -71,6 +71,7 @@ class GameViewmodel(
                         this.showConnectionError = false
                     }
                 }
+                else -> {}
             }
         }).addTo(compositeDisposable)
     }
