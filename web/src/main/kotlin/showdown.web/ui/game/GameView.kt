@@ -93,12 +93,12 @@ class GameView : RComponent<Props, GameViewState>(), GameContract.View {
                     this.showEntryPopup = false
                 }
             } else {
-                playerNameDialog(onJoinClicked = { playerName ->
+                playerNameDialog(onJoinClicked = { joinGame ->
                     setState {
-                        this.playerName = playerName
+                        this.playerName = joinGame.playerName
                         this.showEntryPopup = false
                     }
-                    viewmodel.joinGame(playerName)
+                    viewmodel.joinGame(joinGame.playerName, "", joinGame.isSpectator)
                 })
             }
 

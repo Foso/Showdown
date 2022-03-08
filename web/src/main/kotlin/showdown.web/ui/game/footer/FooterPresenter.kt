@@ -31,8 +31,6 @@ class FooterPresenter(private val view: FooterContract.View) :
                     this.roomHasPassword = conf.roomHasPassword
                 }
             }
-
-
         }).addTo(compositeDisposable)
     }
 

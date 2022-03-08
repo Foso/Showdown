@@ -11,7 +11,7 @@ class NetworkPreferences {
     private val localIP = "192.168.178.56"
     var hostUri: String = "${window.location}"
 
-    val hostname = when {
+    private val hostname = when {
         hostUri.contains("localhost") -> {
             "ws://localhost:$debugPort/"
         }

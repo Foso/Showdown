@@ -9,7 +9,7 @@ import de.jensklingenberg.showdown.model.api.clientrequest.NewGameConfig
 
 interface GameDataSource {
     fun connectToServer(): Completable
-    fun joinRoom(name: String, password: String)
+    fun joinRoom(name: String, password: String, isSpectator: Boolean)
     fun observeGameState(): Observable<GameState>
     fun observeMessage(): Observable<String>
     fun observeRoomConfig(): Observable<ClientGameConfig?>
@@ -25,6 +25,5 @@ interface GameDataSource {
     fun setAutoReveal(enabled: Boolean)
     fun setSpectatorStatus(enabled: Boolean)
     fun setAnonymVote(enabled: Boolean)
-    //fun getRoomConfig(): NewGameConfig?
 }
 

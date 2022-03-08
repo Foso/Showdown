@@ -14,7 +14,7 @@ interface GameContract {
     interface Viewmodel {
         fun onCreate()
         fun onDestroy()
-        fun joinGame(playerName: String, password: String = "")
+        fun joinGame(playerName: String, password: String = "", isSpectator: Boolean = false)
         fun changeRoomPassword(password: String)
         val starEstimationTimerSubject: BehaviorSubject<Boolean>
     }

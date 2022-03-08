@@ -28,11 +28,8 @@ fun RBuilder.optionsList(selectedOptionId: Int, options: List<String>, onOptionC
                 this.size = ButtonSize.small
             }
             +""
-
         }
-
     }
-
 }
 
 private fun RBuilder.OptionsButton(
