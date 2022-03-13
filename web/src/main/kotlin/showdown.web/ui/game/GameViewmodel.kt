@@ -71,15 +71,16 @@ class GameViewmodel(
                         this.showConnectionError = false
                     }
                 }
+                else -> {}
             }
         }).addTo(compositeDisposable)
     }
 
-    private fun connectToServer(playerName: String, password: String) {
+    private fun connectToServer(playerName: String, password: String, isSpectator: Boolean) {
         gameDataSource.connectToServer().subscribe(
             onComplete = {
                 debugLog("ConnectToServer onComplete")
-                gameDataSource.joinRoom(playerName, password)
+                gameDataSource.joinRoom(playerName, password, isSpectator)
                 view.newState {
                     this.showEntryPopup = false
                     this.showConnectionError = false
@@ -100,10 +101,10 @@ class GameViewmodel(
     }
 
 
-    override fun joinGame(playerName: String, password: String) {
+    override fun joinGame(playerName: String, password: String, isSpectator: Boolean) {
         debugLog("JoinGame")
         this.playerName = playerName
-        connectToServer(playerName, password)
+        connectToServer(playerName, password, isSpectator)
 
     }
 

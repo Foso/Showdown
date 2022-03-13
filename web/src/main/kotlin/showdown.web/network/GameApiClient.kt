@@ -34,7 +34,7 @@ class GameApiClient {
 
             onerror = {
                 observer.onError(ShowdownError.NoConnectionError)
-                emitter.onError(Throwable("NO Connection"))
+                emitter.onError(Throwable("No Connection"))
             }
             onclose = {
                 observer.onError(ShowdownError.NoConnectionError)
@@ -64,7 +64,7 @@ class GameApiClient {
         try {
             response = Json.decodeFromString<Response>(json)
         } catch (ex: Exception) {
-            println("onMessage" + ex + "     " + json)
+            println("onMessage$ex     $json")
         }
 
         response?.let { it ->

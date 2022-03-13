@@ -86,20 +86,21 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
         return spectatorStatusSubject
     }
 
-    override fun joinRoom(name: String, password: String) {
+    override fun joinRoom(name: String, password: String, isSpectator: Boolean) {
         playerName = name
         roomPassword = password
         val req = Request(
             PATHS.JOINROOM.path, JoinGame(
                 name,
-                password
+                password,
+                isSpectator
             ).stringify()
         )
 
         gameApiClient.sendMessage(JSON.stringify(req))
     }
 
-    fun Request.encodeToString(): String {
+    private fun Request.encodeToString(): String {
         return Json.encodeToString(this)
     }
 

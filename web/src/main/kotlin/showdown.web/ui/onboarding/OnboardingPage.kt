@@ -10,9 +10,6 @@ import materialui.components.formcontrol.enums.FormControlVariant
 import materialui.components.textfield.textField
 import org.w3c.dom.HTMLInputElement
 import react.Props
-import react.RBuilder
-import react.RComponent
-import react.State
 import react.dom.a
 import react.dom.attrs
 import react.dom.br
@@ -26,12 +23,6 @@ import react.dom.img
 import react.fc
 import react.useState
 
-
-class OnboardingClass : RComponent<Props, State>() {
-    override fun RBuilder.render() {
-        child(onboardingScreen()) {}
-    }
-}
 
 /**
  * On this view, the user can see an explanation
@@ -58,18 +49,13 @@ fun onboardingScreen() = fc<Props> {
                 }
                 onKeyDownFunction = {
                     if (it.type == "keydown" && it.asDynamic()["key"] == "Enter") {
-
                         window.location.href = "/#/room/${roomName}";
-
                     }
-
                 }
 
                 onChangeFunction = {
                     val target = it.target as HTMLInputElement
-
                     setRoomName(target.value)
-
                 }
             }
         }
@@ -87,7 +73,7 @@ fun onboardingScreen() = fc<Props> {
     }
     div {
         h3 {
-            +"2) Choose a player name\n"
+            +"2) Choose a voter name\n"
         }
         img {
             attrs {
@@ -135,17 +121,13 @@ fun onboardingScreen() = fc<Props> {
             }
             onChangeFunction = {
                 val target = it.target as HTMLInputElement
-
                 setRoomName(target.value)
-
             }
+
             onKeyDownFunction = {
                 if (it.type == "keydown" && it.asDynamic()["key"] == "Enter") {
-
                     window.location.href = "/#/room/${roomName}";
-
                 }
-
             }
         }
     }

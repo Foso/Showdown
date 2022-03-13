@@ -138,6 +138,9 @@ class ShowdownServer : GameServer {
 
                         if (joinGame.roomPassword == gameSource?.gameConfig?.room?.password) {
                             gameSource?.playerJoined(Player(sessionId, joinGame.playerName))
+                            if (joinGame.isSpectator) {
+                                gameSource?.onSpectate(sessionId, true)
+                            }
                         } else {
 
                             val response = Response(PATHS.ERROR.path, moshi.toJson(ShowdownError.NotAuthorizedError))

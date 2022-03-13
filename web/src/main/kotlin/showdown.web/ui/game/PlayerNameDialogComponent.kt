@@ -1,11 +1,13 @@
 package showdown.web.ui.game
 
+import de.jensklingenberg.showdown.model.api.clientrequest.JoinGame
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onKeyDownFunction
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonColor
 import materialui.components.button.enums.ButtonVariant
+import materialui.components.checkbox.checkbox
 import materialui.components.dialog.DialogElementBuilder
 import materialui.components.dialog.dialog
 import materialui.components.formcontrol.enums.FormControlVariant
@@ -21,7 +23,7 @@ import showdown.web.ui.game.Strings.Companion.JOIN_GAME
 
 
 external interface PlayerNameDialogComponentProps : Props {
-    var onJoinClicked: (String) -> Unit
+    var onJoinClicked: (JoinGame) -> Unit
 }
 
 fun DialogElementBuilder.joinGameButton(onClick: () -> Unit) {
@@ -42,13 +44,16 @@ fun DialogElementBuilder.joinGameButton(onClick: () -> Unit) {
  */
 val PlayerNameDialogComponent = fc<PlayerNameDialogComponentProps> { props ->
 
-    val (playerName, setplayerName) = useState("User" + (0..1000).random().toString())
+    val (playerName, setPlayerName) = useState("User" + (0..1000).random().toString())
+    val (specState, setSpec) = useState(false)
+
     dialog {
         attrs {
             this.open = true
         }
 
         div {
+
             textField {
                 attrs {
                     variant = FormControlVariant.filled
@@ -58,31 +63,42 @@ val PlayerNameDialogComponent = fc<PlayerNameDialogComponentProps> { props ->
                     value(playerName)
                     onKeyDownFunction = {
                         if (it.type == "keydown" && it.asDynamic()["key"] == "Enter") {
-                            props.onJoinClicked(playerName)
+                            props.onJoinClicked(JoinGame(playerName, "", specState))
                         }
 
                     }
                     onChangeFunction = {
                         val target = it.target as HTMLInputElement
 
-                        setplayerName(target.value)
+                        setPlayerName(target.value)
 
                     }
                 }
 
             }
-
+            div {
+                checkbox {
+                    attrs {
+                        checked = specState
+                        onClickFunction = {
+                            setSpec(!specState)
+                        }
+                    }
+                }
+                +"I'm a spectator"
+            }
         }
 
         joinGameButton(onClick = {
-            props.onJoinClicked(playerName)
+            props.onJoinClicked(JoinGame(playerName, "", specState))
+
         })
 
     }
 }
 
 
-fun RBuilder.playerNameDialog(onJoinClicked: (String) -> Unit) {
+fun RBuilder.playerNameDialog(onJoinClicked: (JoinGame) -> Unit) {
     child(PlayerNameDialogComponent) {
         attrs {
             this.onJoinClicked = onJoinClicked

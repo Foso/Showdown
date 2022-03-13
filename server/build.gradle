@@ -2,8 +2,8 @@ buildscript {
     apply from: './constants.gradle'
 }
 buildscript {
-    ext.kotlin_version = '1.5.31'
-    ext.ktor_version = '1.6.4'
+    ext.kotlin_version = '1.6.10'
+    ext.ktor_version = '1.6.7'
 
     repositories {
         mavenCentral()
@@ -36,7 +36,7 @@ task stage {
 }
 
 
-def klockVersion = "2.4.8"
+def klockVersion = '2.5.2'
 dependencies {
     implementation project(":shared")
     implementation "io.ktor:ktor-server-core:$ktor_version"
@@ -44,9 +44,9 @@ dependencies {
     implementation "io.ktor:ktor-gson:$ktor_version"
     implementation "io.ktor:ktor-websockets:$ktor_version"
     implementation "com.squareup.moshi:moshi-kotlin:${libs.moshikotlin}"
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-core:1.3.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-core:1.3.2'
     implementation("com.soywiz.korlibs.klock:klock-jvm:$klockVersion")
-    testImplementation 'org.mockito:mockito-core:4.0.0'
+    testImplementation 'org.mockito:mockito-core:4.3.1'
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
     testImplementation group: 'junit', name: 'junit', version: '4.12'
    // implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2'
