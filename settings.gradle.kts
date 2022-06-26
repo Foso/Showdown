@@ -37,5 +37,5 @@ rootProject.name = "showdown"
 
 
 include(":server")
-include(":web")
+include(":composeweb")
 include(":shared")

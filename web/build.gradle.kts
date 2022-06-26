@@ -17,7 +17,7 @@ buildscript {
 plugins {
     kotlin("multiplatform")
     id("kotlinx-serialization")
-   // id("org.jetbrains.compose")
+    id("org.jetbrains.compose")
 }
 
 
