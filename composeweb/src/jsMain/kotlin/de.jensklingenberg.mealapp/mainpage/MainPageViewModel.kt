@@ -51,32 +51,7 @@ class MainPageViewModel(private val mealDataSource: MealDataSource) {
     val filters = mutableStateOf<List<Filter>>(countries.map { Filter(it, false) })
 
 
-    init {
-        getMeals()
-        loadCategories()
-    }
 
-    private fun getMeals() {
-        mealsState.value = MainpageUiState.Loading
-        GlobalScope.launch {
-            val meals = mealDataSource.getMeals()
-            console.log("SIZE" + meals.size)
-            if (meals.isEmpty()) {
-                mealsState.value = MainpageUiState.Error
-            } else {
-                val results = mealDataSource.getMeals()
-                searchResults = results
-                mealsState.value = MainpageUiState.Success((results))
-            }
-        }
-    }
-
-    private fun loadCategories() {
-
-        GlobalScope.launch {
-            categories.value = mealDataSource.getCategories()
-        }
-    }
 
     fun onSearch(name: String) {
         mealsState.value = MainpageUiState.Loading

@@ -135,7 +135,7 @@ class ShowdownServer : GameServer {
                             gameSource = createNewRoom(room.name)
 
                         }
-
+                        println(joinGame.playerName)
                         if (joinGame.roomPassword == gameSource?.gameConfig?.room?.password) {
                             gameSource?.playerJoined(Player(sessionId, joinGame.playerName))
                             if (joinGame.isSpectator) {

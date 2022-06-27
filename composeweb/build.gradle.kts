@@ -47,6 +47,10 @@ kotlin {
                 implementation(project(":shared"))
                 implementation(compose.web.core)
                 implementation(compose.runtime)
+
+                implementation("com.badoo.reaktive:reaktive-js:1.2.1")
+
+                implementation("app.softwork:routing-compose:0.2.4")
                 implementation("dev.petuska:kmdc:0.0.4")
                 implementation("dev.petuska:kmdcx:0.0.4")
                 implementation(npm("material-icons","^1.10.4"))
@@ -55,6 +59,8 @@ kotlin {
                 implementation(devNpm("css-loader", "^6.7.1"))
                 implementation(devNpm("sass-loader", "^13.0.0"))
                 implementation(devNpm("sass", "^1.52.1"))
+
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
             }
         }
         val jsTest by getting {
@@ -66,10 +72,11 @@ kotlin {
 }
 
 dependencies {
-    add("kspCommonMainMetadata", "de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
+      add("kspCommonMainMetadata", "de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
     add("kspJs","de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
 }
 
 rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
     versions.webpackCli.version = "4.10.0"
 }
+

@@ -22,7 +22,7 @@ fun Drawer(drawerOpened: Boolean) {
             Text("de.jensklingenberg.mealapp.common.Drawer")
         }
         MDCDrawerAppContent {
-            MDCBody1("de.jensklingenberg.mealapp.App Content")
+            MDCBody1("showdown.web.App Content")
         }
     }
 }

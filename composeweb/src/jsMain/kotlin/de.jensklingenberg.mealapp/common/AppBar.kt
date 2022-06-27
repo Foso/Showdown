@@ -18,7 +18,7 @@ fun AppBar(
 ) {
 
     Div {
-        MDCTopAppBar(type = MDCTopAppBarType.Default) {
+        MDCTopAppBar(type = MDCTopAppBarType.Dense) {
             TopAppBar(attrs = {
                 style {
                     position(Position.Relative)

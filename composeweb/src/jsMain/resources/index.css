@@ -1,0 +1,21 @@
+html, body {
+    width: 100%;
+
+    margin: 0px auto;
+    text-align: center;
+
+
+}
+
+.root{
+
+     width: 100%;
+   display: inline-block;
+      margin: 0px auto;
+      text-align: center;
+
+}
+
+
+
+
