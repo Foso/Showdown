@@ -13,9 +13,12 @@ import dev.petuska.kmdc.checkbox.MDCCheckbox
 import dev.petuska.kmdc.chips.grid.InputChip
 import dev.petuska.kmdc.chips.grid.MDCChipsGrid
 import dev.petuska.kmdc.chips.grid.PrimaryAction
+import dev.petuska.kmdc.circular.progress.MDCCircularProgress
 import dev.petuska.kmdc.icon.button.Icon
 import dev.petuska.kmdc.icon.button.MDCIconButton
 import dev.petuska.kmdc.icon.button.onChange
+import dev.petuska.kmdc.list.MDCList
+import dev.petuska.kmdc.list.item.ListItem
 import dev.petuska.kmdc.tooltip.MDCTooltip
 import dev.petuska.kmdcx.icons.MDCIcon
 import dev.petuska.kmdcx.icons.mdcIcon
@@ -37,13 +40,19 @@ fun getPlayers(members: List<Member>): List<Member> {
 @Composable
 fun GameView(gameViewmodel: GameViewmodel, onChangePage: (Page) -> Unit) {
 
-    var openDialog: Boolean by remember { mutableStateOf(false) }
   //  var selectedOption: Int by remember { mutableStateOf(-1) }
+    var openSettings by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit){
         gameViewmodel.onCreate()
     }
     document.title= "Hallo"
+
+    if(openSettings){
+        SettingsDialog {
+            openSettings = false
+        }
+    }
 
     if(gameViewmodel.showEntryPopup.value){
         JoinGameDialog{
@@ -54,9 +63,7 @@ fun GameView(gameViewmodel: GameViewmodel, onChangePage: (Page) -> Unit) {
 
 
     Div {
-        InfoDialog(openDialog) {
-            openDialog = false
-        }
+
         Div(attrs = {
             this.style {
 
@@ -69,16 +76,22 @@ fun GameView(gameViewmodel: GameViewmodel, onChangePage: (Page) -> Unit) {
                 gameViewmodel.showVotes()
             })
             JKRaisedButton("Settings", onClick = {
-
+                openSettings = true
             })
         }
 
+
         if(true){
             Div {
-                H2 {
-                    IconButton(MDCIcon.TouchApp) {
+                MDCCircularProgress(
+                    determinate = true,
+                    size = 20,
+                    label = "5%",
+                    progress = 0.5,
 
-                    }
+                )
+                H2 {
+                    IconButton(MDCIcon.TouchApp) {}
                     Text("Select option")
                 }
 
@@ -141,20 +154,30 @@ fun GameView(gameViewmodel: GameViewmodel, onChangePage: (Page) -> Unit) {
                 IconButton(MDCIcon.Group) {}
                 Text("Voters (${players.size}) Voted:")
             }
-            players.forEach {
-                Text(("Voter: " + it.playerName + " Voted:"))
 
-                if(it.voted){
-                    IconButton(MDCIcon.CheckCircle, style = {
-                        color(Color.green)
-                    }){}
-                }else{
-                    IconButton(MDCIcon.Cancel, style = {
-                        color(Color.red)
-                    }){}
+            MDCList() {
+                players.forEach {
+                    ListItem(disabled = true, selected = false, attrs = {
+                        style { textAlign("center")
+                            justifyContent(JustifyContent.Center)}
+                    }) {
+                        Text(("Voter: " + it.playerName + " Voted:"))
+
+                        if(it.voted){
+                            IconButton(MDCIcon.CheckCircle, style = {
+                                color(Color.green)
+                            }){}
+                        }else{
+                            IconButton(MDCIcon.Cancel, style = {
+                                color(Color.red)
+                            }){}
+                        }
+                    }
+
+
                 }
-
             }
+
         }
 
         Div {

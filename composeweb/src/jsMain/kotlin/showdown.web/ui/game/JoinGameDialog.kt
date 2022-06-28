@@ -9,7 +9,6 @@ import dev.petuska.kmdc.checkbox.MDCCheckbox
 import dev.petuska.kmdc.dialog.Content
 import dev.petuska.kmdc.dialog.MDCDialog
 import dev.petuska.kmdc.dialog.onClosed
-import dev.petuska.kmdc.textfield.MDCTextField
 import org.jetbrains.compose.web.dom.Div
 
 @Composable
@@ -19,7 +18,7 @@ fun JoinGameDialog(onJoinClicked: (JoinGame) -> Unit) {
 
     MDCDialog(open = true, attrs = {
         this.onClosed {
-
+            onJoinClicked(JoinGame(playerName, "", isSpec))
         }
     }) {
         Div {
@@ -36,7 +35,7 @@ fun JoinGameDialog(onJoinClicked: (JoinGame) -> Unit) {
             }
             Div {
                 MDCButton(text = "Join Game", type = MDCButtonType.Raised) {
-                    onClick { onJoinClicked(JoinGame(playerName,"",isSpec)) }
+                    onClick { onJoinClicked(JoinGame(playerName, "", isSpec)) }
 
                 }
             }
