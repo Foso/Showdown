@@ -20,6 +20,13 @@ interface GameContract {
         val starEstimationTimerSubject: BehaviorSubject<Boolean>
         var showEntryPopup: MutableState<Boolean>
         fun onSelectedVote(voteId: Int)
+        fun setSpectatorStatus(b: Boolean)
+        var isSpectator: MutableState<Boolean>
+
+        fun reset()
+        fun showVotes()
+        var options: MutableState<List<String>>
+        var selectedOption: MutableState<Int>
     }
 
 }

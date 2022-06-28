@@ -80,3 +80,6 @@ rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.N
     versions.webpackCli.version = "4.10.0"
 }
 
+task("prepareKotlinBuildScriptModel")  {
+
+}

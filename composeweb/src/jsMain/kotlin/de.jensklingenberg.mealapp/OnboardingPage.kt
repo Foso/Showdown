@@ -26,11 +26,19 @@ fun OnboardingScreen()  {
         H3 {
             Text("1) Choose a room name and go to the room")
         }
-        JKTextField(roomName, label = "Search", onTextChange =  {
+        JKTextField(roomName, label = "Choose new room name", onTextChange =  {
             roomName=(it)
         }, onEnterPressed = {
             window.location.href = "/#/room/${roomName}";
         })
+        Button(attrs = {
+            onClick {
+                window.location.href = "/#/room/${roomName}";
+            }
+        }) {
+            Text("Go to room")
+
+        }
     }
 }
 
