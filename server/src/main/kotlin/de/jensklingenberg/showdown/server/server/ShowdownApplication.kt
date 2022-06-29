@@ -38,6 +38,7 @@ class ShowdownApplication {
 
 
         embeddedServer(Netty, port = port) {
+
             install(Compression) {
                 gzip()
             }

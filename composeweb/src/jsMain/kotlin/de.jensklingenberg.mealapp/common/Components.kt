@@ -20,23 +20,24 @@ import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.HTMLElement
 
 @Composable
-fun JKRaisedButton(text: String, onClick: () -> Unit) {
+fun JKRaisedButton(text: String, leadingIcon:MDCIcon?=null, onClick: () -> Unit) {
     MDCButton(type = MDCButtonType.Raised, icon = MDCButtonIconType.Leading, attrs = {
-
+        style {
+            backgroundColor(rgb(63,81,181))
+        }
         //height("200px")
         onClick { onClick() }
 
 
     }) {
-       Icon {  MDCIcon.Add }
+       //Icon {  MDCIcon.Add }
+        Icon(attrs = { mdcIcon() }) { leadingIcon?.let { Text(it.type) } }
         Text(text)
     }
 }
 
 
-fun <TElement : HTMLElement> AttrsScope<TElement>.height(s: String) {
-    attr("height", s)
-}
+
 
 @Composable
 fun JKSnackbar(text: String) {
@@ -68,6 +69,17 @@ fun HeightSpacer(value: CSSNumeric) {
     Div(attrs = {
         style {
             height(value)
+        }
+    }) {
+
+    }
+}
+
+@Composable
+fun WidthSpacer(value: CSSNumeric) {
+    Div(attrs = {
+        style {
+            width(value)
         }
     }) {
 

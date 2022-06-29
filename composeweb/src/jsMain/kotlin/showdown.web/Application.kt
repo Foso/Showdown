@@ -4,15 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import app.softwork.routingcompose.HashRouter
-import de.jensklingenberg.ktorfit.Ktorfit
-import de.jensklingenberg.ktorfit.create
-import de.jensklingenberg.mealapp.MealDataSource
-import de.jensklingenberg.mealapp.MealRepository
-import de.jensklingenberg.mealapp.OnboardingScreen
 import de.jensklingenberg.mealapp.Page
-import showdown.web.ui.game.GameView
-import de.jensklingenberg.mealapp.mainpage.MainPageViewModel
-import de.jensklingenberg.mealapp.mealdbapi.MealApiService
 import io.ktor.client.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
@@ -21,6 +13,8 @@ import org.jetbrains.compose.web.renderComposable
 import showdown.web.game.GameDataSource
 import showdown.web.game.GameRepository
 import showdown.web.network.GameApiClient
+import showdown.web.ui.OnboardingScreen
+import showdown.web.ui.game.GameView
 import showdown.web.ui.game.GameViewmodel
 
 class Application {
@@ -38,8 +32,6 @@ class Application {
             }
         }
 
-        private val api = Ktorfit(MealApiService.baseUrl, client).create<MealApiService>()
-        val mealDataSource: MealDataSource = MealRepository(api)
 
     }
 

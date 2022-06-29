@@ -15,6 +15,15 @@ import de.jensklingenberg.showdown.model.ShowdownError
 import showdown.web.Application
 import showdown.web.debugLog
 import showdown.web.game.GameDataSource
+val gameModeOptions: List<Pair<String, Int>>
+    get() = listOf(
+        "Fibonacci" to 0,
+        "T-Shirt" to 1,
+        "Modified Fibonacci" to 2,
+        "Power of 2" to 3,
+
+        "Custom" to 4
+    )
 
 class GameViewmodel(
     // private val view: GameContract.View,
