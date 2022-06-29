@@ -12,7 +12,8 @@ import de.jensklingenberg.showdown.server.game.ServerGame
 import de.jensklingenberg.showdown.server.model.Player
 import de.jensklingenberg.showdown.server.model.Room
 import de.jensklingenberg.showdown.server.model.getDefaultConfig
-import io.ktor.http.cio.websocket.*
+import io.ktor.websocket.*
+
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.ClosedSendChannelException
 import kotlinx.coroutines.launch
