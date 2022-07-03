@@ -29,7 +29,7 @@ fun getPlayers(members: List<Member>): List<Member> {
 
 @OptIn(KMDCInternalAPI::class)
 @Composable
-fun GameView(gameViewmodel: GameViewmodel, onChangePage: (Page) -> Unit) {
+fun GameView(gameViewmodel: GameViewmodel) {
 
   //  var selectedOption: Int by remember { mutableStateOf(-1) }
     var openSettings by remember { mutableStateOf(false) }
@@ -40,7 +40,7 @@ fun GameView(gameViewmodel: GameViewmodel, onChangePage: (Page) -> Unit) {
     document.title= "Hallo"
 
     if(openSettings){
-        SettingsDialog {
+        SettingsDialog(gameViewmodel) {
             openSettings = false
         }
     }

@@ -45,9 +45,7 @@ class Application {
         renderComposable(rootElementId = rootElement) {
             HashRouter("") {
                 route("/room") {
-                    GameView( GameViewmodel(gameDataSource)) {
-                        selectedPage = it
-                    }
+                    GameView( GameViewmodel(gameDataSource))
                 }
                 noMatch {
                     OnboardingScreen()

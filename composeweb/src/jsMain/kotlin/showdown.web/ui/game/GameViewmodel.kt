@@ -7,11 +7,9 @@ import com.badoo.reaktive.disposable.CompositeDisposable
 import com.badoo.reaktive.disposable.addTo
 import com.badoo.reaktive.observable.subscribe
 import com.badoo.reaktive.subject.behavior.BehaviorSubject
-import de.jensklingenberg.showdown.model.GameState
-import de.jensklingenberg.showdown.model.Member
-import de.jensklingenberg.showdown.model.Result
+import de.jensklingenberg.showdown.model.*
+import de.jensklingenberg.showdown.model.api.clientrequest.NewGameConfig
 
-import de.jensklingenberg.showdown.model.ShowdownError
 import showdown.web.Application
 import showdown.web.debugLog
 import showdown.web.game.GameDataSource
@@ -158,6 +156,29 @@ class GameViewmodel(
 
     }
 
+    override fun changeConfig(gameModeId: Int, gameOptions: String) {
+        val mode = when (gameModeId) {
+            0 -> {
+                fibo
+            }
+            1 -> {
+                tshirtSizesList
+            }
+            2 -> {
+                modFibo
+            }
+            3 -> {
+                powerOf2
+            }
+            4 -> {
+                gameOptions.split(";")
+            }
+            else -> fibo
+        }
+        val config =
+            NewGameConfig(voteOptions = mode)
+        gameDataSource.changeConfig(config)
+    }
 
     override fun changeRoomPassword(password: String) {
         gameDataSource.changeRoomPassword(password)

@@ -27,6 +27,7 @@ interface GameContract {
         fun showVotes()
         var options: MutableState<List<String>>
         var selectedOption: MutableState<Int>
+        fun changeConfig(gameModeId: Int, gameOptions: String)
     }
 
 }

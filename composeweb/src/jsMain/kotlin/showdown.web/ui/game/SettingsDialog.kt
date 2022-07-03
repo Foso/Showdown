@@ -1,6 +1,7 @@
 package showdown.web.ui.game
 
 import androidx.compose.runtime.*
+import de.jensklingenberg.mealapp.mainpage.JKTextField
 import de.jensklingenberg.showdown.SHOWDOWN_ISSUES_URL
 import de.jensklingenberg.showdown.SHOWDOWN_REPO_URL
 import de.jensklingenberg.showdown.SHOWDOWN_VERSION
@@ -15,8 +16,9 @@ import org.jetbrains.compose.web.dom.*
 import showdown.web.ui.Strings
 
 @Composable
-fun SettingsDialog(onClose: () -> Unit) {
-
+fun SettingsDialog(gameViewmodel: GameViewmodel, onClose: () -> Unit) {
+    val CUSTOM_MODE = 4
+    val customOptio0ns = rememberMutableStateOf("")
 
     MDCDialog(open = true, attrs = {
         style {
@@ -34,9 +36,10 @@ fun SettingsDialog(onClose: () -> Unit) {
             }
 
             Div {
-                val menuItems = listOf("Java", "Kotlin", "Scala", "Groovy", "JavaScript", "TypeScript")
 
                 Menu(gameModeOptions.map { it.first })
+                JKTextField(customOptio0ns.value, label = "Insert Custom options separate with semicolon (;)", onTextChange = {customOptio0ns.value = it}, onEnterPressed = {})
+
                 MDCButton(text = "Change Mode", type = MDCButtonType.Raised) {
                     onClick { onClose() }
 
