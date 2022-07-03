@@ -2,10 +2,11 @@ package showdown.web.ui
 
 
 import androidx.compose.runtime.*
-import de.jensklingenberg.mealapp.mainpage.JKTextField
+
 import de.jensklingenberg.showdown.SHOWDOWN_REPO_URL
 import kotlinx.browser.window
 import org.jetbrains.compose.web.dom.*
+import showdown.web.common.JKTextField
 
 
 /**
@@ -13,7 +14,7 @@ import org.jetbrains.compose.web.dom.*
  * on how to use Showdown and can select a room name
  */
 @Composable
-fun OnboardingScreen()  {
+fun OnboardingScreen() {
 
     var roomName by remember { mutableStateOf("") }
 
@@ -27,23 +28,23 @@ fun OnboardingScreen()  {
         H3 {
             Text("1) Choose a room name and go to the room")
         }
-        JKTextField(roomName, label = "Choose new room name", onTextChange =  {
-            roomName=(it)
+        JKTextField(roomName, label = "Choose new room name", onTextChange = {
+            roomName = (it)
         }, onEnterPressed = {
             window.location.href = "/#/room/${roomName}";
         })
 
     }
-   Div {
-       Button(attrs = {
-           onClick {
-               window.location.href = "/#/room/${roomName}";
-           }
-       }) {
-           Text("Go to room")
+    Div {
+        Button(attrs = {
+            onClick {
+                window.location.href = "/#/room/${roomName}";
+            }
+        }) {
+            Text("Go to room")
 
-       }
-   }
+        }
+    }
     H3 {
         Text("2) Choose a voter name\n")
     }
@@ -60,14 +61,14 @@ fun OnboardingScreen()  {
     }
     Img("/web/img/showvotes.png")
     Br {}
-    Hr {  }
-    Br {  }
+    Hr { }
+    Br { }
     Text("\uD83D\uDC47")
-    Br {  }
+    Br { }
     Div {
 
-        JKTextField(roomName, label = "Choose new room name", onTextChange =  {
-            roomName=(it)
+        JKTextField(roomName, label = "Choose new room name", onTextChange = {
+            roomName = (it)
         }, onEnterPressed = {
             window.location.href = "/#/room/${roomName}";
         })
@@ -83,9 +84,9 @@ fun OnboardingScreen()  {
 
         }
     }
-    Br {  }
-    Br {  }
-    Br {  }
+    Br { }
+    Br { }
+    Br { }
     Div {
         A(href = SHOWDOWN_REPO_URL) {
             Text("Showdown")

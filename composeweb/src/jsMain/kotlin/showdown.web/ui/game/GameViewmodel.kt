@@ -39,10 +39,9 @@ class GameViewmodel(
     private var playerName: String = ""
     var members: MutableState<List<Member>> = mutableStateOf(emptyList())
     override var selectedOption: MutableState<Int> = mutableStateOf(-1)
-
-
     override val starEstimationTimerSubject: BehaviorSubject<Boolean> = BehaviorSubject(false)
-    val gameStateSubject: MutableState<GameState> = mutableStateOf(GameState.NotStarted)
+    override var autoReveal: MutableState<Boolean> = mutableStateOf(false)
+    override var anonymResults: MutableState<Boolean> = mutableStateOf(false)
 
 
     override fun reset() {
@@ -59,6 +58,13 @@ class GameViewmodel(
         observeMessage()
         observeGameState()
         observeSpectatorStatus()
+        gameDataSource.observeRoomConfig().subscribe {
+            it?.let {
+                console.log("HUHU"+it.autoReveal)
+                autoReveal.value = it.autoReveal
+                anonymResults.value = it.anonymResults
+            }
+        }
     }
 
     private fun observeSpectatorStatus() {
@@ -178,6 +184,15 @@ class GameViewmodel(
         val config =
             NewGameConfig(voteOptions = mode)
         gameDataSource.changeConfig(config)
+    }
+
+    override fun setAutoReveal(any: Boolean) {
+        console.log("HER"+any)
+        gameDataSource.setAutoReveal(any)
+    }
+
+    override fun setAnonymVote(any: Boolean) {
+        gameDataSource.setAnonymVote(any)
     }
 
     override fun changeRoomPassword(password: String) {

@@ -1,7 +1,7 @@
 package de.jensklingenberg.mealapp.mainpage
 
 import androidx.compose.runtime.*
-import de.jensklingenberg.mealapp.common.IconButton
+import showdown.web.common.IconButton
 import dev.petuska.kmdc.checkbox.MDCCheckbox
 import dev.petuska.kmdc.menu.surface.MDCMenuSurface
 import dev.petuska.kmdc.menu.surface.MDCMenuSurfaceAnchor

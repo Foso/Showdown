@@ -26,9 +26,6 @@ class Application {
     }
 
     private val rootElement = "root"
-    private var selectedPage: Page by mutableStateOf(Page.Main)
-
-
 
     init {
 

@@ -12,12 +12,13 @@ import dev.petuska.kmdc.textfield.icon.MDCTextFieldTrailingIcon
 import dev.petuska.kmdcx.icons.MDCIcon
 import dev.petuska.kmdcx.icons.mdcIcon
 import org.jetbrains.compose.web.dom.Text
+import showdown.web.ui.Strings
 
 @Composable
 public fun <T> rememberMutableStateOf(initial: T): MutableState<T> = remember { mutableStateOf(initial) }
 
 @Composable
-fun Menu(menuItems: List<String>) {
+fun GameModeMenu(menuItems: List<String>, onEntrySelected: (Int)->Unit) {
     var open by rememberMutableStateOf(false)
 
     var selectedId by mutableStateOf<Int>(0)
@@ -30,12 +31,13 @@ fun Menu(menuItems: List<String>) {
         MDCTextField(
             value = input,
 
-            label = "GameMode",
+            label = Strings.GAME_MODE,
             type = MDCTextFieldType.Outlined,
             attrs = {
                 // onFocus { open = true }
                 onClick { open = true }
                 onInput {
+                    console.log(it)
                     input = it.value
                     open = true
                 }
@@ -65,6 +67,7 @@ fun Menu(menuItems: List<String>) {
 
                 onSelected {
                     selectedId = it.detail.index
+                    onEntrySelected(selectedId)
                     input = menuItems[it.detail.index]
                     open = false
                 }

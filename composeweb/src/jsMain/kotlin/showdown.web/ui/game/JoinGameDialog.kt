@@ -1,7 +1,7 @@
 package showdown.web.ui.game
 
 import androidx.compose.runtime.*
-import de.jensklingenberg.mealapp.mainpage.JKTextField
+
 import de.jensklingenberg.showdown.model.api.clientrequest.JoinGame
 import dev.petuska.kmdc.button.MDCButton
 import dev.petuska.kmdc.button.MDCButtonType
@@ -10,6 +10,8 @@ import dev.petuska.kmdc.dialog.Content
 import dev.petuska.kmdc.dialog.MDCDialog
 import dev.petuska.kmdc.dialog.onClosed
 import org.jetbrains.compose.web.dom.Div
+import showdown.web.common.JKTextField
+import showdown.web.ui.Strings.Companion.JOIN_GAME
 
 @Composable
 fun JoinGameDialog(onJoinClicked: (JoinGame) -> Unit) {
@@ -34,7 +36,7 @@ fun JoinGameDialog(onJoinClicked: (JoinGame) -> Unit) {
                 })
             }
             Div {
-                MDCButton(text = "Join Game", type = MDCButtonType.Raised) {
+                MDCButton(text = JOIN_GAME, type = MDCButtonType.Raised) {
                     onClick { onJoinClicked(JoinGame(playerName, "", isSpec)) }
 
                 }

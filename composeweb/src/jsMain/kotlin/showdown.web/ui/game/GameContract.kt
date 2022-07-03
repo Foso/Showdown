@@ -1,6 +1,7 @@
 package showdown.web.ui.game
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import com.badoo.reaktive.subject.behavior.BehaviorSubject
 
 interface StateView<T> {
@@ -28,6 +29,12 @@ interface GameContract {
         var options: MutableState<List<String>>
         var selectedOption: MutableState<Int>
         fun changeConfig(gameModeId: Int, gameOptions: String)
+        fun setAutoReveal(any: Boolean)
+        fun setAnonymVote(any: Boolean)
+
+        var autoReveal: MutableState<Boolean>
+
+        var anonymResults: MutableState<Boolean>
     }
 
 }

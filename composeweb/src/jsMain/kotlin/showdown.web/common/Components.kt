@@ -1,4 +1,4 @@
-package de.jensklingenberg.mealapp.common
+package showdown.web.common
 
 import androidx.compose.runtime.Composable
 import dev.petuska.kmdc.button.Icon
@@ -10,9 +10,11 @@ import dev.petuska.kmdc.icon.button.MDCIconButton
 import dev.petuska.kmdc.icon.button.onChange
 import dev.petuska.kmdc.snackbar.Label
 import dev.petuska.kmdc.snackbar.MDCSnackbar
+import dev.petuska.kmdc.textfield.MDCTextField
 import dev.petuska.kmdcx.icons.MDCIcon
 import dev.petuska.kmdcx.icons.mdcIcon
 import org.jetbrains.compose.web.attributes.AttrsScope
+import org.jetbrains.compose.web.attributes.autoFocus
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Img
@@ -21,8 +23,11 @@ import org.w3c.dom.HTMLElement
 
 @Composable
 fun JKRaisedButton(text: String, leadingIcon:MDCIcon?=null, onClick: () -> Unit) {
-    MDCButton(type = MDCButtonType.Raised, icon = MDCButtonIconType.Leading, attrs = {
+
+    MDCButton(type = MDCButtonType.Raised, touch=true, icon = MDCButtonIconType.Leading, attrs = {
+
         style {
+
             backgroundColor(rgb(63,81,181))
         }
         //height("200px")
@@ -115,4 +120,19 @@ fun IconButton(onIcon: MDCIcon, offIcon: MDCIcon = onIcon, style : StyleScope.()
 
 
     }
+}
+
+
+@Composable
+fun JKTextField(value: String, label: String? = null, onTextChange: (String) -> Unit, onEnterPressed: ()->Unit) {
+    MDCTextField(value = value, label = label, attrs = {
+        onKeyDown {
+            if(it.key == "Enter"){
+                onEnterPressed()
+            }
+        }
+        onInput { onTextChange(it.value) }
+    }, trailingIcon = {
+
+    })
 }
