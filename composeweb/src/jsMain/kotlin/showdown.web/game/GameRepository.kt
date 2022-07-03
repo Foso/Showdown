@@ -3,11 +3,7 @@ package showdown.web.game
 import com.badoo.reaktive.completable.Completable
 import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.subject.behavior.BehaviorSubject
-import de.jensklingenberg.showdown.model.ClientGameConfig
-import de.jensklingenberg.showdown.model.GameState
-import de.jensklingenberg.showdown.model.PATHS
-import de.jensklingenberg.showdown.model.Request
-import de.jensklingenberg.showdown.model.ShowdownError
+import de.jensklingenberg.showdown.model.*
 import de.jensklingenberg.showdown.model.api.clientrequest.JoinGame
 import de.jensklingenberg.showdown.model.api.clientrequest.NewGameConfig
 import kotlinx.serialization.encodeToString

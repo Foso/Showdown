@@ -1,16 +1,15 @@
-package showdown.web.ui.game
+package showdown.web.ui.game.voting
 
 import androidx.compose.runtime.*
-
 import de.jensklingenberg.showdown.model.api.clientrequest.JoinGame
-import dev.petuska.kmdc.button.MDCButton
-import dev.petuska.kmdc.button.MDCButtonType
 import dev.petuska.kmdc.checkbox.MDCCheckbox
 import dev.petuska.kmdc.dialog.Content
 import dev.petuska.kmdc.dialog.MDCDialog
 import dev.petuska.kmdc.dialog.onClosed
 import org.jetbrains.compose.web.dom.Div
+import showdown.web.common.JKRaisedButton
 import showdown.web.common.JKTextField
+import showdown.web.ui.Strings
 import showdown.web.ui.Strings.Companion.JOIN_GAME
 
 @Composable
@@ -24,22 +23,24 @@ fun JoinGameDialog(onJoinClicked: (JoinGame) -> Unit) {
         }
     }) {
         Div {
-            JKTextField(value = playerName, label = "Insert a name", onTextChange = {
+            JKTextField(value = playerName, label = Strings.INSERT_NAME, onTextChange = {
                 playerName = it
-            }, onEnterPressed = {})
+            }, onEnterPressed = {
+                onJoinClicked(JoinGame(playerName, "", isSpec))
+            })
         }
         this.Content {
 
             Div {
-                MDCCheckbox(isSpec, label = "I'm a spectator", attrs = {
+                MDCCheckbox(isSpec, label = Strings.IMSPECTATOR, attrs = {
                     onClick { isSpec = !isSpec }
                 })
             }
             Div {
-                MDCButton(text = JOIN_GAME, type = MDCButtonType.Raised) {
-                    onClick { onJoinClicked(JoinGame(playerName, "", isSpec)) }
-
+                JKRaisedButton(JOIN_GAME) {
+                    onJoinClicked(JoinGame(playerName, "", isSpec))
                 }
+
             }
         }
 

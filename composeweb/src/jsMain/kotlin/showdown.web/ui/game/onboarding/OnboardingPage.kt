@@ -1,4 +1,4 @@
-package showdown.web.ui
+package showdown.web.ui.game.onboarding
 
 
 import androidx.compose.runtime.*

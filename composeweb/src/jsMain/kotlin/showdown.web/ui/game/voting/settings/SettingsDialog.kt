@@ -1,25 +1,26 @@
-package showdown.web.ui.game
+package showdown.web.ui.game.voting.settings
 
 import androidx.compose.runtime.Composable
 import de.jensklingenberg.showdown.SHOWDOWN_ISSUES_URL
 import de.jensklingenberg.showdown.SHOWDOWN_REPO_URL
 import de.jensklingenberg.showdown.SHOWDOWN_VERSION
-import dev.petuska.kmdc.button.MDCButton
-import dev.petuska.kmdc.button.MDCButtonType
 import dev.petuska.kmdc.checkbox.MDCCheckbox
 import dev.petuska.kmdc.dialog.Content
 import dev.petuska.kmdc.dialog.MDCDialog
 import dev.petuska.kmdc.dialog.onClosed
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
+import showdown.web.common.JKRaisedButton
 import showdown.web.common.JKTextField
 import showdown.web.ui.Strings
 import showdown.web.ui.Strings.Companion.AUTO_REVEAL
 import showdown.web.ui.Strings.Companion.CHANGE_MODE
 import showdown.web.ui.Strings.Companion.SETTINGS_GAMEMODE
+import showdown.web.ui.game.voting.GameContract
+import showdown.web.ui.game.voting.gameModeOptions
 
 @Composable
-fun SettingsDialog(gameViewmodel: GameViewmodel, onClose: () -> Unit) {
+fun SettingsDialog(gameViewmodel: GameContract.Viewmodel, onClose: () -> Unit) {
     val CUSTOM_MODE = 4
     val gameModeId = rememberMutableStateOf(0)
 
@@ -56,13 +57,11 @@ fun SettingsDialog(gameViewmodel: GameViewmodel, onClose: () -> Unit) {
 
             }
 
-            MDCButton(text = CHANGE_MODE, type = MDCButtonType.Raised) {
-                onClick {
-                    gameViewmodel.changeConfig(gameModeId.value, customOptio0ns.value)
-                    onClose()
-                }
-
+            JKRaisedButton(CHANGE_MODE){
+                gameViewmodel.changeConfig(gameModeId.value, customOptio0ns.value)
+                onClose()
             }
+
 
             Div(attrs = {
                 style {
@@ -113,8 +112,8 @@ fun SettingsDialog(gameViewmodel: GameViewmodel, onClose: () -> Unit) {
                 }
             }
             Div {
-                MDCButton(text = "Close", type = MDCButtonType.Raised) {
-                    onClick { onClose() }
+                JKRaisedButton(text = "Close") {
+                     onClose()
 
                 }
             }

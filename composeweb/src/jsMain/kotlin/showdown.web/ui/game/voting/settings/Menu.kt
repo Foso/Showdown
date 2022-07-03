@@ -1,4 +1,4 @@
-package showdown.web.ui.game
+package showdown.web.ui.game.voting.settings
 
 import androidx.compose.runtime.*
 import dev.petuska.kmdc.menu.MDCMenu
@@ -18,7 +18,7 @@ import showdown.web.ui.Strings
 public fun <T> rememberMutableStateOf(initial: T): MutableState<T> = remember { mutableStateOf(initial) }
 
 @Composable
-fun GameModeMenu(menuItems: List<String>, onEntrySelected: (Int)->Unit) {
+fun GameModeMenu(menuItems: List<String>, onEntrySelected: (Int) -> Unit) {
     var open by rememberMutableStateOf(false)
 
     var selectedId by mutableStateOf<Int>(0)

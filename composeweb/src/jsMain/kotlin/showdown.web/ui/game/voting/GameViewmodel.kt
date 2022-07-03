@@ -1,4 +1,4 @@
-package showdown.web.ui.game
+package showdown.web.ui.game.voting
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -6,13 +6,15 @@ import com.badoo.reaktive.completable.subscribe
 import com.badoo.reaktive.disposable.CompositeDisposable
 import com.badoo.reaktive.disposable.addTo
 import com.badoo.reaktive.observable.subscribe
-import com.badoo.reaktive.subject.behavior.BehaviorSubject
 import de.jensklingenberg.showdown.model.*
 import de.jensklingenberg.showdown.model.api.clientrequest.NewGameConfig
-
+import kotlinx.browser.window
 import showdown.web.Application
 import showdown.web.debugLog
 import showdown.web.game.GameDataSource
+import kotlin.js.Date
+import kotlin.math.floor
+
 val gameModeOptions: List<Pair<String, Int>>
     get() = listOf(
         "Fibonacci" to 0,
@@ -28,20 +30,20 @@ class GameViewmodel(
     private val gameDataSource: GameDataSource = Application.gameDataSource
 ) : GameContract.Viewmodel {
 
-    private var showConnectionError: Boolean = false
     private var requestRoomPassword: Boolean = false
     override var isSpectator: MutableState<Boolean> = mutableStateOf(false)
     override var options: MutableState<List<String>> = mutableStateOf(emptyList())
-
-    var results: MutableState<List<Result>> = mutableStateOf(emptyList())
+    override var results: MutableState<List<Result>> = mutableStateOf(emptyList())
     override var showEntryPopup: MutableState<Boolean> = mutableStateOf(true)
     private val compositeDisposable = CompositeDisposable()
     private var playerName: String = ""
-    var members: MutableState<List<Member>> = mutableStateOf(emptyList())
+    override var members: MutableState<List<Member>> = mutableStateOf(emptyList())
     override var selectedOption: MutableState<Int> = mutableStateOf(-1)
-    override val starEstimationTimerSubject: BehaviorSubject<Boolean> = BehaviorSubject(false)
     override var autoReveal: MutableState<Boolean> = mutableStateOf(false)
     override var anonymResults: MutableState<Boolean> = mutableStateOf(false)
+    override var showConnectionError: MutableState<Boolean> = mutableStateOf(false)
+    private var gameStartTime = Date()
+    override var timer: MutableState<Int> = mutableStateOf(0)
 
 
     override fun reset() {
@@ -60,11 +62,17 @@ class GameViewmodel(
         observeSpectatorStatus()
         gameDataSource.observeRoomConfig().subscribe {
             it?.let {
-                console.log("HUHU"+it.autoReveal)
                 autoReveal.value = it.autoReveal
                 anonymResults.value = it.anonymResults
             }
         }
+        window.setInterval({
+            val startDate = gameStartTime
+            val endDate = Date()
+
+            val diffSecs = (endDate.getTime() - startDate.getTime()) / 1000
+            timer.value = (floor(diffSecs).toInt())
+        }, 1000)
     }
 
     private fun observeSpectatorStatus() {
@@ -75,6 +83,7 @@ class GameViewmodel(
 
     private fun observeGameState() {
         gameDataSource.observeGameState().subscribe(onNext = { newState ->
+            showConnectionError.value = false
             when (newState) {
                 GameState.NotStarted -> {}
                 is GameState.PlayerListUpdate -> {
@@ -83,19 +92,15 @@ class GameViewmodel(
                 is GameState.Started -> {
                     val config = newState.clientGameConfig
                     selectedOption.value = -1
-                    this.options.value = config.voteOptions
-                    this.results.value = emptyList()
-                    //this.selectedOptionId = -1
-
-                    starEstimationTimerSubject.onNext(true)
+                    options.value = config.voteOptions
+                    results.value = emptyList()
 
                     this.requestRoomPassword = false
 
-
+                    gameStartTime = Date(config.createdAt.toDouble())
                 }
 
                 is GameState.ShowVotes -> {
-                    starEstimationTimerSubject.onNext(false)
                     results.value = newState.results
                 }
 
@@ -122,7 +127,7 @@ class GameViewmodel(
                     debugLog("No Connection")
 
                     this.showEntryPopup.value = true
-                    this.showConnectionError = false
+                    this.showConnectionError.value = false
 
                 }
                 else -> {}
@@ -137,7 +142,7 @@ class GameViewmodel(
                 gameDataSource.joinRoom(playerName, password, isSpectator)
 
                 showEntryPopup.value = false
-                this.showConnectionError = false
+                this.showConnectionError.value = false
 
 
             },
@@ -187,12 +192,16 @@ class GameViewmodel(
     }
 
     override fun setAutoReveal(any: Boolean) {
-        console.log("HER"+any)
+        console.log("HER" + any)
         gameDataSource.setAutoReveal(any)
     }
 
     override fun setAnonymVote(any: Boolean) {
         gameDataSource.setAnonymVote(any)
+    }
+
+    override fun onEntryPopupClosed() {
+        showEntryPopup.value = false
     }
 
     override fun changeRoomPassword(password: String) {

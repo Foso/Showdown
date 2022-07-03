@@ -1,8 +1,7 @@
-package showdown.web.ui.game
+package showdown.web.ui.game.voting
 
 
-
- interface GameViewState  {
+interface GameViewState {
     var playerName: String
     var errorMessage: String
     var showSnackbar: Boolean
