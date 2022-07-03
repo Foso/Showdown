@@ -33,13 +33,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("de.jensklingenberg.ktorfit:ktorfit-lib:$ktorfitVersion")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
 
-                //Only needed when you want to use Kotlin Serialization
-                implementation("io.ktor:ktor-client-serialization:$ktorVersion")
-                implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
-                implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
             }
         }
         val jsMain by getting {
@@ -48,17 +42,28 @@ kotlin {
                 implementation(compose.web.core)
                 implementation(compose.runtime)
 
-                implementation("com.badoo.reaktive:reaktive-js:1.2.1")
+                implementation("com.badoo.reaktive:reaktive-js:1.2.2")
 
                 implementation("app.softwork:routing-compose:0.2.4")
-                implementation("dev.petuska:kmdc:0.0.4")
+              //  implementation("dev.petuska:kmdc:0.0.4")
+                implementation("dev.petuska:kmdc-button-js:0.0.4")
+                implementation("dev.petuska:kmdc-checkbox-js:0.0.4")
+                implementation("dev.petuska:kmdc-list-js:0.0.4")
+                implementation("dev.petuska:kmdc-snackbar-js:0.0.4")
+                implementation("dev.petuska:kmdc-menu-js:0.0.4")
+                implementation("dev.petuska:kmdc-textfield-js:0.0.4")
+                implementation("dev.petuska:kmdc-dialog-js:0.0.4")
+
+                implementation("dev.petuska:kmdc-icon-button-js:0.0.4")
+
                 implementation("dev.petuska:kmdcx:0.0.4")
-                implementation(npm("material-icons","^1.10.4"))
+               // implementation(npm("material-icons","^1.10.4"))
                 // SCSS dependencies
                 implementation(devNpm("style-loader", "^3.3.1"))
                 implementation(devNpm("css-loader", "^6.7.1"))
                 implementation(devNpm("sass-loader", "^13.0.0"))
                 implementation(devNpm("sass", "^1.52.1"))
+                implementation(devNpm("uglifyjs-webpack-plugin", "2.2.0"))
 
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
             }
@@ -72,8 +77,8 @@ kotlin {
 }
 
 dependencies {
-      add("kspCommonMainMetadata", "de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
-    add("kspJs","de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
+   //   add("kspCommonMainMetadata", "de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
+   // add("kspJs","de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
 }
 
 rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
