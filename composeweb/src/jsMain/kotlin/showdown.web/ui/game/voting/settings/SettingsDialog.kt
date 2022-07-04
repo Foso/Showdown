@@ -97,9 +97,7 @@ fun SettingsDialog(gameViewmodel: GameContract.Viewmodel, onClose: () -> Unit) {
             }
 
 
-            Hr {
-
-            }
+            Hr {}
             Div {
                 A(href = SHOWDOWN_ISSUES_URL) {
                     Text("Issues/Feature Requests")

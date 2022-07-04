@@ -3,6 +3,7 @@ package showdown.web.ui.game.voting
 import androidx.compose.runtime.*
 import de.jensklingenberg.showdown.model.Member
 import dev.petuska.kmdc.checkbox.MDCCheckbox
+import kotlinx.browser.document
 import kotlinx.browser.window
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
@@ -33,7 +34,10 @@ fun GameView(gameViewmodel: GameContract.Viewmodel) {
     LaunchedEffect(Unit) {
         gameViewmodel.onCreate()
     }
-    // document.title = "Hallo"
+    val roomName =
+        window.location.toString().substringAfter("/room/").substringBefore("/").substringBefore("?")
+
+     document.title = "Showdown - $roomName"
 
     if (openSettings) {
         SettingsDialog(gameViewmodel) {
