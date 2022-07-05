@@ -30,7 +30,7 @@ class GameViewmodel(
     private val gameDataSource: GameDataSource = Application.gameDataSource
 ) : GameContract.Viewmodel {
 
-    private var requestRoomPassword: Boolean = false
+    override var requestRoomPassword: MutableState<Boolean> = mutableStateOf(false)
     override var isSpectator: MutableState<Boolean> = mutableStateOf(false)
     override var options: MutableState<List<String>> = mutableStateOf(emptyList())
     override var results: MutableState<List<Result>> = mutableStateOf(emptyList())
@@ -44,6 +44,7 @@ class GameViewmodel(
     override var showConnectionError: MutableState<Boolean> = mutableStateOf(false)
     private var gameStartTime = Date()
     override var timer: MutableState<Int> = mutableStateOf(0)
+    override var showRoomPasswordSettingsDialog: MutableState<Boolean> = mutableStateOf(false)
 
 
     override fun reset() {
@@ -95,7 +96,7 @@ class GameViewmodel(
                     options.value = config.voteOptions
                     results.value = emptyList()
 
-                    this.requestRoomPassword = false
+                    this.requestRoomPassword.value = false
 
                     gameStartTime = Date(config.createdAt.toDouble())
                 }
@@ -111,7 +112,7 @@ class GameViewmodel(
 
     private fun observeMessage() {
         gameDataSource.observeMessage().subscribe(onNext = {
-            // view.showInfoPopup(it)
+            // view.showInfoPopup(it) //TODO:
         }).addTo(compositeDisposable)
     }
 
@@ -120,7 +121,7 @@ class GameViewmodel(
             when (error) {
                 ShowdownError.NotAuthorizedError -> {
 
-                    this.requestRoomPassword = true
+                    this.requestRoomPassword.value = true
 
                 }
                 ShowdownError.NoConnectionError -> {
@@ -162,8 +163,11 @@ class GameViewmodel(
 
     override fun joinGame(playerName: String, password: String, isSpectator: Boolean) {
         debugLog("JoinGame")
-        this.playerName = playerName
-        connectToServer(playerName, password, isSpectator)
+        if (this.playerName.isEmpty()) {
+            this.playerName = playerName
+        }
+
+        connectToServer(this.playerName, password, isSpectator)
 
     }
 
@@ -192,7 +196,6 @@ class GameViewmodel(
     }
 
     override fun setAutoReveal(any: Boolean) {
-        console.log("HER" + any)
         gameDataSource.setAutoReveal(any)
     }
 
@@ -216,5 +219,6 @@ class GameViewmodel(
     override fun setSpectatorStatus(b: Boolean) {
         gameDataSource.setSpectatorStatus(b)
     }
+
 
 }

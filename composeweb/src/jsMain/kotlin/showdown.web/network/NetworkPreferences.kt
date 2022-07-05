@@ -27,9 +27,8 @@ class NetworkPreferences {
 
         val roomName =
             window.location.toString().substringAfter("/room/").substringBefore("/").substringBefore("?")
-        val url = hostname + "showdown?room=" + roomName
 
-        return url
+        return hostname + "showdown?room=" + roomName
 
 
     }
