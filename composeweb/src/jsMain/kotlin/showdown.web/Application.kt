@@ -2,6 +2,8 @@ package showdown.web
 
 
 import app.softwork.routingcompose.HashRouter
+import kotlinx.browser.document
+import kotlinx.browser.window
 import org.jetbrains.compose.web.renderComposable
 import showdown.web.game.GameDataSource
 import showdown.web.game.GameRepository
@@ -28,6 +30,10 @@ class Application {
         renderComposable(rootElementId = rootElement) {
             HashRouter("") {
                 route("/room") {
+                    val roomName =
+                        window.location.toString().substringAfter("/room/").substringBefore("/").substringBefore("?")
+
+                    document.title = "Showdown - $roomName"
                     GameView(GameViewmodel(gameDataSource))
                 }
                 noMatch {

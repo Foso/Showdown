@@ -35,7 +35,6 @@ fun OptionsList(gameViewmodel: GameContract.Viewmodel) {
                 }
                 onClick {
                     gameViewmodel.onSelectedVote(index)
-
                 }
             }) {
 

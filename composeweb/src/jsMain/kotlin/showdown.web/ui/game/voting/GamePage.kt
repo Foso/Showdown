@@ -3,7 +3,6 @@ package showdown.web.ui.game.voting
 import androidx.compose.runtime.*
 import de.jensklingenberg.showdown.model.Member
 import dev.petuska.kmdc.checkbox.MDCCheckbox
-import kotlinx.browser.document
 import kotlinx.browser.window
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
@@ -26,18 +25,12 @@ fun getPlayers(members: List<Member>): List<Member> {
 @Composable
 fun GameView(gameViewmodel: GameContract.Viewmodel) {
 
-
-    /* TODO: PASSWORD LINK */
-
     var openSettings by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         gameViewmodel.onCreate()
     }
-    val roomName =
-        window.location.toString().substringAfter("/room/").substringBefore("/").substringBefore("?")
 
-     document.title = "Showdown - $roomName"
 
     if (openSettings) {
         SettingsDialog(gameViewmodel) {
@@ -59,6 +52,12 @@ fun GameView(gameViewmodel: GameContract.Viewmodel) {
             }
         }
     }
+    if(gameViewmodel.requestRoomPassword.value){
+        InsertPasswordDialog{
+            gameViewmodel.joinGame("",it)
+        }
+    }
+
 
     if (gameViewmodel.showConnectionError.value) {
         ConnectionErrorSnackbar(EROR) {
@@ -103,9 +102,9 @@ fun GameView(gameViewmodel: GameContract.Viewmodel) {
             }
         }
 
-        VotersList(gameViewmodel)
+        VotersList(getPlayers(gameViewmodel.members.value))
 
-        SpectatorsList(gameViewmodel)
+        SpectatorsList(getSpectators(gameViewmodel.members.value))
 
     }
 }

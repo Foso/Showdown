@@ -1,6 +1,6 @@
 package showdown.web.ui.game.voting.settings
 
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import de.jensklingenberg.showdown.SHOWDOWN_ISSUES_URL
 import de.jensklingenberg.showdown.SHOWDOWN_REPO_URL
 import de.jensklingenberg.showdown.SHOWDOWN_VERSION
@@ -25,6 +25,7 @@ fun SettingsDialog(gameViewmodel: GameContract.Viewmodel, onClose: () -> Unit) {
     val gameModeId = rememberMutableStateOf(0)
 
     val customOptio0ns = rememberMutableStateOf("")
+    var playerName by remember { mutableStateOf("") }
 
     MDCDialog(open = true, attrs = {
         this.onClosed {
@@ -92,6 +93,28 @@ fun SettingsDialog(gameViewmodel: GameContract.Viewmodel, onClose: () -> Unit) {
                 })
                 Text(Strings.anonym)
             }
+
+            Div {
+                JKTextField(value = playerName, label = Strings.SET_ROOM_PW, onTextChange = {
+                    playerName = it
+                }, onEnterPressed = {
+                    gameViewmodel.changeRoomPassword(playerName)
+
+                })
+            }
+            Div {
+                JKRaisedButton(Strings.Save_PASSWORD) {
+                    gameViewmodel.changeRoomPassword(playerName)
+
+                }
+            }
+            Div {
+                JKRaisedButton(Strings.REMOVE_PASSWORD) {
+                    gameViewmodel.changeRoomPassword("")
+                }
+            }
+
+
             H1 {
                 Text("About")
             }

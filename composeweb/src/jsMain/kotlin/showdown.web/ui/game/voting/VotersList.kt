@@ -1,6 +1,7 @@
 package showdown.web.ui.game.voting
 
 import androidx.compose.runtime.Composable
+import de.jensklingenberg.showdown.model.Member
 import dev.petuska.kmdc.list.MDCList
 import dev.petuska.kmdc.list.item.ListItem
 import dev.petuska.kmdcx.icons.MDCIcon
@@ -11,9 +12,9 @@ import org.jetbrains.compose.web.dom.Text
 import showdown.web.common.IconButton
 
 @Composable
-fun VotersList(gameViewmodel: GameContract.Viewmodel) {
+fun VotersList(players: List<Member>) {
     Div {
-        val players = getPlayers(gameViewmodel.members.value)
+      
         H2 {
             IconButton(MDCIcon.Group) {}
             Text("Voters (${players.size}) Voted:")
