@@ -30,22 +30,20 @@ class GameViewmodel(
     private val gameDataSource: GameDataSource = Application.gameDataSource
 ) : GameContract.Viewmodel {
 
-    override var requestRoomPassword: MutableState<Boolean> = mutableStateOf(false)
+    override var isRoomPasswordNeeded: MutableState<Boolean> = mutableStateOf(false)
     override var isSpectator: MutableState<Boolean> = mutableStateOf(false)
     override var options: MutableState<List<String>> = mutableStateOf(emptyList())
     override var results: MutableState<List<Result>> = mutableStateOf(emptyList())
-    override var showEntryPopup: MutableState<Boolean> = mutableStateOf(true)
-    private val compositeDisposable = CompositeDisposable()
-    private var playerName: String = ""
+    override var isRegistration: MutableState<Boolean> = mutableStateOf(true)
     override var members: MutableState<List<Member>> = mutableStateOf(emptyList())
     override var selectedOption: MutableState<Int> = mutableStateOf(-1)
-    override var autoReveal: MutableState<Boolean> = mutableStateOf(false)
-    override var anonymResults: MutableState<Boolean> = mutableStateOf(false)
-    override var showConnectionError: MutableState<Boolean> = mutableStateOf(false)
-    private var gameStartTime = Date()
-    override var timer: MutableState<Int> = mutableStateOf(0)
+    override var isConnectionError: MutableState<Boolean> = mutableStateOf(false)
+    override var estimationTimer: MutableState<Int> = mutableStateOf(0)
     override var showRoomPasswordSettingsDialog: MutableState<Boolean> = mutableStateOf(false)
 
+    private val compositeDisposable = CompositeDisposable()
+    private var playerName: String = ""
+    private var gameStartTime = Date()
 
     override fun reset() {
         gameDataSource.requestReset()
@@ -61,18 +59,12 @@ class GameViewmodel(
         observeMessage()
         observeGameState()
         observeSpectatorStatus()
-        gameDataSource.observeRoomConfig().subscribe {
-            it?.let {
-                autoReveal.value = it.autoReveal
-                anonymResults.value = it.anonymResults
-            }
-        }
         window.setInterval({
             val startDate = gameStartTime
             val endDate = Date()
 
             val diffSecs = (endDate.getTime() - startDate.getTime()) / 1000
-            timer.value = (floor(diffSecs).toInt())
+            estimationTimer.value = (floor(diffSecs).toInt())
         }, 1000)
     }
 
@@ -84,7 +76,7 @@ class GameViewmodel(
 
     private fun observeGameState() {
         gameDataSource.observeGameState().subscribe(onNext = { newState ->
-            showConnectionError.value = false
+            isConnectionError.value = false
             when (newState) {
                 GameState.NotStarted -> {}
                 is GameState.PlayerListUpdate -> {
@@ -96,7 +88,7 @@ class GameViewmodel(
                     options.value = config.voteOptions
                     results.value = emptyList()
 
-                    this.requestRoomPassword.value = false
+                    this.isRoomPasswordNeeded.value = false
 
                     gameStartTime = Date(config.createdAt.toDouble())
                 }
@@ -121,14 +113,14 @@ class GameViewmodel(
             when (error) {
                 ShowdownError.NotAuthorizedError -> {
 
-                    this.requestRoomPassword.value = true
+                    this.isRoomPasswordNeeded.value = true
 
                 }
                 ShowdownError.NoConnectionError -> {
                     debugLog("No Connection")
 
-                    this.showEntryPopup.value = true
-                    this.showConnectionError.value = false
+                    this.isRegistration.value = true
+                    this.isConnectionError.value = false
 
                 }
                 else -> {}
@@ -142,15 +134,15 @@ class GameViewmodel(
                 debugLog("ConnectToServer onComplete")
                 gameDataSource.joinRoom(playerName, password, isSpectator)
 
-                showEntryPopup.value = false
-                this.showConnectionError.value = false
+                isRegistration.value = false
+                this.isConnectionError.value = false
 
 
             },
             onError = {
                 debugLog("connectToServer: onError" + it.message)
 
-                this.showEntryPopup.value = true
+                this.isRegistration.value = true
 
             }
         ).addTo(compositeDisposable)
@@ -171,45 +163,16 @@ class GameViewmodel(
 
     }
 
-    override fun changeConfig(gameModeId: Int, gameOptions: String) {
-        val mode = when (gameModeId) {
-            0 -> {
-                fibo
-            }
-            1 -> {
-                tshirtSizesList
-            }
-            2 -> {
-                modFibo
-            }
-            3 -> {
-                powerOf2
-            }
-            4 -> {
-                gameOptions.split(";")
-            }
-            else -> fibo
-        }
-        val config =
-            NewGameConfig(voteOptions = mode)
-        gameDataSource.changeConfig(config)
-    }
 
-    override fun setAutoReveal(any: Boolean) {
-        gameDataSource.setAutoReveal(any)
-    }
 
-    override fun setAnonymVote(any: Boolean) {
-        gameDataSource.setAnonymVote(any)
-    }
+
+
 
     override fun onEntryPopupClosed() {
-        showEntryPopup.value = false
+        isRegistration.value = false
     }
 
-    override fun changeRoomPassword(password: String) {
-        gameDataSource.changeRoomPassword(password)
-    }
+
 
     override fun onSelectedVote(voteId: Int) {
         selectedOption.value = voteId
