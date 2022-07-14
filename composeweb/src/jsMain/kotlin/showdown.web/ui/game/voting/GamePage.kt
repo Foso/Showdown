@@ -13,6 +13,7 @@ import showdown.web.common.HeightSpacer
 import showdown.web.ui.Strings
 import showdown.web.ui.Strings.Companion.EROR
 import showdown.web.ui.game.voting.settings.SettingsDialog
+import showdown.web.ui.game.voting.settings.SettingsViewModel
 
 fun getSpectators(members: List<Member>): List<Member> {
     return members.filter { it.isSpectator }
@@ -33,12 +34,12 @@ fun GameView(gameViewmodel: GameContract.Viewmodel) {
 
 
     if (openSettings) {
-        SettingsDialog(gameViewmodel) {
+        SettingsDialog( SettingsViewModel()) {
             openSettings = false
         }
     }
 
-    if (gameViewmodel.showEntryPopup.value) {
+    if (gameViewmodel.isRegistration.value) {
         val urlSearchParams = URLSearchParams(window.location.hash.substringAfter("?"))
 
         if (urlSearchParams.has(PARAM_UNAME)) {
@@ -52,14 +53,14 @@ fun GameView(gameViewmodel: GameContract.Viewmodel) {
             }
         }
     }
-    if(gameViewmodel.requestRoomPassword.value){
+    if(gameViewmodel.isRoomPasswordNeeded.value){
         InsertPasswordDialog{
             gameViewmodel.joinGame("",it)
         }
     }
 
 
-    if (gameViewmodel.showConnectionError.value) {
+    if (gameViewmodel.isConnectionError.value) {
         ConnectionErrorSnackbar(EROR) {
             gameViewmodel.onCreate()
         }
@@ -70,7 +71,7 @@ fun GameView(gameViewmodel: GameContract.Viewmodel) {
         Toolbar(
             onNewVotingClicked = { gameViewmodel.reset() },
             onShowVotesClicked = { gameViewmodel.showVotes() },
-            onOpenSettings = { openSettings = true }, seconds = gameViewmodel.timer.value)
+            onOpenSettings = { openSettings = true }, seconds = gameViewmodel.estimationTimer.value)
 
         Br { }
         Br { }

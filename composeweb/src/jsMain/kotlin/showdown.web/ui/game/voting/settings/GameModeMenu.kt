@@ -30,7 +30,6 @@ fun GameModeMenu(menuItems: List<String>, onEntrySelected: (Int) -> Unit) {
     }) {
         MDCTextField(
             value = input,
-
             label = Strings.GAME_MODE,
             type = MDCTextFieldType.Outlined,
             attrs = {

@@ -16,16 +16,20 @@ import showdown.web.ui.Strings
 import showdown.web.ui.Strings.Companion.AUTO_REVEAL
 import showdown.web.ui.Strings.Companion.CHANGE_MODE
 import showdown.web.ui.Strings.Companion.SETTINGS_GAMEMODE
-import showdown.web.ui.game.voting.GameContract
 import showdown.web.ui.game.voting.gameModeOptions
 
+
 @Composable
-fun SettingsDialog(gameViewmodel: GameContract.Viewmodel, onClose: () -> Unit) {
+fun SettingsDialog(settingsViewModel: SettingsViewModel, onClose: () -> Unit) {
     val CUSTOM_MODE = 4
     val gameModeId = rememberMutableStateOf(0)
 
-    val customOptio0ns = rememberMutableStateOf("")
-    var playerName by remember { mutableStateOf("") }
+    val customOptions = rememberMutableStateOf("")
+    var roomPassword by remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        settingsViewModel.onCreate()
+    }
 
     MDCDialog(open = true, attrs = {
         this.onClosed {
@@ -47,10 +51,10 @@ fun SettingsDialog(gameViewmodel: GameContract.Viewmodel, onClose: () -> Unit) {
 
                 if (gameModeId.value == CUSTOM_MODE) {
                     JKTextField(
-                        customOptio0ns.value,
+                        customOptions.value,
                         label = SETTINGS_GAMEMODE,
                         onTextChange = {
-                            customOptio0ns.value = it
+                            customOptions.value = it
                         },
                         onEnterPressed = {})
                 }
@@ -59,7 +63,7 @@ fun SettingsDialog(gameViewmodel: GameContract.Viewmodel, onClose: () -> Unit) {
             }
 
             JKRaisedButton(CHANGE_MODE){
-                gameViewmodel.changeConfig(gameModeId.value, customOptio0ns.value)
+                settingsViewModel.changeConfig(gameModeId.value, customOptions.value)
                 onClose()
             }
 
@@ -73,8 +77,8 @@ fun SettingsDialog(gameViewmodel: GameContract.Viewmodel, onClose: () -> Unit) {
                 }
             }) {
 
-                MDCCheckbox(gameViewmodel.autoReveal.value, attrs = {
-                    onClick { gameViewmodel.setAutoReveal(!gameViewmodel.autoReveal.value) }
+                MDCCheckbox(settingsViewModel.autoRevealEnabled.value, attrs = {
+                    onClick { settingsViewModel.setAutoReveal(!settingsViewModel.autoRevealEnabled.value) }
                 })
                 Text(AUTO_REVEAL)
             }
@@ -88,29 +92,29 @@ fun SettingsDialog(gameViewmodel: GameContract.Viewmodel, onClose: () -> Unit) {
                 }
             }) {
 
-                MDCCheckbox(gameViewmodel.anonymResults.value, attrs = {
-                    onClick { gameViewmodel.setAnonymVote(!gameViewmodel.anonymResults.value) }
+                MDCCheckbox(settingsViewModel.isAnonymResults.value, attrs = {
+                    onClick { settingsViewModel.setAnonymVote(!settingsViewModel.isAnonymResults.value) }
                 })
                 Text(Strings.anonym)
             }
 
             Div {
-                JKTextField(value = playerName, label = Strings.SET_ROOM_PW, onTextChange = {
-                    playerName = it
+                JKTextField(value = roomPassword, label = Strings.SET_ROOM_PW, onTextChange = {
+                    roomPassword = it
                 }, onEnterPressed = {
-                    gameViewmodel.changeRoomPassword(playerName)
+                    settingsViewModel.changeRoomPassword(roomPassword)
 
                 })
             }
             Div {
                 JKRaisedButton(Strings.Save_PASSWORD) {
-                    gameViewmodel.changeRoomPassword(playerName)
+                    settingsViewModel.changeRoomPassword(roomPassword)
 
                 }
             }
             Div {
                 JKRaisedButton(Strings.REMOVE_PASSWORD) {
-                    gameViewmodel.changeRoomPassword("")
+                    settingsViewModel.changeRoomPassword("")
                 }
             }
 
@@ -129,7 +133,7 @@ fun SettingsDialog(gameViewmodel: GameContract.Viewmodel, onClose: () -> Unit) {
 
             Div {
                 A(href = SHOWDOWN_REPO_URL) {
-                    Text("Showdown v$SHOWDOWN_VERSION on Github")
+                    Text("Showdown v$SHOWDOWN_VERSION on GitHub")
                 }
             }
             Div {
