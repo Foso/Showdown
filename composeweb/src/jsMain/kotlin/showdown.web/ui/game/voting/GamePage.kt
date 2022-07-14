@@ -5,7 +5,9 @@ import de.jensklingenberg.showdown.model.Member
 import dev.petuska.kmdc.checkbox.MDCCheckbox
 import kotlinx.browser.window
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.*
+import org.jetbrains.compose.web.dom.Br
+import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.url.URLSearchParams
 import showdown.web.Application.Companion.PARAM_UNAME
 import showdown.web.common.ConnectionErrorSnackbar
@@ -32,12 +34,12 @@ fun GameView(gameViewmodel: GameContract.Viewmodel) {
         gameViewmodel.onCreate()
     }
 
-
     if (openSettings) {
         SettingsDialog( SettingsViewModel()) {
             openSettings = false
         }
     }
+
 
     if (gameViewmodel.isRegistration.value) {
         val urlSearchParams = URLSearchParams(window.location.hash.substringAfter("?"))
@@ -76,7 +78,9 @@ fun GameView(gameViewmodel: GameContract.Viewmodel) {
         Br { }
         Br { }
 
-        OptionsList(gameViewmodel)
+        OptionsList(gameViewmodel.options.value,gameViewmodel.selectedOption.value){selectedIndex ->
+            gameViewmodel.onSelectedVote(selectedIndex)
+        }
 
         HeightSpacer(40.px)
         Div(attrs = {

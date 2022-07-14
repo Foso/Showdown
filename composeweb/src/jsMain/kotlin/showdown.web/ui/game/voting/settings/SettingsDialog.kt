@@ -4,16 +4,15 @@ import androidx.compose.runtime.*
 import de.jensklingenberg.showdown.SHOWDOWN_ISSUES_URL
 import de.jensklingenberg.showdown.SHOWDOWN_REPO_URL
 import de.jensklingenberg.showdown.SHOWDOWN_VERSION
-import dev.petuska.kmdc.checkbox.MDCCheckbox
 import dev.petuska.kmdc.dialog.Content
 import dev.petuska.kmdc.dialog.MDCDialog
 import dev.petuska.kmdc.dialog.onClosed
+import dev.petuska.kmdc.switch.MDCSwitch
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 import showdown.web.common.JKRaisedButton
 import showdown.web.common.JKTextField
 import showdown.web.ui.Strings
-import showdown.web.ui.Strings.Companion.AUTO_REVEAL
 import showdown.web.ui.Strings.Companion.CHANGE_MODE
 import showdown.web.ui.Strings.Companion.SETTINGS_GAMEMODE
 import showdown.web.ui.game.voting.gameModeOptions
@@ -62,7 +61,7 @@ fun SettingsDialog(settingsViewModel: SettingsViewModel, onClose: () -> Unit) {
 
             }
 
-            JKRaisedButton(CHANGE_MODE){
+            JKRaisedButton(CHANGE_MODE) {
                 settingsViewModel.changeConfig(gameModeId.value, customOptions.value)
                 onClose()
             }
@@ -70,32 +69,39 @@ fun SettingsDialog(settingsViewModel: SettingsViewModel, onClose: () -> Unit) {
 
             Div(attrs = {
                 style {
-                    textAlign("center")
-                    justifyContent(JustifyContent.Center)
-                    alignItems(AlignItems.Center)
+                    textAlign("left")
+                    justifyContent(JustifyContent.Start)
+                    alignItems(AlignItems.Start)
 
                 }
             }) {
 
-                MDCCheckbox(settingsViewModel.autoRevealEnabled.value, attrs = {
+                MDCSwitch(settingsViewModel.autoRevealEnabled.value, label = Strings.AUTO_REVEAL, attrs = {
                     onClick { settingsViewModel.setAutoReveal(!settingsViewModel.autoRevealEnabled.value) }
-                })
-                Text(AUTO_REVEAL)
+                }) {}
+
             }
 
             Div(attrs = {
                 style {
-                    textAlign("center")
-                    justifyContent(JustifyContent.Center)
-                    alignItems(AlignItems.Center)
+                    marginTop(10.px)
+                    textAlign("left")
+                    justifyContent(JustifyContent.Start)
+                    alignItems(AlignItems.Start)
 
                 }
             }) {
-
-                MDCCheckbox(settingsViewModel.isAnonymResults.value, attrs = {
+                MDCSwitch(settingsViewModel.isAnonymResults.value, label = Strings.anonym, attrs = {
                     onClick { settingsViewModel.setAnonymVote(!settingsViewModel.isAnonymResults.value) }
-                })
-                Text(Strings.anonym)
+                }) {
+
+                }
+
+            }
+
+            Hr {}
+            H2 {
+                Text("Room Password Settings")
             }
 
             Div {
@@ -119,12 +125,14 @@ fun SettingsDialog(settingsViewModel: SettingsViewModel, onClose: () -> Unit) {
             }
 
 
-            H1 {
+            Hr {}
+
+            H2 {
                 Text("About")
             }
 
 
-            Hr {}
+
             Div {
                 A(href = SHOWDOWN_ISSUES_URL) {
                     Text("Issues/Feature Requests")
@@ -138,7 +146,7 @@ fun SettingsDialog(settingsViewModel: SettingsViewModel, onClose: () -> Unit) {
             }
             Div {
                 JKRaisedButton(text = "Close") {
-                     onClose()
+                    onClose()
 
                 }
             }

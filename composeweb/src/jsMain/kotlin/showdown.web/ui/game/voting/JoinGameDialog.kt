@@ -7,6 +7,8 @@ import dev.petuska.kmdc.dialog.Content
 import dev.petuska.kmdc.dialog.MDCDialog
 import dev.petuska.kmdc.dialog.onClosed
 import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.H2
+import org.jetbrains.compose.web.dom.Text
 import showdown.web.common.JKRaisedButton
 import showdown.web.common.JKTextField
 import showdown.web.ui.Strings
@@ -22,6 +24,10 @@ fun JoinGameDialog(onJoinClicked: (JoinGame) -> Unit) {
             onJoinClicked(JoinGame(playerName, "", isSpec))
         }
     }) {
+        H2 {
+            Text("Showdown")
+        }
+
         Div {
             JKTextField(value = playerName, label = Strings.INSERT_NAME, onTextChange = {
                 playerName = it
