@@ -2,7 +2,6 @@
 plugins {
     kotlin("multiplatform")
     id("org.jetbrains.compose")
-    id("com.google.devtools.ksp") version "1.6.21-1.0.5"
     id("kotlinx-serialization")
 }
 
@@ -76,11 +75,6 @@ kotlin {
             }
         }
     }
-}
-
-dependencies {
-   //   add("kspCommonMainMetadata", "de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
-   // add("kspJs","de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
 }
 
 rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
