@@ -2,6 +2,7 @@ package showdown.web.ui.game.voting
 
 import androidx.compose.runtime.Composable
 import de.jensklingenberg.showdown.model.Member
+import dev.petuska.kmdc.list.Divider
 import dev.petuska.kmdc.list.MDCList
 import dev.petuska.kmdc.list.item.ListItem
 import dev.petuska.kmdcx.icons.MDCIcon
@@ -12,16 +13,16 @@ import org.jetbrains.compose.web.dom.Text
 import showdown.web.common.IconButton
 
 @Composable
-fun VotersList(players: List<Member>) {
+fun VotersList(voters: List<Member>) {
     Div {
       
         H2 {
             IconButton(MDCIcon.Group) {}
-            Text("Voters (${players.size}) Voted:")
+            Text("Voters (${voters.size}) Voted:")
         }
 
-        MDCList() {
-            players.forEach {
+        MDCList {
+            voters.forEach {
                 ListItem(disabled = true, selected = false, attrs = {
                     style {
                         textAlign("center")
@@ -40,6 +41,7 @@ fun VotersList(players: List<Member>) {
                         }) {}
                     }
                 }
+                Divider {  }
             }
         }
 

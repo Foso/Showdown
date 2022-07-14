@@ -48,6 +48,8 @@ kotlin {
               //  implementation("dev.petuska:kmdc:0.0.4")
                 implementation("dev.petuska:kmdc-button-js:0.0.4")
                 implementation("dev.petuska:kmdc-checkbox-js:0.0.4")
+                implementation("dev.petuska:kmdc-switch-js:0.0.4")
+
                 implementation("dev.petuska:kmdc-list-js:0.0.4")
                 implementation("dev.petuska:kmdc-snackbar-js:0.0.4")
                 implementation("dev.petuska:kmdc-menu-js:0.0.4")

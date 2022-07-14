@@ -13,20 +13,20 @@ import showdown.web.common.IconButton
 import showdown.web.ui.Strings
 
 @Composable
-fun OptionsList(gameViewmodel: GameContract.Viewmodel) {
+fun OptionsList(options: List<String>, selectedOption: Int, onSelectedVote: (Int)->Unit) {
     Div {
-        if (gameViewmodel.options.value.isNotEmpty()) {
+        if (options.isNotEmpty()) {
             H2 {
                 IconButton(MDCIcon.TouchApp) {}
                 Text(Strings.SELECT_OPTION)
             }
         }
 
-        gameViewmodel.options.value.forEachIndexed { index, option ->
+        options.forEachIndexed { index, option ->
 
             MDCButton(type = MDCButtonType.Outlined, attrs = {
                 style {
-                    val clr = if (index == gameViewmodel.selectedOption.value) {
+                    val clr = if (index == selectedOption) {
                         Color.red
                     } else {
                         Color.blue
@@ -34,7 +34,7 @@ fun OptionsList(gameViewmodel: GameContract.Viewmodel) {
                     this.color(clr)
                 }
                 onClick {
-                    gameViewmodel.onSelectedVote(index)
+                    onSelectedVote(index)
                 }
             }) {
 

@@ -1,8 +1,6 @@
 package showdown.web.ui.game.voting
 
 import androidx.compose.runtime.*
-import de.jensklingenberg.showdown.model.api.clientrequest.JoinGame
-import dev.petuska.kmdc.checkbox.MDCCheckbox
 import dev.petuska.kmdc.dialog.Content
 import dev.petuska.kmdc.dialog.MDCDialog
 import dev.petuska.kmdc.dialog.onClosed
