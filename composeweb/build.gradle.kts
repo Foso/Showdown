@@ -1,3 +1,4 @@
+import org.jetbrains.compose.jetbrainsCompose
 
 plugins {
     kotlin("multiplatform")
@@ -7,14 +8,15 @@ plugins {
 
 group "com.example"
 version "1.0-SNAPSHOT"
-val ktorVersion = "2.0.1"
-val ktorfitVersion = "1.0.0-beta06"
 repositories {
     google()
     mavenCentral()
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    this.jetbrainsCompose()
+   // maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 
 }
+
+val kmdcVersion = "0.0.4"
 
 kotlin {
     js(IR) {
@@ -45,25 +47,25 @@ kotlin {
 
                 implementation("app.softwork:routing-compose:0.2.4")
               //  implementation("dev.petuska:kmdc:0.0.4")
-                implementation("dev.petuska:kmdc-button-js:0.0.4")
-                implementation("dev.petuska:kmdc-checkbox-js:0.0.4")
-                implementation("dev.petuska:kmdc-switch-js:0.0.4")
+                implementation("dev.petuska:kmdc-button-js:$kmdcVersion")
+                implementation("dev.petuska:kmdc-checkbox-js:$kmdcVersion")
+                implementation("dev.petuska:kmdc-switch-js:$kmdcVersion")
 
-                implementation("dev.petuska:kmdc-list-js:0.0.4")
-                implementation("dev.petuska:kmdc-snackbar-js:0.0.4")
-                implementation("dev.petuska:kmdc-menu-js:0.0.4")
-                implementation("dev.petuska:kmdc-textfield-js:0.0.4")
-                implementation("dev.petuska:kmdc-dialog-js:0.0.4")
+                implementation("dev.petuska:kmdc-list-js:$kmdcVersion")
+                implementation("dev.petuska:kmdc-snackbar-js:$kmdcVersion")
+                implementation("dev.petuska:kmdc-menu-js:$kmdcVersion")
+                implementation("dev.petuska:kmdc-textfield-js:$kmdcVersion")
+                implementation("dev.petuska:kmdc-dialog-js:$kmdcVersion")
 
-                implementation("dev.petuska:kmdc-icon-button-js:0.0.4")
+                implementation("dev.petuska:kmdc-icon-button-js:$kmdcVersion")
 
-                implementation("dev.petuska:kmdcx:0.0.4")
+                implementation("dev.petuska:kmdcx:$kmdcVersion")
                // implementation(npm("material-icons","^1.10.4"))
                 // SCSS dependencies
-                implementation(devNpm("style-loader", "^3.3.1"))
-                implementation(devNpm("css-loader", "^6.7.1"))
-                implementation(devNpm("sass-loader", "^13.0.0"))
-                implementation(devNpm("sass", "^1.52.1"))
+                implementation(devNpm("style-loader", "3.3.1"))
+                implementation(devNpm("css-loader", "6.7.1"))
+                implementation(devNpm("sass-loader", "13.0.0"))
+                implementation(devNpm("sass", "1.52.1"))
                 implementation(devNpm("uglifyjs-webpack-plugin", "2.2.0"))
 
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
@@ -76,3 +78,9 @@ kotlin {
         }
     }
 }
+
+rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
+    versions.webpackCli.version = "4.10.0"
+}
+
+task("prepareKotlinBuildScriptModel")  {}
