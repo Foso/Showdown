@@ -35,7 +35,7 @@ fun GameView(gameViewmodel: GameContract.Viewmodel) {
     }
 
     if (openSettings) {
-        SettingsDialog( SettingsViewModel()) {
+        SettingsDialog(SettingsViewModel()) {
             openSettings = false
         }
     }
@@ -55,9 +55,9 @@ fun GameView(gameViewmodel: GameContract.Viewmodel) {
             }
         }
     }
-    if(gameViewmodel.isRoomPasswordNeeded.value){
-        InsertPasswordDialog{
-            gameViewmodel.joinGame("",it)
+    if (gameViewmodel.isRoomPasswordNeeded.value) {
+        InsertPasswordDialog {
+            gameViewmodel.joinGame("", it)
         }
     }
 
@@ -74,12 +74,13 @@ fun GameView(gameViewmodel: GameContract.Viewmodel) {
             onNewVotingClicked = { gameViewmodel.reset() },
             onShowVotesClicked = { gameViewmodel.showVotes() },
             onOpenSettings = { openSettings = true },
-            seconds = gameViewmodel.estimationTimer.value)
+            seconds = gameViewmodel.estimationTimer.value
+        )
 
         Br { }
         Br { }
 
-        OptionsList(gameViewmodel.options.value,gameViewmodel.selectedOption.value){selectedIndex ->
+        OptionsList(gameViewmodel.options.value, gameViewmodel.selectedOption.value) { selectedIndex ->
             gameViewmodel.onSelectedVote(selectedIndex)
         }
 

@@ -11,7 +11,7 @@ import de.jensklingenberg.showdown.model.tshirtSizesList
 import showdown.web.Application
 import showdown.web.game.GameDataSource
 
-class SettingsViewModel( private val gameDataSource: GameDataSource = Application.gameDataSource){
+class SettingsViewModel(private val gameDataSource: GameDataSource = Application.gameDataSource) {
     var isAnonymResults: MutableState<Boolean> = mutableStateOf(false)
     var autoRevealEnabled: MutableState<Boolean> = mutableStateOf(false)
 
