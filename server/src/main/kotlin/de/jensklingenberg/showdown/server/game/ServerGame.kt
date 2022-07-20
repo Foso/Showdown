@@ -229,7 +229,6 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
 
     private fun sendGameStateChanged(sessionId: String, gameState: GameState) {
         val res = Response(PATHS.STATECHANGED.path, gameState.toJson())
-        //val json = ServerResponse.GameStateChanged(gameState).toJson()
         server.sendData(sessionId, moshi.toJson(res))
     }
 

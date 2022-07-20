@@ -51,7 +51,6 @@ fun OptionsList(options: List<String>, selectedOption: Int, onSelectedVote: (Int
 
                     Div {
                         Text("")
-
                     }
                 }
             }
