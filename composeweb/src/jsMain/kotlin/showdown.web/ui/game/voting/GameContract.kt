@@ -21,7 +21,6 @@ interface GameViewmodelITF {
     val isConnectionError: State<Boolean>
     val results: State<List<Result>>
     val members: State<List<Member>>
- //   val estimationTimer: State<Int>
 
 }
 

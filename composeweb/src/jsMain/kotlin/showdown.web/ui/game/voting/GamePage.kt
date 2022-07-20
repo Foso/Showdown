@@ -1,6 +1,7 @@
 package showdown.web.ui.game.voting
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import de.jensklingenberg.showdown.model.Member
 import dev.petuska.kmdc.checkbox.MDCCheckbox
 import kotlinx.browser.window
@@ -14,8 +15,6 @@ import showdown.web.common.ConnectionErrorSnackbar
 import showdown.web.common.HeightSpacer
 import showdown.web.ui.Strings
 import showdown.web.ui.Strings.Companion.CONNECTION_ERROR
-import showdown.web.ui.game.voting.settings.SettingsDialog
-import showdown.web.ui.game.voting.settings.SettingsViewModel
 import showdown.web.ui.game.voting.toolbar.Toolbar
 
 fun getSpectators(members: List<Member>): List<Member> {

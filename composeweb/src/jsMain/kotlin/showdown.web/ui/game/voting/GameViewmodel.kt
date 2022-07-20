@@ -10,12 +10,9 @@ import de.jensklingenberg.showdown.model.GameState
 import de.jensklingenberg.showdown.model.Member
 import de.jensklingenberg.showdown.model.Result
 import de.jensklingenberg.showdown.model.ShowdownError
-import kotlinx.browser.window
 import showdown.web.Application
 import showdown.web.debugLog
 import showdown.web.game.GameDataSource
-import kotlin.js.Date
-import kotlin.math.floor
 
 
 class GameViewmodel(
@@ -33,9 +30,6 @@ class GameViewmodel(
 
     private val compositeDisposable = CompositeDisposable()
     private var playerName: String = ""
-
-
-
 
 
     override fun onCreate() {
