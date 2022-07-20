@@ -4,13 +4,12 @@ package de.jensklingenberg.showdown.server.server
 import de.jensklingenberg.showdown.debugPort
 import de.jensklingenberg.showdown.server.model.Room
 import de.jensklingenberg.showdown.server.model.Session
-import io.ktor.http.content.*
 import io.ktor.serialization.gson.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.http.content.*
 import io.ktor.server.netty.*
-import io.ktor.server.plugins.*
+import io.ktor.server.plugins.compression.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -21,7 +20,6 @@ import io.ktor.util.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.channels.consumeEach
 import java.time.Duration
-import io.ktor.server.plugins.compression.*
 
 fun main() {
     ShowdownApplication()

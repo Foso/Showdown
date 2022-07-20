@@ -3,11 +3,12 @@ package showdown.web.ui.game.onboarding
 
 import androidx.compose.runtime.*
 
-import de.jensklingenberg.showdown.SHOWDOWN_REPO_URL
+
 import kotlinx.browser.window
 import org.jetbrains.compose.web.dom.*
 import showdown.web.common.JKTextField
 import showdown.web.ui.Strings.Companion.SHOWDOWN
+import showdown.web.ui.Strings.Companion.SHOWDOWN_REPO_URL
 
 
 /**
@@ -29,7 +30,7 @@ fun OnboardingScreen() {
     H3 {
         Text("1) Choose a room name and go to the room")
     }
-    Div{
+    Div {
 
         JKTextField(roomName, label = "Choose new room name", onTextChange = {
             roomName = (it)

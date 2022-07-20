@@ -6,8 +6,10 @@ import com.badoo.reaktive.completable.subscribe
 import com.badoo.reaktive.disposable.CompositeDisposable
 import com.badoo.reaktive.disposable.addTo
 import com.badoo.reaktive.observable.subscribe
-import de.jensklingenberg.showdown.model.*
-import de.jensklingenberg.showdown.model.api.clientrequest.NewGameConfig
+import de.jensklingenberg.showdown.model.GameState
+import de.jensklingenberg.showdown.model.Member
+import de.jensklingenberg.showdown.model.Result
+import de.jensklingenberg.showdown.model.ShowdownError
 import kotlinx.browser.window
 import showdown.web.Application
 import showdown.web.debugLog
@@ -108,7 +110,7 @@ class GameViewmodel(
                 ShowdownError.NoConnectionError -> {
                     debugLog("No Connection")
 
-                   // this.isRegistration.value = true
+                    // this.isRegistration.value = true
                     this.isConnectionError.value = true
 
                 }
@@ -157,8 +159,13 @@ class GameViewmodel(
     }
 
     override fun onSelectedVote(voteId: Int) {
+        val votedOption = if (voteId >= options.value.size) {
+            options.value.indices.random()
+        } else {
+            voteId
+        }
         selectedOption.value = voteId
-        gameDataSource.onSelectedVote(voteId)
+        gameDataSource.onSelectedVote(votedOption)
     }
 
     override fun setSpectatorStatus(b: Boolean) {

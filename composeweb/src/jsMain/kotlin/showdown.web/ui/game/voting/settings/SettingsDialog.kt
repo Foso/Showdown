@@ -1,20 +1,22 @@
 package showdown.web.ui.game.voting.settings
 
 import androidx.compose.runtime.*
-import de.jensklingenberg.showdown.SHOWDOWN_ISSUES_URL
-import de.jensklingenberg.showdown.SHOWDOWN_REPO_URL
-import de.jensklingenberg.showdown.SHOWDOWN_VERSION
 import dev.petuska.kmdc.dialog.Content
 import dev.petuska.kmdc.dialog.MDCDialog
 import dev.petuska.kmdc.dialog.onClosed
 import dev.petuska.kmdc.switch.MDCSwitch
+import dev.petuska.kmdcx.icons.MDCIcon
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
+import showdown.web.common.IconButton
 import showdown.web.common.JKRaisedButton
 import showdown.web.common.JKTextField
 import showdown.web.ui.Strings
 import showdown.web.ui.Strings.Companion.CHANGE_MODE
 import showdown.web.ui.Strings.Companion.SETTINGS_GAMEMODE
+import showdown.web.ui.Strings.Companion.SHOWDOWN_ISSUES_URL
+import showdown.web.ui.Strings.Companion.SHOWDOWN_REPO_URL
+import showdown.web.ui.Strings.Companion.SHOWDOWN_VERSION
 
 val gameModeOptions: List<Pair<String, Int>>
     get() = listOf(
@@ -44,8 +46,10 @@ fun SettingsDialog(settingsViewModel: SettingsViewModel, onClose: () -> Unit) {
             onClose()
         }
     }) {
+        IconButton(MDCIcon.Close, onClick = { onClose() }) {
 
-        this.Content {
+        }
+        Content {
 
             H1 {
                 Text(Strings.GAME_SETTINGS)
@@ -53,7 +57,7 @@ fun SettingsDialog(settingsViewModel: SettingsViewModel, onClose: () -> Unit) {
 
             Div {
 
-                DropdownMenu(Strings.GAME_MODE,gameModeOptions.map { it.first }) {
+                DropdownMenu(Strings.GAME_MODE, gameModeOptions.map { it.first }) {
                     gameModeId.value = it
                 }
 
@@ -151,12 +155,7 @@ fun SettingsDialog(settingsViewModel: SettingsViewModel, onClose: () -> Unit) {
                     Text("Showdown v$SHOWDOWN_VERSION on GitHub")
                 }
             }
-            Div {
-                JKRaisedButton(text = "Close") {
-                    onClose()
 
-                }
-            }
         }
 
 

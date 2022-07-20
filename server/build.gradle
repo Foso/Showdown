@@ -43,7 +43,6 @@ dependencies {
     implementation "io.ktor:ktor-server-content-negotiation:$ktor_version"
     implementation "io.ktor:ktor-server-sessions:$ktor_version"
     implementation "io.ktor:ktor-server-compression:$ktor_version"
-
     implementation "io.ktor:ktor-server-netty:$ktor_version"
     implementation "io.ktor:ktor-serialization-gson:$ktor_version"
     implementation "io.ktor:ktor-server-websockets:$ktor_version"
@@ -53,7 +52,6 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:4.6.1'
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
     testImplementation group: 'junit', name: 'junit', version: '4.13.1'
-   // implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2'
 }
 
 sourceSets {

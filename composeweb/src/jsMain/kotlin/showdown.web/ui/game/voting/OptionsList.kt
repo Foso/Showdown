@@ -58,6 +58,14 @@ fun OptionsList(options: List<String>, selectedOption: Int, onSelectedVote: (Int
 
 
             MDCButton(type = MDCButtonType.Outlined, attrs = {
+                style {
+                    val clr = if ((options.size + 1) == selectedOption) {
+                        Color.red
+                    } else {
+                        Color.blue
+                    }
+                    this.color(clr)
+                }
                 onClick {
                     onSelectedVote(options.size + 1)
                 }

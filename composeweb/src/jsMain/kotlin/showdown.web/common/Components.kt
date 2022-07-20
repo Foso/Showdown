@@ -17,7 +17,9 @@ import dev.petuska.kmdcx.icons.MDCIcon
 import dev.petuska.kmdcx.icons.mdcIcon
 import org.jetbrains.compose.web.attributes.AttrsScope
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.*
+import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Img
+import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.HTMLElement
 
 @Composable
@@ -98,11 +100,19 @@ fun <T : HTMLElement> AttrsScope<T>.ariaDescribedBy(id: String) {
 
 
 @Composable
-fun IconButton(onIcon: MDCIcon, offIcon: MDCIcon = onIcon, style: StyleScope.() -> Unit = {}, onChange: () -> Unit) {
+fun IconButton(
+    onIcon: MDCIcon,
+    offIcon: MDCIcon = onIcon,
+    style: StyleScope.() -> Unit = {},
+    onClick: () -> Unit = {},
+    onChange: () -> Unit
+) {
     MDCIconButton(true, attrs = {
         style {
             style()
+
         }
+        onClick { onClick() }
         onChange { onChange() }
     }) {
 

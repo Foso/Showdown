@@ -10,9 +10,6 @@ version "1.0-SNAPSHOT"
 repositories {
     google()
     mavenCentral()
-
-   // maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-
 }
 
 val kmdcVersion = "0.0.4"
