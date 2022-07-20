@@ -16,6 +16,7 @@ import showdown.web.ui.Strings
 import showdown.web.ui.Strings.Companion.CONNECTION_ERROR
 import showdown.web.ui.game.voting.settings.SettingsDialog
 import showdown.web.ui.game.voting.settings.SettingsViewModel
+import showdown.web.ui.game.voting.toolbar.Toolbar
 
 fun getSpectators(members: List<Member>): List<Member> {
     return members.filter { it.isSpectator }
@@ -26,20 +27,12 @@ fun getPlayers(members: List<Member>): List<Member> {
 }
 
 @Composable
-fun GameView(gameViewmodel: GameContract.Viewmodel) {
+fun GameView(gameViewmodel: GameViewmodelITF) {
 
-    var openSettings by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         gameViewmodel.onCreate()
     }
-
-    if (openSettings) {
-        SettingsDialog(SettingsViewModel()) {
-            openSettings = false
-        }
-    }
-
 
     if (gameViewmodel.isRegistration.value) {
         val urlSearchParams = URLSearchParams(window.location.hash.substringAfter("?"))
@@ -61,7 +54,6 @@ fun GameView(gameViewmodel: GameContract.Viewmodel) {
         }
     }
 
-
     if (gameViewmodel.isConnectionError.value) {
         ConnectionErrorSnackbar(CONNECTION_ERROR) {
             gameViewmodel.onCreate()
@@ -70,12 +62,7 @@ fun GameView(gameViewmodel: GameContract.Viewmodel) {
 
     Div {
 
-        Toolbar(
-            onNewVotingClicked = { gameViewmodel.reset() },
-            onShowVotesClicked = { gameViewmodel.showVotes() },
-            onOpenSettings = { openSettings = true },
-            seconds = gameViewmodel.estimationTimer.value
-        )
+        Toolbar()
 
         Br { }
         Br { }

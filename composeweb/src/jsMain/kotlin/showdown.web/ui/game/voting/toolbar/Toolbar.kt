@@ -1,6 +1,6 @@
-package showdown.web.ui.game.voting
+package showdown.web.ui.game.voting.toolbar
 
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import dev.petuska.kmdc.elevation.MDCElevation
 import dev.petuska.kmdcx.icons.MDCIcon
 import org.jetbrains.compose.web.css.Color
@@ -12,10 +12,21 @@ import org.jetbrains.compose.web.dom.Text
 import showdown.web.common.JKRaisedButton
 import showdown.web.common.jkBLue
 import showdown.web.ui.Strings
+import showdown.web.ui.game.voting.settings.SettingsDialog
+import showdown.web.ui.game.voting.settings.SettingsViewModel
 
 
 @Composable
-fun Toolbar(onNewVotingClicked: () -> Unit, onShowVotesClicked: () -> Unit, onOpenSettings: () -> Unit, seconds: Int) {
+fun Toolbar(
+    toolBarViewModel: ToolBarViewModel = ToolBarViewModel()
+) {
+
+    LaunchedEffect(Unit) {
+        toolBarViewModel.onCreate()
+    }
+
+    var openSettings by remember { mutableStateOf(false) }
+
 
     MDCElevation(8) {
         Div(attrs = {
@@ -24,14 +35,20 @@ fun Toolbar(onNewVotingClicked: () -> Unit, onShowVotesClicked: () -> Unit, onOp
             }
         }) {
             JKRaisedButton(Strings.NEW_VOTING, MDCIcon.Add, onClick = {
-                onNewVotingClicked()
+                toolBarViewModel.reset()
             })
 
+            if (openSettings) {
+                SettingsDialog(SettingsViewModel()) {
+                    openSettings = false
+                }
+            }
+
             JKRaisedButton(Strings.SHOW_VOTES, MDCIcon.Visibility, onClick = {
-                onShowVotesClicked()
+                toolBarViewModel.showVotes()
             })
             JKRaisedButton(Strings.SETTINGS, MDCIcon.Settings, onClick = {
-                onOpenSettings()
+                openSettings = true
             })
 
             Span(attrs = {
@@ -39,7 +56,7 @@ fun Toolbar(onNewVotingClicked: () -> Unit, onShowVotesClicked: () -> Unit, onOp
                     color(Color.white)
                 }
             }) {
-                Text("Estimation time: $seconds seconds.")
+                Text("Estimation time: ${toolBarViewModel.estimationTimer.value} seconds.")
             }
 
         }

@@ -33,8 +33,7 @@ val gameModeOptions: List<Pair<String, Int>>
 fun SettingsDialog(settingsViewModel: SettingsViewModel, onClose: () -> Unit) {
     val CUSTOM_MODE = 4
     val gameModeId = remember { mutableStateOf(0) }
-
-    val customOptions = rememberMutableStateOf("")
+    val customOptions = remember { mutableStateOf("") }
     var roomPassword by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
@@ -46,9 +45,7 @@ fun SettingsDialog(settingsViewModel: SettingsViewModel, onClose: () -> Unit) {
             onClose()
         }
     }) {
-        IconButton(MDCIcon.Close, onClick = { onClose() }) {
-
-        }
+        IconButton(MDCIcon.Close, onClick = { onClose() }) {}
         Content {
 
             H1 {
@@ -106,10 +103,7 @@ fun SettingsDialog(settingsViewModel: SettingsViewModel, onClose: () -> Unit) {
             }) {
                 MDCSwitch(settingsViewModel.isAnonymResults.value, label = Strings.anonym, attrs = {
                     onClick { settingsViewModel.setAnonymVote(!settingsViewModel.isAnonymResults.value) }
-                }) {
-
-                }
-
+                }) {}
             }
 
             Hr {}
@@ -122,13 +116,11 @@ fun SettingsDialog(settingsViewModel: SettingsViewModel, onClose: () -> Unit) {
                     roomPassword = it
                 }, onEnterPressed = {
                     settingsViewModel.changeRoomPassword(roomPassword)
-
                 })
             }
             Div {
                 JKRaisedButton(Strings.Save_PASSWORD) {
                     settingsViewModel.changeRoomPassword(roomPassword)
-
                 }
             }
             Div {
@@ -136,6 +128,7 @@ fun SettingsDialog(settingsViewModel: SettingsViewModel, onClose: () -> Unit) {
                     settingsViewModel.changeRoomPassword("")
                 }
             }
+
 
 
             Hr {}

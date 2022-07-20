@@ -20,7 +20,7 @@ import kotlin.math.floor
 
 class GameViewmodel(
     private val gameDataSource: GameDataSource = Application.gameDataSource
-) : GameContract.Viewmodel {
+) : GameViewmodelITF {
 
     override var isRoomPasswordNeeded: MutableState<Boolean> = mutableStateOf(false)
     override var isSpectator: MutableState<Boolean> = mutableStateOf(false)
@@ -30,19 +30,13 @@ class GameViewmodel(
     override var members: MutableState<List<Member>> = mutableStateOf(emptyList())
     override var selectedOption: MutableState<Int> = mutableStateOf(-1)
     override var isConnectionError: MutableState<Boolean> = mutableStateOf(false)
-    override var estimationTimer: MutableState<Int> = mutableStateOf(0)
 
     private val compositeDisposable = CompositeDisposable()
     private var playerName: String = ""
-    private var gameStartTime = Date()
 
-    override fun reset() {
-        gameDataSource.requestReset()
-    }
 
-    override fun showVotes() {
-        gameDataSource.showVotes()
-    }
+
+
 
     override fun onCreate() {
 
@@ -50,13 +44,7 @@ class GameViewmodel(
         observeMessage()
         observeGameState()
         observeSpectatorStatus()
-        window.setInterval({
-            val startDate = gameStartTime
-            val endDate = Date()
 
-            val diffSecs = (endDate.getTime() - startDate.getTime()) / 1000
-            estimationTimer.value = (floor(diffSecs).toInt())
-        }, 1000)
     }
 
     private fun observeSpectatorStatus() {
@@ -81,7 +69,6 @@ class GameViewmodel(
 
                     this.isRoomPasswordNeeded.value = false
 
-                    gameStartTime = Date(config.createdAt.toDouble())
                 }
 
                 is GameState.ShowVotes -> {
@@ -103,16 +90,11 @@ class GameViewmodel(
         gameDataSource.observeErrors().subscribe(onNext = { error ->
             when (error) {
                 ShowdownError.NotAuthorizedError -> {
-
                     this.isRoomPasswordNeeded.value = true
-
                 }
                 ShowdownError.NoConnectionError -> {
                     debugLog("No Connection")
-
-                    // this.isRegistration.value = true
                     this.isConnectionError.value = true
-
                 }
                 else -> {}
             }
@@ -168,8 +150,8 @@ class GameViewmodel(
         gameDataSource.onSelectedVote(votedOption)
     }
 
-    override fun setSpectatorStatus(b: Boolean) {
-        gameDataSource.setSpectatorStatus(b)
+    override fun setSpectatorStatus(enable: Boolean) {
+        gameDataSource.setSpectatorStatus(enable)
     }
 
 

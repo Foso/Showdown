@@ -32,7 +32,6 @@ fun DropdownMenu(label: String, menuItems: List<String>, onEntrySelected: (Int) 
             label = label,
             type = MDCTextFieldType.Outlined,
             attrs = {
-                // onFocus { open = true }
                 onClick { open = true }
                 onInput {
                     input = it.value
