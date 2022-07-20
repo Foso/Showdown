@@ -15,13 +15,22 @@ import showdown.web.common.JKTextField
 import showdown.web.ui.Strings
 import showdown.web.ui.Strings.Companion.CHANGE_MODE
 import showdown.web.ui.Strings.Companion.SETTINGS_GAMEMODE
-import showdown.web.ui.game.voting.gameModeOptions
+
+val gameModeOptions: List<Pair<String, Int>>
+    get() = listOf(
+        "Fibonacci" to 0,
+        "T-Shirt" to 1,
+        "Modified Fibonacci" to 2,
+        "Power of 2" to 3,
+
+        "Custom" to 4
+    )
 
 
 @Composable
 fun SettingsDialog(settingsViewModel: SettingsViewModel, onClose: () -> Unit) {
     val CUSTOM_MODE = 4
-    val gameModeId = rememberMutableStateOf(0)
+    val gameModeId = remember { mutableStateOf(0) }
 
     val customOptions = rememberMutableStateOf("")
     var roomPassword by remember { mutableStateOf("") }
@@ -44,7 +53,7 @@ fun SettingsDialog(settingsViewModel: SettingsViewModel, onClose: () -> Unit) {
 
             Div {
 
-                GameModeMenu(gameModeOptions.map { it.first }) {
+                DropdownMenu(Strings.GAME_MODE,gameModeOptions.map { it.first }) {
                     gameModeId.value = it
                 }
 
@@ -130,8 +139,6 @@ fun SettingsDialog(settingsViewModel: SettingsViewModel, onClose: () -> Unit) {
             H2 {
                 Text("About")
             }
-
-
 
             Div {
                 A(href = SHOWDOWN_ISSUES_URL) {

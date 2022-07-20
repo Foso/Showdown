@@ -8,10 +8,10 @@ import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
 import showdown.web.common.JKRaisedButton
+import showdown.web.common.jkBLue
 import showdown.web.ui.Strings
 
 
-val jkBLue = rgb(63, 81, 181)
 
 @Composable
 fun Toolbar(onNewVotingClicked: () -> Unit, onShowVotesClicked: () -> Unit, onOpenSettings: () -> Unit, seconds:Int) {
@@ -26,10 +26,10 @@ fun Toolbar(onNewVotingClicked: () -> Unit, onShowVotesClicked: () -> Unit, onOp
                 onNewVotingClicked()
             })
 
-            JKRaisedButton("Show Votes", MDCIcon.Visibility, onClick = {
+            JKRaisedButton(Strings.SHOW_VOTES, MDCIcon.Visibility, onClick = {
                 onShowVotesClicked()
             })
-            JKRaisedButton("Settings", MDCIcon.Settings, onClick = {
+            JKRaisedButton(Strings.SETTINGS, MDCIcon.Settings, onClick = {
                 onOpenSettings()
             })
 
@@ -38,7 +38,7 @@ fun Toolbar(onNewVotingClicked: () -> Unit, onShowVotesClicked: () -> Unit, onOp
                     color(Color.white)
                 }
             }) {
-                Text("Estimation time: ${seconds} seconds.")
+                Text("Estimation time: $seconds seconds.")
             }
 
         }

@@ -19,7 +19,6 @@ import org.jetbrains.compose.web.attributes.AttrsScope
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 import org.w3c.dom.HTMLElement
-import showdown.web.ui.game.voting.jkBLue
 
 @Composable
 fun JKRaisedButton(text: String, leadingIcon: MDCIcon? = null, onClick: () -> Unit) {
@@ -138,3 +137,5 @@ fun JKTextField(value: String, label: String? = null, onTextChange: (String) -> 
 
     })
 }
+
+val jkBLue = rgb(63, 81, 181)

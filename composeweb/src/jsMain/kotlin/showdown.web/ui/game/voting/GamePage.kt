@@ -13,7 +13,7 @@ import showdown.web.Application.Companion.PARAM_UNAME
 import showdown.web.common.ConnectionErrorSnackbar
 import showdown.web.common.HeightSpacer
 import showdown.web.ui.Strings
-import showdown.web.ui.Strings.Companion.EROR
+import showdown.web.ui.Strings.Companion.CONNECTION_ERROR
 import showdown.web.ui.game.voting.settings.SettingsDialog
 import showdown.web.ui.game.voting.settings.SettingsViewModel
 
@@ -63,7 +63,7 @@ fun GameView(gameViewmodel: GameContract.Viewmodel) {
 
 
     if (gameViewmodel.isConnectionError.value) {
-        ConnectionErrorSnackbar(EROR) {
+        ConnectionErrorSnackbar(CONNECTION_ERROR) {
             gameViewmodel.onCreate()
         }
     }
@@ -73,7 +73,8 @@ fun GameView(gameViewmodel: GameContract.Viewmodel) {
         Toolbar(
             onNewVotingClicked = { gameViewmodel.reset() },
             onShowVotesClicked = { gameViewmodel.showVotes() },
-            onOpenSettings = { openSettings = true }, seconds = gameViewmodel.estimationTimer.value)
+            onOpenSettings = { openSettings = true },
+            seconds = gameViewmodel.estimationTimer.value)
 
         Br { }
         Br { }
@@ -89,10 +90,8 @@ fun GameView(gameViewmodel: GameContract.Viewmodel) {
             }
             style {
                 textAlign("center")
-                //  display(DisplayStyle.Flex)
                 justifyContent(JustifyContent.Center)
                 alignItems(AlignItems.Center)
-                //property("width", "fit-content")
             }
         }) {
             MDCCheckbox(gameViewmodel.isSpectator.value, attrs = {
