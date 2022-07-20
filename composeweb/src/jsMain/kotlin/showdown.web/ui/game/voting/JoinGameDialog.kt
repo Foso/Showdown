@@ -25,7 +25,7 @@ fun JoinGameDialog(onJoinClicked: (JoinGame) -> Unit) {
         }
     }) {
         H2 {
-            Text("Showdown")
+            Text(Strings.SHOW_VOTES)
         }
 
         Div {

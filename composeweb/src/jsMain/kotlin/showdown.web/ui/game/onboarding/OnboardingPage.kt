@@ -7,6 +7,7 @@ import de.jensklingenberg.showdown.SHOWDOWN_REPO_URL
 import kotlinx.browser.window
 import org.jetbrains.compose.web.dom.*
 import showdown.web.common.JKTextField
+import showdown.web.ui.Strings.Companion.SHOWDOWN
 
 
 /**
@@ -24,10 +25,12 @@ fun OnboardingScreen() {
     H2 {
         Text("How to:")
     }
-    Div {
-        H3 {
-            Text("1) Choose a room name and go to the room")
-        }
+
+    H3 {
+        Text("1) Choose a room name and go to the room")
+    }
+    Div{
+
         JKTextField(roomName, label = "Choose new room name", onTextChange = {
             roomName = (it)
         }, onEnterPressed = {
@@ -89,7 +92,7 @@ fun OnboardingScreen() {
     Br { }
     Div {
         A(href = SHOWDOWN_REPO_URL) {
-            Text("Showdown")
+            Text(SHOWDOWN)
         }
 
         Text(" by ")

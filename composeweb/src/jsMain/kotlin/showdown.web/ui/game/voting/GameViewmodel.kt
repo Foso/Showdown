@@ -15,18 +15,8 @@ import showdown.web.game.GameDataSource
 import kotlin.js.Date
 import kotlin.math.floor
 
-val gameModeOptions: List<Pair<String, Int>>
-    get() = listOf(
-        "Fibonacci" to 0,
-        "T-Shirt" to 1,
-        "Modified Fibonacci" to 2,
-        "Power of 2" to 3,
-
-        "Custom" to 4
-    )
 
 class GameViewmodel(
-    // private val view: GameContract.View,
     private val gameDataSource: GameDataSource = Application.gameDataSource
 ) : GameContract.Viewmodel {
 
@@ -39,7 +29,6 @@ class GameViewmodel(
     override var selectedOption: MutableState<Int> = mutableStateOf(-1)
     override var isConnectionError: MutableState<Boolean> = mutableStateOf(false)
     override var estimationTimer: MutableState<Int> = mutableStateOf(0)
-    override var showRoomPasswordSettingsDialog: MutableState<Boolean> = mutableStateOf(false)
 
     private val compositeDisposable = CompositeDisposable()
     private var playerName: String = ""
@@ -119,8 +108,8 @@ class GameViewmodel(
                 ShowdownError.NoConnectionError -> {
                     debugLog("No Connection")
 
-                    this.isRegistration.value = true
-                    this.isConnectionError.value = false
+                   // this.isRegistration.value = true
+                    this.isConnectionError.value = true
 
                 }
                 else -> {}
@@ -163,16 +152,9 @@ class GameViewmodel(
 
     }
 
-
-
-
-
-
     override fun onEntryPopupClosed() {
         isRegistration.value = false
     }
-
-
 
     override fun onSelectedVote(voteId: Int) {
         selectedOption.value = voteId

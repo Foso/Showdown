@@ -20,7 +20,7 @@ fun InsertPasswordDialog(onJoinClicked: (String) -> Unit) {
         }
     }) {
 
-        this.Content {
+        Content {
 
             Div {
                 JKTextField(value = roomPassword, label = Strings.PW_REQUIRED, onTextChange = {

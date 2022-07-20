@@ -18,7 +18,7 @@ import showdown.web.ui.Strings
 public fun <T> rememberMutableStateOf(initial: T): MutableState<T> = remember { mutableStateOf(initial) }
 
 @Composable
-fun GameModeMenu(menuItems: List<String>, onEntrySelected: (Int) -> Unit) {
+fun DropdownMenu(label:String,menuItems: List<String>, onEntrySelected: (Int) -> Unit) {
     var open by rememberMutableStateOf(false)
 
     var selectedId by mutableStateOf<Int>(0)
@@ -30,13 +30,12 @@ fun GameModeMenu(menuItems: List<String>, onEntrySelected: (Int) -> Unit) {
     }) {
         MDCTextField(
             value = input,
-            label = Strings.GAME_MODE,
+            label = label,
             type = MDCTextFieldType.Outlined,
             attrs = {
                 // onFocus { open = true }
                 onClick { open = true }
                 onInput {
-                    console.log(it)
                     input = it.value
                     open = true
                 }

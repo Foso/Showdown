@@ -17,15 +17,12 @@ class SettingsViewModel( private val gameDataSource: GameDataSource = Applicatio
 
 
     fun onCreate() {
-
-
         gameDataSource.observeRoomConfig().subscribe {
             it?.let {
                 autoRevealEnabled.value = it.autoReveal
                 isAnonymResults.value = it.anonymResults
             }
         }
-
     }
 
 
@@ -52,16 +49,17 @@ class SettingsViewModel( private val gameDataSource: GameDataSource = Applicatio
             NewGameConfig(voteOptions = mode)
         gameDataSource.changeConfig(config)
     }
+
     fun changeRoomPassword(password: String) {
         gameDataSource.changeRoomPassword(password)
     }
 
-    fun setAutoReveal(any: Boolean) {
-        gameDataSource.setAutoReveal(any)
+    fun setAutoReveal(enable: Boolean) {
+        gameDataSource.setAutoReveal(enable)
     }
 
-    fun setAnonymVote(any: Boolean) {
-        gameDataSource.setAnonymVote(any)
+    fun setAnonymVote(enable: Boolean) {
+        gameDataSource.setAnonymVote(enable)
     }
 
 }
