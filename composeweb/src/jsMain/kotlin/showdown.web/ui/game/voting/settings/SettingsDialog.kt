@@ -3,11 +3,13 @@ package showdown.web.ui.game.voting.settings
 import androidx.compose.runtime.*
 import dev.petuska.kmdc.dialog.Content
 import dev.petuska.kmdc.dialog.MDCDialog
+import dev.petuska.kmdc.dialog.MDCDialogContentScope
 import dev.petuska.kmdc.dialog.onClosed
 import dev.petuska.kmdc.switch.MDCSwitch
 import dev.petuska.kmdcx.icons.MDCIcon
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
+import showdown.web.common.H2
 import showdown.web.common.IconButton
 import showdown.web.common.JKRaisedButton
 import showdown.web.common.JKTextField
@@ -107,9 +109,7 @@ fun SettingsDialog(settingsViewModel: SettingsViewModel, onClose: () -> Unit) {
             }
 
             Hr {}
-            H2 {
-                Text("Room Password Settings")
-            }
+            H2("Room Password Settings")
 
             Div {
                 JKTextField(value = roomPassword, label = Strings.SET_ROOM_PW, onTextChange = {
@@ -133,9 +133,7 @@ fun SettingsDialog(settingsViewModel: SettingsViewModel, onClose: () -> Unit) {
 
             Hr {}
 
-            H2 {
-                Text("About")
-            }
+            H2("About")
 
             Div {
                 A(href = SHOWDOWN_ISSUES_URL) {
@@ -154,3 +152,4 @@ fun SettingsDialog(settingsViewModel: SettingsViewModel, onClose: () -> Unit) {
 
     }
 }
+
