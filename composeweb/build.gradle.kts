@@ -10,7 +10,7 @@ group "com.example"
 version "1.0-SNAPSHOT"
 
 
-val kmdcVersion = "0.0.4"
+val kmdcVersion = "0.0.5"
 
 kotlin {
     js(IR) {
@@ -26,11 +26,7 @@ kotlin {
         binaries.executable()
     }
     sourceSets {
-        val commonMain by getting {
-            dependencies {
 
-            }
-        }
         val jsMain by getting {
             dependencies {
                 implementation(project(":shared"))
@@ -39,13 +35,15 @@ kotlin {
 
                 implementation("com.badoo.reaktive:reaktive-js:1.2.2")
 
-                implementation("app.softwork:routing-compose:0.2.4")
+                implementation("app.softwork:routing-compose:0.2.7")
               //  implementation("dev.petuska:kmdc:0.0.4")
                 implementation("dev.petuska:kmdc-button-js:$kmdcVersion")
                 implementation("dev.petuska:kmdc-checkbox-js:$kmdcVersion")
                 implementation("dev.petuska:kmdc-switch-js:$kmdcVersion")
 
                 implementation("dev.petuska:kmdc-list-js:$kmdcVersion")
+                implementation("dev.petuska:kmdc-tooltip-js:$kmdcVersion")
+
                 implementation("dev.petuska:kmdc-snackbar-js:$kmdcVersion")
                 implementation("dev.petuska:kmdc-menu-js:$kmdcVersion")
                 implementation("dev.petuska:kmdc-textfield-js:$kmdcVersion")
@@ -74,6 +72,7 @@ kotlin {
 }
 
 rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
+    versions.webpackDevServer.version = "4.3.1"
     versions.webpackCli.version = "4.10.0"
 }
 

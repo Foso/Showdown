@@ -149,3 +149,17 @@ fun JKTextField(value: String, label: String? = null, onTextChange: (String) -> 
 }
 
 val jkBLue = rgb(63, 81, 181)
+
+
+@Composable fun H2(text:String) {
+    org.jetbrains.compose.web.dom.H2 {
+        Text(text)
+    }
+}
+
+
+@Composable fun H3(text:String) {
+    org.jetbrains.compose.web.dom.H3 {
+        Text(text)
+    }
+}

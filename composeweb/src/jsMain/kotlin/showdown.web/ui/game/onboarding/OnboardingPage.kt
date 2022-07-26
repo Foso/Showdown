@@ -2,10 +2,10 @@ package showdown.web.ui.game.onboarding
 
 
 import androidx.compose.runtime.*
-
-
 import kotlinx.browser.window
 import org.jetbrains.compose.web.dom.*
+import showdown.web.common.H2
+import showdown.web.common.H3
 import showdown.web.common.JKTextField
 import showdown.web.ui.Strings.Companion.SHOWDOWN
 import showdown.web.ui.Strings.Companion.SHOWDOWN_REPO_URL
@@ -23,13 +23,9 @@ fun OnboardingScreen() {
     H1 {
         Text("Showdown - Scrum Poker Web App")
     }
-    H2 {
-        Text("How to:")
-    }
+    H2("How to:")
 
-    H3 {
-        Text("1) Choose a room name and go to the room")
-    }
+    H3("1) Choose a room name and go to the room")
     Div {
 
         JKTextField(roomName, label = "Choose new room name", onTextChange = {
@@ -49,20 +45,16 @@ fun OnboardingScreen() {
 
         }
     }
-    H3 {
-        Text("2) Choose a voter name\n")
-    }
+    H3("2) Choose a voter name\n")
+
     Img("/web/img/joingame.png")
-    H3 {
-        Text("3) Share the room link")
-    }
-    H3 {
-        Text("4) Select an Option")
-    }
+    H3("3) Share the room link")
+
+    H3("4) Select an Option")
+
     Img("/web/img/option.png")
-    H3 {
-        Text("5) Click Show Votes to see the votes")
-    }
+    H3("5) Click Show Votes to see the votes")
+
     Img("/web/img/showvotes.png")
     Br {}
     Hr { }

@@ -20,7 +20,7 @@ public fun <T> rememberMutableStateOf(initial: T): MutableState<T> = remember { 
 fun DropdownMenu(label: String, menuItems: List<String>, onEntrySelected: (Int) -> Unit) {
     var open by rememberMutableStateOf(false)
 
-    var selectedId by mutableStateOf<Int>(0)
+    var selectedId by rememberMutableStateOf(0)
     var input by rememberMutableStateOf(menuItems[selectedId])
     MDCMenuSurfaceAnchor(attrs = {
         style {
@@ -32,6 +32,7 @@ fun DropdownMenu(label: String, menuItems: List<String>, onEntrySelected: (Int) 
             label = label,
             type = MDCTextFieldType.Outlined,
             attrs = {
+
                 onClick { open = true }
                 onInput {
                     input = it.value
