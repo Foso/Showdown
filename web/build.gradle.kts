@@ -1,78 +1,86 @@
-buildscript {
-
-    repositories {
-        mavenLocal()
-        google()
-        gradlePluginPortal()
-        mavenCentral()
-        maven("https://s01.oss.sonatype.org/content/repositories/releases")
-
-        maven("https://plugins.gradle.org/m2/")
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-
-
-    }
-}
+import org.jetbrains.compose.jetbrainsCompose
 
 plugins {
     kotlin("multiplatform")
-    id("kotlinx-serialization")
     id("org.jetbrains.compose")
+    id("kotlinx-serialization")
 }
 
+group "com.example"
+version "1.0-SNAPSHOT"
+
+
+val kmdcVersion = "0.0.5"
 
 kotlin {
-
-
     js(IR) {
-        binaries.executable()
-        useCommonJs()
         browser {
-
-        }
-
-    }
-
-
-    sourceSets {
-      val  commonMain by getting {
-            dependencies {
-
+            testTask {
+                testLogging.showStandardStreams = true
+                useKarma {
+                    useChromeHeadless()
+                    useFirefox()
+                }
             }
-
         }
+        binaries.executable()
+    }
+    sourceSets {
 
-       val  jsMain by getting{
-
+        val jsMain by getting {
             dependencies {
                 implementation(project(":shared"))
-                implementation("org.jetbrains.kotlinx:kotlinx-html-assembly:0.7.3")
-                implementation("com.badoo.reaktive:reaktive-js:1.2.1")
-                implementation(npm("react", "17.0.2"))
-                implementation(npm("@material-ui/core", "4.12.3"))
-                implementation(npm("core-js", "3.21.1"))
-                implementation(npm("react-qr-code", "2.0.3"))
-                implementation(npm("@material-ui/icons", "4.11.2"))
-                implementation(npm("inline-style-prefixer", "6.0.0"))
-                implementation(npm("uglifyjs-webpack-plugin", "2.2.0"))
+                implementation(compose.web.core)
+                implementation(compose.runtime)
+
+                implementation("com.badoo.reaktive:reaktive-js:1.2.2")
+
+                implementation("app.softwork:routing-compose:0.2.7")
+                implementation("dev.petuska:kmdc-button-js:$kmdcVersion")
+                implementation("dev.petuska:kmdc-checkbox-js:$kmdcVersion")
+                implementation("dev.petuska:kmdc-switch-js:$kmdcVersion")
+                implementation("dev.petuska:kmdc-list-js:$kmdcVersion")
+                implementation("dev.petuska:kmdc-tooltip-js:$kmdcVersion")
+                implementation("dev.petuska:kmdc-snackbar-js:$kmdcVersion")
+                implementation("dev.petuska:kmdc-menu-js:$kmdcVersion")
+                implementation("dev.petuska:kmdc-textfield-js:$kmdcVersion")
+                implementation("dev.petuska:kmdc-dialog-js:$kmdcVersion")
+                implementation("dev.petuska:kmdc-icon-button-js:$kmdcVersion")
+                implementation("dev.petuska:kmdcx:$kmdcVersion")
+               // implementation(npm("material-icons","^1.10.4"))
+                // SCSS dependencies
+                implementation(devNpm("style-loader", "3.3.1"))
+                implementation(devNpm("css-loader", "6.7.1"))
+                implementation(devNpm("sass-loader", "13.0.0"))
+                implementation(devNpm("sass", "1.52.1"))
+                implementation(devNpm("uglifyjs-webpack-plugin", "2.2.0"))
+
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
+            }
+        }
+        val jsTest by getting {
+            dependencies {
+                implementation(kotlin("test-js"))
             }
         }
     }
 }
 
-
-
-dependencies {
-    "jsMainImplementation"(enforcedPlatform("org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:0.0.1-pre.246-kotlin-1.5.30"))
-    "jsMainImplementation"("org.jetbrains.kotlin-wrappers:kotlin-react")
-    "jsMainImplementation"("org.jetbrains.kotlin-wrappers:kotlin-react-dom")
-    "jsMainImplementation"("org.jetbrains.kotlin-wrappers:kotlin-react-router-dom:5.2.0-pre.246-kotlin-1.5.30")
-    "jsMainImplementation"("org.jetbrains.kotlin-wrappers:kotlin-styled")
-    "jsMainImplementation" ("org.jetbrains.kotlin:kotlin-source-map-loader:1.3.72")
-    "jsMainImplementation"("org.jetbrains.kotlin-wrappers:kotlin-csstype:3.0.9-pre.246-kotlin-1.5.30")
-    "jsMainImplementation"("org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:0.20.0")
-    "jsMainImplementation"("net.subroh0508.kotlinmaterialui:core:0.7.0")
-    "jsMainImplementation"("net.subroh0508.kotlinmaterialui:lab:0.7.0")
-
-
+rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
+    versions.webpackDevServer.version = "4.3.1"
+    versions.webpackCli.version = "4.10.0"
 }
+
+task("prepareKotlinBuildScriptModel")  {}
+
+
+
+val appProject = project(":server")
+
+tasks.register<Copy>("deployToServerAssets") {
+    dependsOn("jsBrowserDistribution")
+    from("./build/distributions/web.js")
+    into("${appProject.projectDir}/src/main/resources/web")
+}
+
+
