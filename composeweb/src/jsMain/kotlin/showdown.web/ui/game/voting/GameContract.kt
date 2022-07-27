@@ -5,7 +5,7 @@ import de.jensklingenberg.showdown.model.Member
 import de.jensklingenberg.showdown.model.Result
 
 
-interface GameViewmodelITF {
+interface GameViewmodelItf {
     fun onCreate()
     fun onDestroy()
     fun joinGame(playerName: String, password: String = "", isSpectator: Boolean = false)

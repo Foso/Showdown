@@ -36,21 +36,16 @@ kotlin {
                 implementation("com.badoo.reaktive:reaktive-js:1.2.2")
 
                 implementation("app.softwork:routing-compose:0.2.7")
-              //  implementation("dev.petuska:kmdc:0.0.4")
                 implementation("dev.petuska:kmdc-button-js:$kmdcVersion")
                 implementation("dev.petuska:kmdc-checkbox-js:$kmdcVersion")
                 implementation("dev.petuska:kmdc-switch-js:$kmdcVersion")
-
                 implementation("dev.petuska:kmdc-list-js:$kmdcVersion")
                 implementation("dev.petuska:kmdc-tooltip-js:$kmdcVersion")
-
                 implementation("dev.petuska:kmdc-snackbar-js:$kmdcVersion")
                 implementation("dev.petuska:kmdc-menu-js:$kmdcVersion")
                 implementation("dev.petuska:kmdc-textfield-js:$kmdcVersion")
                 implementation("dev.petuska:kmdc-dialog-js:$kmdcVersion")
-
                 implementation("dev.petuska:kmdc-icon-button-js:$kmdcVersion")
-
                 implementation("dev.petuska:kmdcx:$kmdcVersion")
                // implementation(npm("material-icons","^1.10.4"))
                 // SCSS dependencies

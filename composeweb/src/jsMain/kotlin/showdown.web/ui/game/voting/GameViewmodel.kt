@@ -17,7 +17,7 @@ import showdown.web.game.GameDataSource
 
 class GameViewmodel(
     private val gameDataSource: GameDataSource = Application.gameDataSource
-) : GameViewmodelITF {
+) : GameViewmodelItf {
 
     override var isRoomPasswordNeeded: MutableState<Boolean> = mutableStateOf(false)
     override var isSpectator: MutableState<Boolean> = mutableStateOf(false)

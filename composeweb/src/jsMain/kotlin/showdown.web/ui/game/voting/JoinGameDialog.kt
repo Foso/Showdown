@@ -38,7 +38,7 @@ fun JoinGameDialog(onJoinClicked: (JoinGame) -> Unit) {
         Content {
 
             Div {
-                MDCCheckbox(isSpec, label = Strings.IMSPECTATOR, attrs = {
+                MDCCheckbox(isSpec, label = Strings.IM_SPECTATOR, attrs = {
                     onClick { isSpec = !isSpec }
                 })
             }

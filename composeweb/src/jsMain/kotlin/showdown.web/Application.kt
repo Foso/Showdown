@@ -19,7 +19,7 @@ class Application {
         private val gameApiHandler = GameApiClient()
         val gameDataSource: GameDataSource = GameRepository(gameApiHandler)
         const val PARAM_UNAME = "uname"
-        const val DEBUG = true
+        const val DEBUG = false
 
     }
 

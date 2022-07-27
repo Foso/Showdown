@@ -15,6 +15,7 @@ import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.HTMLElement
 import showdown.web.common.IconButton
 import showdown.web.ui.Strings
+import showdown.web.ui.Strings.Companion.RANDOM_BUTTON_TOOLTIP
 
 fun <T : HTMLElement> AttrsScope<T>.ariaDescribedBy(id: String) {
     attr("aria-describedby", id)
@@ -74,7 +75,7 @@ fun OptionsList(options: List<String>, selectedOption: Int, onSelectedVote: (Int
     onSelectedVote: (Int) -> Unit
 ) {
     val toolId = "tooltip_random"
-    MDCTooltip(toolId, text = "Select a random option")
+    MDCTooltip(toolId, text = RANDOM_BUTTON_TOOLTIP)
 
     MDCButton(type = MDCButtonType.Outlined, attrs = {
         ariaDescribedBy(toolId)

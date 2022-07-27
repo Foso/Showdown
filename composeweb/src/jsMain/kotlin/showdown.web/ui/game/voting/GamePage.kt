@@ -16,45 +16,42 @@ import showdown.web.ui.Strings
 import showdown.web.ui.Strings.Companion.CONNECTION_ERROR
 import showdown.web.ui.game.voting.toolbar.Toolbar
 
-fun getSpectators(members: List<Member>): List<Member> {
-    return members.filter { it.isSpectator }
-}
 
-fun getPlayers(members: List<Member>): List<Member> {
-    return members.filter { !it.isSpectator }
-}
 
 @Composable
-fun GameView(gameViewmodelITF: GameViewmodelITF) {
+fun GameView(gameViewmodelItf: GameViewmodelItf) {
 
+    fun getSpectators(members: List<Member>): List<Member> = members.filter { it.isSpectator }
+
+    fun getVoters(members: List<Member>): List<Member> = members.filter { !it.isSpectator }
 
     LaunchedEffect(Unit) {
-        gameViewmodelITF.onCreate()
+        gameViewmodelItf.onCreate()
     }
 
-    if (gameViewmodelITF.isRegistration.value) {
+    if (gameViewmodelItf.isRegistration.value) {
         val urlSearchParams = URLSearchParams(window.location.hash.substringAfter("?"))
 
         if (urlSearchParams.has(PARAM_UNAME)) {
             val uname = urlSearchParams.get(PARAM_UNAME) ?: ""
-            gameViewmodelITF.joinGame(uname)
-            gameViewmodelITF.onEntryPopupClosed()
+            gameViewmodelItf.joinGame(uname)
+            gameViewmodelItf.onEntryPopupClosed()
         } else {
             JoinGameDialog {
-                gameViewmodelITF.joinGame(it.playerName, it.roomPassword, it.isSpectator)
-                gameViewmodelITF.onEntryPopupClosed()
+                gameViewmodelItf.joinGame(it.playerName, it.roomPassword, it.isSpectator)
+                gameViewmodelItf.onEntryPopupClosed()
             }
         }
     }
-    if (gameViewmodelITF.isRoomPasswordNeeded.value) {
+    if (gameViewmodelItf.isRoomPasswordNeeded.value) {
         InsertPasswordDialog {
-            gameViewmodelITF.joinGame("", it)
+            gameViewmodelItf.joinGame("", it)
         }
     }
 
-    if (gameViewmodelITF.isConnectionError.value) {
+    if (gameViewmodelItf.isConnectionError.value) {
         ConnectionErrorSnackbar(CONNECTION_ERROR) {
-            gameViewmodelITF.onCreate()
+            gameViewmodelItf.onCreate()
         }
     }
 
@@ -65,8 +62,8 @@ fun GameView(gameViewmodelITF: GameViewmodelITF) {
         Br { }
         Br { }
 
-        OptionsList(gameViewmodelITF.options.value, gameViewmodelITF.selectedOption.value) { selectedIndex ->
-            gameViewmodelITF.onSelectedVote(selectedIndex)
+        OptionsList(gameViewmodelItf.options.value, gameViewmodelItf.selectedOption.value) { selectedIndex ->
+            gameViewmodelItf.onSelectedVote(selectedIndex)
         }
 
         HeightSpacer(40.px)
@@ -80,21 +77,21 @@ fun GameView(gameViewmodelITF: GameViewmodelITF) {
                 alignItems(AlignItems.Center)
             }
         }) {
-            MDCCheckbox(gameViewmodelITF.isSpectator.value, label = Strings.IMSPECTATOR, attrs = {
-                onClick { gameViewmodelITF.setSpectatorStatus(!gameViewmodelITF.isSpectator.value) }
+            MDCCheckbox(gameViewmodelItf.isSpectator.value, label = Strings.IM_SPECTATOR, attrs = {
+                onClick { gameViewmodelItf.setSpectatorStatus(!gameViewmodelItf.isSpectator.value) }
             })
 
         }
 
         Div {
-            if (gameViewmodelITF.results.value.isNotEmpty()) {
-                ResultsList(gameViewmodelITF.results.value)
+            if (gameViewmodelItf.results.value.isNotEmpty()) {
+                ResultsList(gameViewmodelItf.results.value)
             }
         }
 
-        VotersList(getPlayers(gameViewmodelITF.members.value))
+        VotersList(getVoters(gameViewmodelItf.members.value))
 
-        SpectatorsList(getSpectators(gameViewmodelITF.members.value))
+        SpectatorsList(getSpectators(gameViewmodelItf.members.value))
 
     }
 }

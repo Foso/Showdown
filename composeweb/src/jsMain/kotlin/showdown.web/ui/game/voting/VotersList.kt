@@ -17,6 +17,8 @@ import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.HTMLUListElement
 import showdown.web.common.IconButton
 import showdown.web.ui.Strings.Companion.CONNECTION_LOST
+import showdown.web.ui.Strings.Companion.VOTED
+import showdown.web.ui.Strings.Companion.WAITING_FOR
 
 @Composable
 fun VotersList(voters: List<Member>) {
@@ -39,12 +41,12 @@ fun VotersList(voters: List<Member>) {
                     }
                 }) {
                     H3 {
-                        Text("Waiting for:")
+                        Text(WAITING_FOR)
                     }
                 }
             }
 
-            voters.filter { !it.voted }.forEach {
+            votersNotVoted.forEach {
                 VotersListItem(it)
             }
 
@@ -56,11 +58,12 @@ fun VotersList(voters: List<Member>) {
                     }
                 }) {
                     H3 {
-                        Text("Voted:")
+                        Text(VOTED)
                     }
                 }
             }
-            voters.filter { it.voted }.forEach {
+
+            votersVoted.forEach {
                 VotersListItem(it)
             }
         }
