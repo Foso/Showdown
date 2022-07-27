@@ -4,12 +4,13 @@ import androidx.compose.runtime.Composable
 import de.jensklingenberg.showdown.model.Result
 import org.jetbrains.compose.web.dom.*
 import showdown.web.ui.Strings
+import showdown.web.ui.Strings.Companion.RESULT
 
 @Composable
 fun ResultsList(results: List<Result>) {
     Hr { }
     H2 {
-        Text("Result:")
+        Text(RESULT)
     }
 
     H2 {

@@ -3,7 +3,6 @@ package showdown.web.ui.game.voting.settings
 import androidx.compose.runtime.*
 import dev.petuska.kmdc.dialog.Content
 import dev.petuska.kmdc.dialog.MDCDialog
-import dev.petuska.kmdc.dialog.MDCDialogContentScope
 import dev.petuska.kmdc.dialog.onClosed
 import dev.petuska.kmdc.switch.MDCSwitch
 import dev.petuska.kmdcx.icons.MDCIcon
@@ -14,19 +13,19 @@ import showdown.web.common.IconButton
 import showdown.web.common.JKRaisedButton
 import showdown.web.common.JKTextField
 import showdown.web.ui.Strings
+import showdown.web.ui.Strings.Companion.SETTINGS_ABOUT
 import showdown.web.ui.Strings.Companion.CHANGE_MODE
+import showdown.web.ui.Strings.Companion.ROOM_PASSWORD_SETTINGS
 import showdown.web.ui.Strings.Companion.SETTINGS_GAMEMODE
 import showdown.web.ui.Strings.Companion.SHOWDOWN_ISSUES_URL
 import showdown.web.ui.Strings.Companion.SHOWDOWN_REPO_URL
 import showdown.web.ui.Strings.Companion.SHOWDOWN_VERSION
 
-val gameModeOptions: List<Pair<String, Int>>
-    get() = listOf(
+val gameModeOptions: List<Pair<String, Int>> = listOf(
         "Fibonacci" to 0,
         "T-Shirt" to 1,
         "Modified Fibonacci" to 2,
         "Power of 2" to 3,
-
         "Custom" to 4
     )
 
@@ -109,7 +108,8 @@ fun SettingsDialog(settingsViewModel: SettingsViewModel, onClose: () -> Unit) {
             }
 
             Hr {}
-            H2("Room Password Settings")
+
+            H2(ROOM_PASSWORD_SETTINGS)
 
             Div {
                 JKTextField(value = roomPassword, label = Strings.SET_ROOM_PW, onTextChange = {
@@ -133,7 +133,7 @@ fun SettingsDialog(settingsViewModel: SettingsViewModel, onClose: () -> Unit) {
 
             Hr {}
 
-            H2("About")
+            H2(SETTINGS_ABOUT)
 
             Div {
                 A(href = SHOWDOWN_ISSUES_URL) {

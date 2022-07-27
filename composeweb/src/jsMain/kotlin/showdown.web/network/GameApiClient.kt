@@ -7,6 +7,7 @@ import kotlinx.serialization.json.Json
 import org.w3c.dom.MessageEvent
 import org.w3c.dom.WebSocket
 import org.w3c.dom.events.Event
+import showdown.web.ui.Strings.Companion.NO_CONNECTION
 
 class GameApiClient {
 
@@ -28,7 +29,7 @@ class GameApiClient {
 
             onerror = {
                 observer.onError(ShowdownError.NoConnectionError)
-                emitter.onError(Throwable("No Connection"))
+                emitter.onError(Throwable(NO_CONNECTION))
             }
             onclose = {
                 observer.onError(ShowdownError.NoConnectionError)
