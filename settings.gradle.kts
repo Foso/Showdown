@@ -26,5 +26,5 @@ buildscript {
 rootProject.name = "showdown"
 
 include(":server")
-include(":composeweb")
+include(":web")
 include(":shared")

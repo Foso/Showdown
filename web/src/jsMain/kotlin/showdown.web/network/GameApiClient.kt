@@ -1,18 +1,13 @@
 package showdown.web.network
 
 import com.badoo.reaktive.completable.completable
-import de.jensklingenberg.showdown.model.ClientGameConfig
-import de.jensklingenberg.showdown.model.GameState
-import de.jensklingenberg.showdown.model.PATHS
-import de.jensklingenberg.showdown.model.Response
-
-import de.jensklingenberg.showdown.model.ShowdownError
-
+import de.jensklingenberg.showdown.model.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.w3c.dom.MessageEvent
 import org.w3c.dom.WebSocket
 import org.w3c.dom.events.Event
+import showdown.web.ui.Strings.Companion.NO_CONNECTION
 
 class GameApiClient {
 
@@ -34,7 +29,7 @@ class GameApiClient {
 
             onerror = {
                 observer.onError(ShowdownError.NoConnectionError)
-                emitter.onError(Throwable("No Connection"))
+                emitter.onError(Throwable(NO_CONNECTION))
             }
             onclose = {
                 observer.onError(ShowdownError.NoConnectionError)
