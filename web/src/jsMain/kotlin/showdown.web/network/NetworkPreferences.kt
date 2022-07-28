@@ -8,7 +8,7 @@ class NetworkPreferences {
     /**
     Change the testingAddress to the IP of your server
      */
-    private val localIP = "192.168.178.56"
+    private val localIP = "192.168.178.20"
     var hostUri: String = "${window.location}"
 
     private val hostname = when {

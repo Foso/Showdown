@@ -58,7 +58,9 @@ class ShowdownApplication {
             // This enables the use of sessions to keep information between requests/refreshes of the browser.
 
             install(Sessions) {
-                cookie<Session>("SESSION")
+                cookie<Session>("SESSION"){
+                    cookie.extensions["SameSite"] = "lax"
+                }
             }
 
             // This adds an interceptor that will create a specific session in each request if no session is available already.
@@ -90,6 +92,7 @@ class ShowdownApplication {
 
                 webSocket("showdown") {
                     val roomName = call.parameters["room"]?.substringBeforeLast("?") ?: ""
+
                     val password = call.parameters["pw"] ?: ""
                     val session = call.sessions.get<Session>()
 

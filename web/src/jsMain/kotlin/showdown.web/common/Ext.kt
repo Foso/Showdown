@@ -1,5 +1,5 @@
 package showdown.web.common
 
-fun Any.stringify(): String {
-    return JSON.stringify(this)
-}
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+
