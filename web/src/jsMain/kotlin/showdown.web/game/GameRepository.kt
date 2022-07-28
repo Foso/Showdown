@@ -8,7 +8,6 @@ import de.jensklingenberg.showdown.model.api.clientrequest.JoinGame
 import de.jensklingenberg.showdown.model.api.clientrequest.NewGameConfig
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import showdown.web.common.stringify
 import showdown.web.network.GameApiClient
 import showdown.web.network.NetworkApiObserver
 
@@ -29,22 +28,23 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
     }
 
     override fun showVotes() {
-        val req = Request(PATHS.SHOWVOTES.path).stringify()
+        val req = Json.encodeToString(Request(PATHS.SHOWVOTES.path))
         gameApiClient.sendMessage(req)
     }
 
     override fun onSelectedVote(voteId: Int) {
-        val req = Request(PATHS.VOTEPATH.path, voteId.toString()).stringify()
+        val req = Json.encodeToString(Request(PATHS.VOTEPATH.path, voteId.toString()))
         gameApiClient.sendMessage(req)
     }
 
     override fun changeConfig(newGameConfig: NewGameConfig) {
-        val req = Request(PATHS.ROOMCONFIGUPDATE.path, newGameConfig.stringify()).stringify()
+        val req =
+            Json.encodeToString(Request(PATHS.ROOMCONFIGUPDATE.path, Json.encodeToString(newGameConfig)))
         gameApiClient.sendMessage(req)
     }
 
     override fun changeRoomPassword(password: String) {
-        val req = Request(PATHS.SETROOMPASSSWORDPATH.path, password).stringify()
+        val req = Json.encodeToString(Request(PATHS.SETROOMPASSSWORDPATH.path, password))
         gameApiClient.sendMessage(req)
     }
 
@@ -57,17 +57,17 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
     }
 
     override fun setAutoReveal(enabled: Boolean) {
-        val req = Request(PATHS.SETAUTOREVEALPATH.path, enabled.stringify()).stringify()
+        val req = Json.encodeToString(Request(PATHS.SETAUTOREVEALPATH.path, Json.encodeToString(enabled)))
         gameApiClient.sendMessage(req)
     }
 
     override fun setSpectatorStatus(enabled: Boolean) {
-        val req = Request(PATHS.SPECTATORPATH.path, enabled.stringify()).stringify()
+        val req = Json.encodeToString(Request(PATHS.SPECTATORPATH.path, Json.encodeToString(enabled)))
         gameApiClient.sendMessage(req)
     }
 
     override fun setAnonymVote(enabled: Boolean) {
-        val req = Request(PATHS.SETANONYMVOTES.path, enabled.stringify()).stringify()
+        val req = Json.encodeToString(Request(PATHS.SETANONYMVOTES.path, Json.encodeToString(enabled)))
         gameApiClient.sendMessage(req)
     }
 
@@ -86,22 +86,19 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
         playerName = name
         roomPassword = password
         val req = Request(
-            PATHS.JOINROOM.path, JoinGame(
+            PATHS.JOINROOM.path, Json.encodeToString(JoinGame(
                 name,
                 password,
                 isSpectator
-            ).stringify()
+            ))
         )
 
-        gameApiClient.sendMessage(JSON.stringify(req))
+        gameApiClient.sendMessage(Json.encodeToString(req))
     }
 
-    private fun Request.encodeToString(): String {
-        return Json.encodeToString(this)
-    }
 
     override fun requestReset() {
-        val req = Request(PATHS.RESTARTPATH.path, "").encodeToString()
+        val req = Json.encodeToString(Request(PATHS.RESTARTPATH.path, ""))
         gameApiClient.sendMessage(req)
     }
 
