@@ -30,7 +30,7 @@ fun Moshi.toJson(any: Any): String {
 
 inline fun <reified T> fromJson(json: String): T? {
     //TODO clean json
-    val js = json.replace("\"_", "\"").replace("_0", "")
+    val js = json.replace("\"_", "\"").replace("_0", "").replace("_1", "")
     val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
     val jsonAdapter: JsonAdapter<T> = moshi.adapter(T::class.java)
 

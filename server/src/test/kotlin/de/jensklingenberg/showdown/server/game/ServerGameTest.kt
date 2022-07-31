@@ -1,11 +1,12 @@
 package de.jensklingenberg.showdown.server.game
 
 import com.nhaarman.mockitokotlin2.anyOrNull
-import com.nhaarman.mockitokotlin2.atLeastOnce
 import com.nhaarman.mockitokotlin2.eq
 import com.soywiz.klock.DateTime
 import com.squareup.moshi.Moshi
-import de.jensklingenberg.showdown.model.*
+import de.jensklingenberg.showdown.model.PATHS
+import de.jensklingenberg.showdown.model.Response
+import de.jensklingenberg.showdown.model.fibo
 import de.jensklingenberg.showdown.server.common.toJson
 import de.jensklingenberg.showdown.server.model.Player
 import de.jensklingenberg.showdown.server.model.Room
@@ -52,7 +53,7 @@ class ServerGameTest {
         game.playerJoined(player1)
         game.onSpectate(player1.sessionId, true)
 
-       // Mockito.verify(mockServer, atLeastOnce()).sendData(eq(player1.sessionId), eq(response.toJson()))
+        // Mockito.verify(mockServer, atLeastOnce()).sendData(eq(player1.sessionId), eq(response.toJson()))
     }
 
     @Test

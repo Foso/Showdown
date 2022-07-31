@@ -1,19 +1,21 @@
 package de.jensklingenberg.showdown.server.server
 
+
 import de.jensklingenberg.showdown.debugPort
 import de.jensklingenberg.showdown.server.model.Room
 import de.jensklingenberg.showdown.server.model.Session
-import io.ktor.application.*
-import io.ktor.features.*
-import io.ktor.gson.*
-import io.ktor.http.cio.websocket.*
-import io.ktor.http.content.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
+import io.ktor.serialization.gson.*
+import io.ktor.server.application.*
 import io.ktor.server.engine.*
+import io.ktor.server.http.content.*
 import io.ktor.server.netty.*
-import io.ktor.sessions.*
+import io.ktor.server.plugins.compression.*
+import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import io.ktor.server.sessions.*
+import io.ktor.server.websocket.*
 import io.ktor.util.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.channels.consumeEach
@@ -38,6 +40,8 @@ class ShowdownApplication {
 
 
         embeddedServer(Netty, port = port) {
+
+
             install(Compression) {
                 gzip()
             }
@@ -54,7 +58,9 @@ class ShowdownApplication {
             // This enables the use of sessions to keep information between requests/refreshes of the browser.
 
             install(Sessions) {
-                cookie<Session>("SESSION")
+                cookie<Session>("SESSION"){
+                    cookie.extensions["SameSite"] = "lax"
+                }
             }
 
             // This adds an interceptor that will create a specific session in each request if no session is available already.
@@ -86,6 +92,7 @@ class ShowdownApplication {
 
                 webSocket("showdown") {
                     val roomName = call.parameters["room"]?.substringBeforeLast("?") ?: ""
+
                     val password = call.parameters["pw"] ?: ""
                     val session = call.sessions.get<Session>()
 

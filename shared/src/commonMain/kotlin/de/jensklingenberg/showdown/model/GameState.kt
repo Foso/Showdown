@@ -1,6 +1,5 @@
 package de.jensklingenberg.showdown.model
 
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -30,7 +29,6 @@ sealed class GameState {
 private val json = Json { allowStructuredMapKeys = true }
 
 
-@OptIn(ExperimentalSerializationApi::class)
 fun GameState.toJson(): String {
     return json.encodeToString(this)
 }
