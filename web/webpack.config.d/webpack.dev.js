@@ -1,4 +1,3 @@
-
 // dev server
 config.devServer = {
     ...config.devServer || {},

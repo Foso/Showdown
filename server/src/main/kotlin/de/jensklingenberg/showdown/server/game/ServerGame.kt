@@ -4,14 +4,8 @@ package de.jensklingenberg.showdown.server.game
 import com.soywiz.klock.DateTime
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import de.jensklingenberg.showdown.model.ClientGameConfig
-import de.jensklingenberg.showdown.model.GameState
-import de.jensklingenberg.showdown.model.Member
-import de.jensklingenberg.showdown.model.PATHS
-import de.jensklingenberg.showdown.model.Response
-import de.jensklingenberg.showdown.model.Result
+import de.jensklingenberg.showdown.model.*
 import de.jensklingenberg.showdown.model.api.clientrequest.NewGameConfig
-import de.jensklingenberg.showdown.model.toJson
 import de.jensklingenberg.showdown.server.common.toJson
 import de.jensklingenberg.showdown.server.model.Player
 import de.jensklingenberg.showdown.server.model.ServerConfig
@@ -156,6 +150,7 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
     }
 
     fun onPlayerVoted(sessionId: String, voteId: Int) {
+        if (voteId >= gameConfig.voteOptions.size) return
         if (gameState is GameState.ShowVotes) return
         if (spectatorIds.any { it == sessionId }) return
 
@@ -234,7 +229,6 @@ class ServerGame(private val server: GameServer, var gameConfig: ServerConfig) {
 
     private fun sendGameStateChanged(sessionId: String, gameState: GameState) {
         val res = Response(PATHS.STATECHANGED.path, gameState.toJson())
-        //val json = ServerResponse.GameStateChanged(gameState).toJson()
         server.sendData(sessionId, moshi.toJson(res))
     }
 
