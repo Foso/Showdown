@@ -47,13 +47,12 @@ kotlin {
                 implementation("dev.petuska:kmdc-dialog-js:$kmdcVersion")
                 implementation("dev.petuska:kmdc-icon-button-js:$kmdcVersion")
                 implementation("dev.petuska:kmdcx:$kmdcVersion")
-               // implementation(npm("material-icons","^1.10.4"))
+
                 // SCSS dependencies
                 implementation(devNpm("style-loader", "3.3.1"))
                 implementation(devNpm("css-loader", "6.7.1"))
-                implementation(devNpm("sass-loader", "13.0.0"))
+                implementation(devNpm("sass-loader", "13.0.2"))
                 implementation(devNpm("sass", "1.52.1"))
-                implementation(devNpm("uglifyjs-webpack-plugin", "2.2.0"))
 
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
             }
