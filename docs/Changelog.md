@@ -1,3 +1,7 @@
+v1.4
+==============================
+Migrate frontend from Kotlin React to Compose for Web
+
 v1.3.1
 ==============================
 Fix for connection errors
