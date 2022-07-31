@@ -37,14 +37,14 @@ Showdown is a selfhosted web app and server, you can use for planning poker™. 
 
 ## 🛠️ Built With
 ### Kotlin
-[![jCenter](https://img.shields.io/badge/Kotlin-1.6.10-green.svg
+[![jCenter](https://img.shields.io/badge/Kotlin-1.7.10-green.svg
 )]()
 
 
 
 ### Project Structure
 * <kbd>server</kbd> - A Ktor project with the server for Showdown
-* <kbd>web</kbd> - The frontend of Showdown, written with Kotlin and Kotlin React
+* <kbd>web</kbd> - The frontend of Showdown, written with Kotlin and Compose for Web
 * <kbd>shared</kbd> - Shared module for <kbd>server and web</kbd>, which contains specific classes/interfaces like Error types or responses
 
 # Development
