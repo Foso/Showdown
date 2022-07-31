@@ -14,7 +14,7 @@ class Strings {
         const val SHOWDOWN = "Showdown"
         const val SHOWDOWN_REPO_URL = "https://github.com/Foso/Showdown"
         const val SHOWDOWN_ISSUES_URL = "$SHOWDOWN_REPO_URL/issues"
-        const val SHOWDOWN_VERSION = "1.3.3"
+        const val SHOWDOWN_VERSION = "1.4.0"
         const val TOP_VOTED_ANSWER: String = "Top Voted Answer:"
         const val VOTED = "Voted:"
         const val WAITING_FOR = "Waiting for:"
