@@ -81,7 +81,7 @@ private fun MDCListScope<HTMLUListElement>.VotersListItem(it: Member) {
         Text(it.playerName)
 
         if (!it.isConnected) {
-            Text(CONNECTION_LOST)
+            Text(" $CONNECTION_LOST")
         }
     }
     Divider { }

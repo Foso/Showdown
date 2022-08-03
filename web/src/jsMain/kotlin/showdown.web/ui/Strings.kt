@@ -4,7 +4,7 @@ class Strings {
     companion object {
         const val anonym: String = "anonymize vote results"
         const val CONNECTION_ERROR = "You are not connected to the server"
-        const val CONNECTION_LOST = "Connection lost"
+        const val CONNECTION_LOST = "(Connection lost)"
         const val IM_SPECTATOR = "I'm a spectator"
         const val INSERT_NAME: String = "Insert a name"
         const val JOIN_GAME = "Join Game"
