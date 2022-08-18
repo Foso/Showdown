@@ -3,7 +3,7 @@ buildscript {
 }
 buildscript {
     ext.kotlin_version = '1.7.10'
-    ext.ktor_version = '2.0.3'
+    ext.ktor_version = '2.1.0'
 
     repositories {
         mavenCentral()
