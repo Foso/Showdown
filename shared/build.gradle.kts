@@ -43,7 +43,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
 
-                implementation ("org.jetbrains.kotlinx:kotlinx-serialization-core:1.4.0")
+                implementation ("org.jetbrains.kotlinx:kotlinx-serialization-core:1.4.1")
                 implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
             }
         }
