@@ -1,5 +1,6 @@
 name: Deploy to Fly
-on: [push]
+on:
+    workflow_dispatch:
 jobs:
   deploy:
     name: Deploy proxy
