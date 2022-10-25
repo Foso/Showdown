@@ -1,5 +1,5 @@
 ## Image for build
-FROM gradle:6.7.1-jdk11 as builder
+FROM gradle:7.5.1-jdk11 as builder
 ARG GRADLE_OPTS="-Dorg.gradle.daemon=false ${GRADLE_OPTS}"
 WORKDIR /app
 COPY . .
