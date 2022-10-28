@@ -6,6 +6,7 @@ import de.jensklingenberg.showdown.server.model.Room
 import de.jensklingenberg.showdown.server.model.Session
 import io.ktor.serialization.gson.*
 import io.ktor.server.application.*
+import io.ktor.server.application.ApplicationCallPipeline.ApplicationPhase.Plugins
 import io.ktor.server.engine.*
 import io.ktor.server.http.content.*
 import io.ktor.server.netty.*
@@ -64,7 +65,7 @@ class ShowdownApplication {
             }
 
             // This adds an interceptor that will create a specific session in each request if no session is available already.
-            intercept(ApplicationCallPipeline.Features) {
+            intercept(Plugins) {
                 if (call.sessions.get<Session>() == null) {
                     call.sessions.set(Session(generateNonce()))
                 }
