@@ -25,6 +25,7 @@ fun VotersList(voters: List<Member>) {
     Div {
 
         H2 {
+
             IconButton(MDCIcon.Group) {}
             Text("Voters (${voters.size}) ")
         }
@@ -58,7 +59,7 @@ fun VotersList(voters: List<Member>) {
                     }
                 }) {
                     H3 {
-                        Text(VOTED)
+                        Text("100%".takeIf { voters.all { it.voted } }+VOTED)
                     }
                 }
             }
