@@ -6,8 +6,10 @@ import de.jensklingenberg.showdown.model.Member
 import dev.petuska.kmdc.checkbox.MDCCheckbox
 import kotlinx.browser.window
 import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.Br
 import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.url.URLSearchParams
 import showdown.web.Application.Companion.PARAM_UNAME
 import showdown.web.common.ConnectionErrorSnackbar
@@ -64,6 +66,12 @@ fun GameView(gameViewmodelItf: GameViewmodelItf) {
 
         OptionsList(gameViewmodelItf.options.value, gameViewmodelItf.selectedOption.value) { selectedIndex ->
             gameViewmodelItf.onSelectedVote(selectedIndex)
+        }
+
+        Div {
+            A(href = "https://showdown.fly.dev"){
+                Text("Please use showdown.fly.dev instead of this page, this page will be not available after 28.11.2022 ")
+            }
         }
 
         HeightSpacer(40.px)
