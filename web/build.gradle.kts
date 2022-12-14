@@ -54,7 +54,7 @@ kotlin {
                 implementation(devNpm("sass-loader", "13.0.2"))
                 implementation(devNpm("sass", "1.52.1"))
 
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
             }
         }
         val jsTest by getting {

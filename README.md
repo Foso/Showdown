@@ -37,7 +37,7 @@ Showdown is a selfhosted web app and server, you can use for planning poker™. 
 
 ## 🛠️ Built With
 ### Kotlin
-[![jCenter](https://img.shields.io/badge/Kotlin-1.7.10-green.svg
+[![jCenter](https://img.shields.io/badge/Kotlin-1.7.20-green.svg
 )]()
 
 

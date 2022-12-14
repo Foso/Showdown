@@ -19,7 +19,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-serialization:1.7.10")
+        classpath("org.jetbrains.kotlin:kotlin-serialization:1.7.20")
     }
 }
 

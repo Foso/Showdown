@@ -2,7 +2,7 @@ buildscript {
     apply from: './constants.gradle'
 }
 buildscript {
-    ext.kotlin_version = '1.7.10'
+    ext.kotlin_version = '1.7.20'
     ext.ktor_version = '2.2.1'
 
     repositories {
