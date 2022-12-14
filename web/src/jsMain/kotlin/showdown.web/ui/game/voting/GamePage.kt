@@ -70,12 +70,6 @@ fun GameView(gameViewmodelItf: GameViewmodelItf) {
             gameViewmodelItf.onSelectedVote(selectedIndex)
         }
 
-        Div {
-            A(href = "https://showdown.fly.dev"){
-                Text("Please use showdown.fly.dev instead of this page, this page will be not available after 28.11.2022 ")
-            }
-        }
-
         HeightSpacer(40.px)
         Div(attrs = {
             onClick {
