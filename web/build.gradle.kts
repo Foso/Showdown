@@ -6,7 +6,7 @@ plugins {
     id("kotlinx-serialization")
 }
 
-group "com.example"
+group "de.jensklingenberg"
 version "1.0-SNAPSHOT"
 
 

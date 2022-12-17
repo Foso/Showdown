@@ -6,16 +6,17 @@ import de.jensklingenberg.showdown.model.ClientGameConfig
 import de.jensklingenberg.showdown.model.GameState
 import de.jensklingenberg.showdown.model.ShowdownError
 import de.jensklingenberg.showdown.model.api.clientrequest.NewGameConfig
+import kotlinx.coroutines.flow.StateFlow
 
 interface GameDataSource {
     fun connectToServer(): Completable
     fun joinRoom(name: String, password: String, isSpectator: Boolean)
-    fun observeGameState(): Observable<GameState>
-    fun observeMessage(): Observable<String>
-    fun observeRoomConfig(): Observable<ClientGameConfig?>
-    fun observeSpectatorStatus(): Observable<Boolean>
+    fun observeGameState(): StateFlow<GameState>
+    fun observeMessage(): StateFlow<String>
+    fun observeRoomConfig(): StateFlow<ClientGameConfig?>
+    fun observeSpectatorStatus(): StateFlow<Boolean>
     fun requestReset()
-    fun observeErrors(): Observable<ShowdownError?>
+    fun observeErrors(): StateFlow<ShowdownError?>
     fun showVotes()
     fun onSelectedVote(voteId: Int)
     fun changeConfig(newGameConfig: NewGameConfig)

@@ -6,10 +6,14 @@ import com.badoo.reaktive.completable.subscribe
 import com.badoo.reaktive.disposable.CompositeDisposable
 import com.badoo.reaktive.disposable.addTo
 import com.badoo.reaktive.observable.subscribe
+import com.badoo.reaktive.observable.toObservable
 import de.jensklingenberg.showdown.model.GameState
 import de.jensklingenberg.showdown.model.Member
 import de.jensklingenberg.showdown.model.Result
 import de.jensklingenberg.showdown.model.ShowdownError
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import showdown.web.Application
 import showdown.web.debugLog
 import showdown.web.game.GameDataSource
@@ -18,6 +22,7 @@ import showdown.web.game.GameDataSource
 class GameViewmodel(
     private val gameDataSource: GameDataSource = Application.gameDataSource
 ) : GameViewmodelItf {
+    private val scope = MainScope()
 
     override var isRoomPasswordNeeded: MutableState<Boolean> = mutableStateOf(false)
     override var isSpectator: MutableState<Boolean> = mutableStateOf(false)
@@ -42,57 +47,69 @@ class GameViewmodel(
     }
 
     private fun observeSpectatorStatus() {
-        gameDataSource.observeSpectatorStatus().subscribe(onNext = {
-            isSpectator.value = it
-        }).addTo(compositeDisposable)
+        scope.launch {
+            gameDataSource.observeSpectatorStatus().collect{
+                isSpectator.value = it
+            }
+        }
+
     }
 
     private fun observeGameState() {
-        gameDataSource.observeGameState().subscribe(onNext = { newState ->
-            isConnectionError.value = false
-            when (newState) {
-                GameState.NotStarted -> {}
-                is GameState.PlayerListUpdate -> {
-                    members.value = newState.members
+
+        scope.launch {
+            gameDataSource.observeGameState().collect { newState->
+                isConnectionError.value = false
+                when (newState) {
+                    GameState.NotStarted -> {}
+                    is GameState.PlayerListUpdate -> {
+                        members.value = newState.members
+                    }
+                    is GameState.Started -> {
+                        val config = newState.clientGameConfig
+                        selectedOption.value = -1
+                        options.value = config.voteOptions
+                        results.value = emptyList()
+
+                        isRoomPasswordNeeded.value = false
+
+                    }
+
+                    is GameState.ShowVotes -> {
+                        results.value = newState.results
+                    }
+
                 }
-                is GameState.Started -> {
-                    val config = newState.clientGameConfig
-                    selectedOption.value = -1
-                    options.value = config.voteOptions
-                    results.value = emptyList()
-
-                    this.isRoomPasswordNeeded.value = false
-
-                }
-
-                is GameState.ShowVotes -> {
-                    results.value = newState.results
-                }
-
             }
-        }).addTo(compositeDisposable)
+        }
+
     }
 
 
     private fun observeMessage() {
-        gameDataSource.observeMessage().subscribe(onNext = {
-            // view.showInfoPopup(it) //TODO:
-        }).addTo(compositeDisposable)
+       scope.launch {
+           gameDataSource.observeMessage().collect{
+               // view.showInfoPopup(it) //TODO:
+           }
+       }
     }
 
     private fun observeErrors() {
-        gameDataSource.observeErrors().subscribe(onNext = { error ->
-            when (error) {
-                ShowdownError.NotAuthorizedError -> {
-                    this.isRoomPasswordNeeded.value = true
+
+        scope.launch {
+            gameDataSource.observeErrors().collect{ error ->
+                when (error) {
+                    ShowdownError.NotAuthorizedError -> {
+                        isRoomPasswordNeeded.value = true
+                    }
+                    ShowdownError.NoConnectionError -> {
+                        debugLog("No Connection")
+                        isConnectionError.value = true
+                    }
+                    else -> {}
                 }
-                ShowdownError.NoConnectionError -> {
-                    debugLog("No Connection")
-                    this.isConnectionError.value = true
-                }
-                else -> {}
             }
-        }).addTo(compositeDisposable)
+        }
     }
 
     private fun connectToServer(playerName: String, password: String, isSpectator: Boolean) {

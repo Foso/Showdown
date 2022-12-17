@@ -51,7 +51,7 @@ class ShowdownServer : GameServer {
         // We could also control how many sockets we would allow per client here before appending it.
         // But since this is a sample we are not doing it.
         //if (members.any() { it.key == memberId }) return
-        val socketList = members.computeIfAbsent(memberId) { CopyOnWriteArrayList<WebSocketSession>() }
+        val socketList = members.computeIfAbsent(memberId) { CopyOnWriteArrayList() }
         socketList.add(socket)
 
     }

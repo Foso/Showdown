@@ -19,7 +19,7 @@ plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 version '1.3-SNAPSHOT'
-group 'ges.example'
+group 'de.jensklingenberg'
 
 apply plugin: 'application'
 

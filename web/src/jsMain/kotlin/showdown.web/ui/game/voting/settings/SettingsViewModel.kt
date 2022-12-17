@@ -8,19 +8,24 @@ import de.jensklingenberg.showdown.model.fibo
 import de.jensklingenberg.showdown.model.modFibo
 import de.jensklingenberg.showdown.model.powerOf2
 import de.jensklingenberg.showdown.model.tshirtSizesList
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import showdown.web.Application
 import showdown.web.game.GameDataSource
 
 class SettingsViewModel(private val gameDataSource: GameDataSource = Application.gameDataSource) {
     var isAnonymResults: MutableState<Boolean> = mutableStateOf(false)
     var autoRevealEnabled: MutableState<Boolean> = mutableStateOf(false)
+    private val scope = MainScope()
 
 
     fun onCreate() {
-        gameDataSource.observeRoomConfig().subscribe {
-            it?.let {
-                autoRevealEnabled.value = it.autoReveal
-                isAnonymResults.value = it.anonymResults
+        scope.launch {
+            gameDataSource.observeRoomConfig().collect() {
+                it?.let {
+                    autoRevealEnabled.value = it.autoReveal
+                    isAnonymResults.value = it.anonymResults
+                }
             }
         }
     }
