@@ -30,6 +30,7 @@ class GameApiClient {
             onerror = {
                 observer.onError(ShowdownError.NoConnectionError)
                 emitter.onError(Throwable(NO_CONNECTION))
+                throw Throwable(NO_CONNECTION)
             }
             onclose = {
                 observer.onError(ShowdownError.NoConnectionError)

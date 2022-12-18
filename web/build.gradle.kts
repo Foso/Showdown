@@ -6,10 +6,6 @@ plugins {
     id("kotlinx-serialization")
 }
 
-group "de.jensklingenberg"
-version "1.0-SNAPSHOT"
-
-
 val kmdcVersion = "0.0.5"
 
 kotlin {

@@ -1,7 +1,6 @@
 package showdown.web.game
 
 import com.badoo.reaktive.completable.Completable
-import com.badoo.reaktive.observable.Observable
 import de.jensklingenberg.showdown.model.ClientGameConfig
 import de.jensklingenberg.showdown.model.GameState
 import de.jensklingenberg.showdown.model.ShowdownError

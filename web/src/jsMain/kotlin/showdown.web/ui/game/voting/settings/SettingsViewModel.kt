@@ -2,7 +2,6 @@ package showdown.web.ui.game.voting.settings
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import com.badoo.reaktive.observable.subscribe
 import de.jensklingenberg.showdown.model.api.clientrequest.NewGameConfig
 import de.jensklingenberg.showdown.model.fibo
 import de.jensklingenberg.showdown.model.modFibo

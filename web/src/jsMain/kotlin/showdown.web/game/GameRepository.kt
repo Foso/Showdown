@@ -14,7 +14,7 @@ import showdown.web.network.NetworkApiObserver
 
 
 class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource, NetworkApiObserver {
-    private val gameStateSubject: BehaviorSubject<GameState> = BehaviorSubject(GameState.NotStarted)
+
     private val gameStateFlow = MutableStateFlow<GameState>(GameState.NotStarted)
     private val errorSubject: BehaviorSubject<ShowdownError?> = BehaviorSubject(null)
     private val errorFlow = MutableStateFlow<ShowdownError?>(null)
@@ -26,7 +26,7 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
     private val configUpdateFlow = MutableStateFlow<ClientGameConfig?>(null)
 
     //   private val spectatorStatusSubject: BehaviorSubject<Boolean> = BehaviorSubject(false)
-    private val spectatorStatusFlow = MutableStateFlow<Boolean>(false)
+    private val spectatorStatusFlow = MutableStateFlow(false)
 
     private var playerName: String = ""
     private var roomPassword: String = ""
@@ -116,7 +116,6 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
 
 
     override fun onGameStateChanged(gameState: GameState) {
-        gameStateSubject.onNext(gameState)
         gameStateFlow.value = gameState
     }
 

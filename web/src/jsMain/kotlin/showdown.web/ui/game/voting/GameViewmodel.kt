@@ -5,14 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import com.badoo.reaktive.completable.subscribe
 import com.badoo.reaktive.disposable.CompositeDisposable
 import com.badoo.reaktive.disposable.addTo
-import com.badoo.reaktive.observable.subscribe
-import com.badoo.reaktive.observable.toObservable
 import de.jensklingenberg.showdown.model.GameState
 import de.jensklingenberg.showdown.model.Member
 import de.jensklingenberg.showdown.model.Result
 import de.jensklingenberg.showdown.model.ShowdownError
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import showdown.web.Application
 import showdown.web.debugLog

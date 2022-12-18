@@ -2,11 +2,9 @@ package showdown.web.ui.game.voting.toolbar
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import com.badoo.reaktive.observable.subscribe
 import de.jensklingenberg.showdown.model.GameState
 import kotlinx.browser.window
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import showdown.web.Application
 import showdown.web.game.GameDataSource
