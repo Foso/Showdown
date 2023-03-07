@@ -14,7 +14,7 @@ import dev.petuska.kmdcx.icons.mdcIcon
 import org.jetbrains.compose.web.dom.Text
 
 @Composable
-public fun <T> rememberMutableStateOf(initial: T): MutableState<T> = remember { mutableStateOf(initial) }
+fun <T> rememberMutableStateOf(initial: T): MutableState<T> = remember { mutableStateOf(initial) }
 
 @Composable
 fun DropdownMenu(label: String, menuItems: List<String>, onEntrySelected: (Int) -> Unit) {
