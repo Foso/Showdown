@@ -22,6 +22,7 @@ buildscript {
         classpath("org.jetbrains.kotlin:kotlin-serialization:1.8.0")
     }
 }
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "showdown"
 

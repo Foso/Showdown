@@ -38,7 +38,7 @@ task stage {
 
 def klockVersion = '2.7.0'
 dependencies {
-    implementation project(":shared")
+    implementation projects.shared
     implementation "io.ktor:ktor-server-core:$ktor_version"
     implementation "io.ktor:ktor-server-content-negotiation:$ktor_version"
     implementation "io.ktor:ktor-server-sessions:$ktor_version"

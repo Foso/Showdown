@@ -29,7 +29,7 @@ kotlin {
 
         val jsMain by getting {
             dependencies {
-                implementation(project(":shared"))
+                implementation(projects.shared)
                 implementation(compose.web.core)
                 implementation(compose.runtime)
 
