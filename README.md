@@ -13,8 +13,6 @@
 ## Introduction  🙋‍♂️ 🙋‍
 Showdown is a selfhosted web app and server, you can use for planning poker™. You can try it at http://showdown.fly.dev/#/
 
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
-
 ### Show some :heart: and star the repo to support the project
 
 [![GitHub stars](https://img.shields.io/github/stars/Foso/Showdown.svg?style=social&label=Star)](https://github.com/Foso/Showdown) [![GitHub forks](https://img.shields.io/github/forks/Foso/Showdown.svg?style=social&label=Fork)](https://github.com/Foso/Showdown/fork) [![GitHub watchers](https://img.shields.io/github/watchers/Foso/Showdown.svg?style=social&label=Watch)](https://github.com/Foso/Showdown) [![Twitter Follow](https://img.shields.io/twitter/follow/jklingenberg_.svg?style=social)](https://twitter.com/jklingenberg_)
