@@ -50,7 +50,7 @@ fun ConnectionErrorSnackbar(text: String, onRetryClicked: () -> Unit) {
         }
     ) {
         Label(text)
-        Actions() {
+        Actions {
             Action("Retry", attrs = {
                 style {
                     color(Color.red)

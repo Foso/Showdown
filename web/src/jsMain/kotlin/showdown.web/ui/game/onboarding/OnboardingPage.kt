@@ -31,14 +31,14 @@ fun OnboardingScreen() {
         JKTextField(roomName, label = "Choose new room name", onTextChange = {
             roomName = (it)
         }, onEnterPressed = {
-            window.location.href = "/#/room/${roomName}";
+            window.location.href = "/#/room/${roomName}"
         })
 
     }
     Div {
         Button(attrs = {
             onClick {
-                window.location.href = "/#/room/${roomName}";
+                window.location.href = "/#/room/${roomName}"
             }
         }) {
             Text("Go to room")
@@ -66,14 +66,14 @@ fun OnboardingScreen() {
         JKTextField(roomName, label = "Choose new room name", onTextChange = {
             roomName = (it)
         }, onEnterPressed = {
-            window.location.href = "/#/room/${roomName}";
+            window.location.href = "/#/room/${roomName}"
         })
 
     }
     Div {
         Button(attrs = {
             onClick {
-                window.location.href = "/#/room/${roomName}";
+                window.location.href = "/#/room/${roomName}"
             }
         }) {
             Text("Go to room")

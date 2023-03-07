@@ -37,7 +37,7 @@ Showdown is a selfhosted web app and server, you can use for planning poker™. 
 
 ## 🛠️ Built With
 ### Kotlin
-[![jCenter](https://img.shields.io/badge/Kotlin-1.7.20-green.svg
+[![jCenter](https://img.shields.io/badge/Kotlin-1.8.0-green.svg
 )]()
 
 
@@ -55,7 +55,7 @@ Showdown is a selfhosted web app and server, you can use for planning poker™. 
 
 ### Frontend
 #### Run development webpack server
-* Run <kbd>./gradlew -t web:run</kbd> inside the project folder to start the development server for the Frontend. The server will run on port 3001. Open "localhost:3001" inside your browser.
+* Run <kbd>./gradlew -t web:jsBrowserRun</kbd> inside the project folder to start the development server for the Frontend. The server will run on port 3001. Open "localhost:3001" inside your browser.
 
 #### Build production frontend files
 * Run the gradle task <kbd>deployToServerAssets</kbd>, it will build the webproject and copy the files to the server project

@@ -6,7 +6,11 @@ plugins {
     id("kotlinx-serialization")
 }
 
-val kmdcVersion = "0.0.5"
+group "com.example"
+version "1.0-SNAPSHOT"
+
+
+val kmdcVersion = "0.1.0"
 
 kotlin {
     js(IR) {
@@ -29,9 +33,9 @@ kotlin {
                 implementation(compose.web.core)
                 implementation(compose.runtime)
 
-                implementation("com.badoo.reaktive:reaktive-js:1.2.2")
+                implementation("com.badoo.reaktive:reaktive-js:1.2.3")
 
-                implementation("app.softwork:routing-compose:0.2.7")
+                implementation("app.softwork:routing-compose:0.2.11")
                 implementation("dev.petuska:kmdc-button-js:$kmdcVersion")
                 implementation("dev.petuska:kmdc-checkbox-js:$kmdcVersion")
                 implementation("dev.petuska:kmdc-switch-js:$kmdcVersion")
