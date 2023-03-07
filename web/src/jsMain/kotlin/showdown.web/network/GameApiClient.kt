@@ -1,13 +1,19 @@
 package showdown.web.network
 
-import com.badoo.reaktive.completable.completable
 import de.jensklingenberg.showdown.model.*
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.w3c.dom.MessageEvent
 import org.w3c.dom.WebSocket
 import org.w3c.dom.events.Event
-import showdown.web.ui.Strings.Companion.NO_CONNECTION
+
+sealed class Either {
+    object Success : Either()
+    data class Error(val showdownError: ShowdownError) : Either()
+}
 
 class GameApiClient {
 
@@ -15,28 +21,35 @@ class GameApiClient {
 
     private lateinit var observer: NetworkApiObserver
 
-    fun start(observer: NetworkApiObserver) = completable { emitter ->
-        this.observer = observer
-        socket = WebSocket(NetworkPreferences().websocketUrl())
+    fun start(observer: NetworkApiObserver): Flow<Either> {
 
-        socket?.apply {
-            onopen = {
-                emitter.onComplete()
-            }
-            onmessage = { event: Event ->
-                onMessage((event as MessageEvent))
-            }
+        return callbackFlow {
+            this@GameApiClient.observer = observer
+            socket = WebSocket(NetworkPreferences().websocketUrl())
 
-            onerror = {
-                observer.onError(ShowdownError.NoConnectionError)
-                emitter.onError(Throwable(NO_CONNECTION))
+            socket?.apply {
+                onopen = {
+                    trySend(Either.Success)
+                }
+                onmessage = { event: Event ->
+                    onMessage((event as MessageEvent))
+                }
+
+                onerror = {
+                    observer.onError(ShowdownError.NoConnectionError)
+                    trySend(Either.Error(ShowdownError.NoConnectionError))
+                    close()
+                }
+                onclose = {
+                    observer.onError(ShowdownError.NoConnectionError)
+                    close()
+                }
             }
-            onclose = {
-                observer.onError(ShowdownError.NoConnectionError)
+            awaitClose {
+                println("Closed")
             }
         }
     }
-
 
     private fun getPath(path: String): PATHS {
         return PATHS.values().find { it.path == path } ?: PATHS.EMPTY
@@ -69,6 +82,7 @@ class GameApiClient {
                         observer.onSpectatorStatusChanged(it)
                     }
                 }
+
                 PATHS.ROOMCONFIGUPDATE -> {
                     decodeFromString<ClientGameConfig>(it.body)?.let {
                         observer.onConfigUpdated(it)
@@ -91,6 +105,7 @@ class GameApiClient {
                         observer.onGameStateChanged(it)
                     }
                 }
+
                 else -> {
                     // println("DOnt Care about $path")
                 }

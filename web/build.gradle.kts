@@ -33,8 +33,6 @@ kotlin {
                 implementation(compose.web.core)
                 implementation(compose.runtime)
 
-                implementation("com.badoo.reaktive:reaktive-js:1.2.3")
-
                 implementation("app.softwork:routing-compose:0.2.11")
                 implementation("dev.petuska:kmdc-button-js:$kmdcVersion")
                 implementation("dev.petuska:kmdc-checkbox-js:$kmdcVersion")

@@ -2,9 +2,10 @@ package showdown.web.ui.game.voting.toolbar
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import com.badoo.reaktive.observable.subscribe
 import de.jensklingenberg.showdown.model.GameState
 import kotlinx.browser.window
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import showdown.web.Application
 import showdown.web.game.GameDataSource
 import kotlin.js.Date
@@ -13,6 +14,7 @@ import kotlin.math.floor
 class ToolBarViewModel(private val gameDataSource: GameDataSource = Application.gameDataSource) {
     private var gameStartTime = Date()
     var estimationTimer: MutableState<Int> = mutableStateOf(0)
+    private val scope = MainScope()
 
 
     fun onCreate() {
@@ -28,12 +30,16 @@ class ToolBarViewModel(private val gameDataSource: GameDataSource = Application.
 
 
     private fun observeGameState() {
-        gameDataSource.observeGameState().subscribe(onNext = { newState ->
-            if (newState is GameState.Started) {
-                val config = newState.clientGameConfig
-                gameStartTime = Date(config.createdAt.toDouble())
+        scope.launch {
+            gameDataSource.observeGameState().collect {newState ->
+                if (newState is GameState.Started) {
+                    val config = newState.clientGameConfig
+                    gameStartTime = Date(config.createdAt.toDouble())
+                }
             }
-        })
+        }
+
+
     }
 
     fun showVotes() {

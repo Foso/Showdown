@@ -1,29 +1,33 @@
 package showdown.web.game
 
-import com.badoo.reaktive.completable.Completable
-import com.badoo.reaktive.observable.Observable
-import com.badoo.reaktive.subject.behavior.BehaviorSubject
 import de.jensklingenberg.showdown.model.*
 import de.jensklingenberg.showdown.model.api.clientrequest.JoinGame
 import de.jensklingenberg.showdown.model.api.clientrequest.NewGameConfig
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import showdown.web.network.Either
 import showdown.web.network.GameApiClient
 import showdown.web.network.NetworkApiObserver
 
 
 class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource, NetworkApiObserver {
 
-    private val gameStateSubject: BehaviorSubject<GameState> = BehaviorSubject(GameState.NotStarted)
-    private val errorSubject: BehaviorSubject<ShowdownError?> = BehaviorSubject(null)
-    private val messageSubject: BehaviorSubject<String> = BehaviorSubject("")
-    private val configUpdateSubject: BehaviorSubject<ClientGameConfig?> = BehaviorSubject(null)
-    private val spectatorStatusSubject: BehaviorSubject<Boolean> = BehaviorSubject(false)
+    private val gameStateFlow = MutableStateFlow<GameState>(GameState.NotStarted)
+    private val errorFlow = MutableStateFlow<ShowdownError?>(null)
+
+    private val messageFlow = MutableStateFlow<String>("")
+
+    private val configUpdateFlow = MutableStateFlow<ClientGameConfig?>(null)
+
+    private val spectatorStatusFlow = MutableStateFlow(false)
 
     private var playerName: String = ""
     private var roomPassword: String = ""
 
-    override fun connectToServer(): Completable {
+    override fun connectToServer(): Flow<Either> {
         return gameApiClient.start(this)
     }
 
@@ -72,25 +76,27 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
     }
 
 
-    override fun observeGameState(): Observable<GameState> = gameStateSubject
-    override fun observeMessage(): Observable<String> {
-        return messageSubject
+    override fun observeGameState(): StateFlow<GameState> = gameStateFlow
+    override fun observeMessage(): StateFlow<String> {
+        return messageFlow
     }
 
-    override fun observeRoomConfig(): Observable<ClientGameConfig?> = configUpdateSubject
-    override fun observeSpectatorStatus(): Observable<Boolean> {
-        return spectatorStatusSubject
+    override fun observeRoomConfig(): StateFlow<ClientGameConfig?> = configUpdateFlow
+    override fun observeSpectatorStatus(): StateFlow<Boolean> {
+        return spectatorStatusFlow
     }
 
     override fun joinRoom(name: String, password: String, isSpectator: Boolean) {
         playerName = name
         roomPassword = password
         val req = Request(
-            PATHS.JOINROOM.path, Json.encodeToString(JoinGame(
-                name,
-                password,
-                isSpectator
-            ))
+            PATHS.JOINROOM.path, Json.encodeToString(
+                JoinGame(
+                    name,
+                    password,
+                    isSpectator
+                )
+            )
         )
 
         gameApiClient.sendMessage(Json.encodeToString(req))
@@ -102,30 +108,29 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
         gameApiClient.sendMessage(req)
     }
 
-    override fun observeErrors(): Observable<ShowdownError?> = errorSubject
+    override fun observeErrors(): StateFlow<ShowdownError?> = errorFlow
 
 
     override fun onGameStateChanged(gameState: GameState) {
-        gameStateSubject.onNext(gameState)
+        gameStateFlow.value = gameState
     }
 
 
     override fun onError(errorEvent: ShowdownError) {
-
-        errorSubject.onNext(errorEvent)
+        errorFlow.value = errorEvent
     }
 
     override fun onMessageEvent(message: String) {
-        messageSubject.onNext(message)
+        messageFlow.value = message
     }
 
     override fun onConfigUpdated(clientGameConfig: ClientGameConfig) {
-        configUpdateSubject.onNext(clientGameConfig)
-
+        configUpdateFlow.value = (clientGameConfig)
     }
 
     override fun onSpectatorStatusChanged(isSpectator: Boolean) {
-        spectatorStatusSubject.onNext(isSpectator)
+        //spectatorStatusSubject.onNext(isSpectator)
+        spectatorStatusFlow.value = isSpectator
     }
 
 }
