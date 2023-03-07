@@ -1,14 +1,14 @@
 package showdown.web.game
 
-import com.badoo.reaktive.completable.Completable
-import com.badoo.reaktive.subject.behavior.BehaviorSubject
 import de.jensklingenberg.showdown.model.*
 import de.jensklingenberg.showdown.model.api.clientrequest.JoinGame
 import de.jensklingenberg.showdown.model.api.clientrequest.NewGameConfig
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import showdown.web.network.Either
 import showdown.web.network.GameApiClient
 import showdown.web.network.NetworkApiObserver
 
@@ -16,22 +16,18 @@ import showdown.web.network.NetworkApiObserver
 class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource, NetworkApiObserver {
 
     private val gameStateFlow = MutableStateFlow<GameState>(GameState.NotStarted)
-    private val errorSubject: BehaviorSubject<ShowdownError?> = BehaviorSubject(null)
     private val errorFlow = MutableStateFlow<ShowdownError?>(null)
 
-    // private val messageSubject: BehaviorSubject<String> = BehaviorSubject("")
     private val messageFlow = MutableStateFlow<String>("")
 
-    // private val configUpdateSubject: BehaviorSubject<ClientGameConfig?> = BehaviorSubject(null)
     private val configUpdateFlow = MutableStateFlow<ClientGameConfig?>(null)
 
-    //   private val spectatorStatusSubject: BehaviorSubject<Boolean> = BehaviorSubject(false)
     private val spectatorStatusFlow = MutableStateFlow(false)
 
     private var playerName: String = ""
     private var roomPassword: String = ""
 
-    override fun connectToServer(): Completable {
+    override fun connectToServer(): Flow<Either> {
         return gameApiClient.start(this)
     }
 
@@ -121,8 +117,6 @@ class GameRepository(private val gameApiClient: GameApiClient) : GameDataSource,
 
 
     override fun onError(errorEvent: ShowdownError) {
-
-        errorSubject.onNext(errorEvent)
         errorFlow.value = errorEvent
     }
 

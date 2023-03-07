@@ -1,14 +1,15 @@
 package showdown.web.game
 
-import com.badoo.reaktive.completable.Completable
 import de.jensklingenberg.showdown.model.ClientGameConfig
 import de.jensklingenberg.showdown.model.GameState
 import de.jensklingenberg.showdown.model.ShowdownError
 import de.jensklingenberg.showdown.model.api.clientrequest.NewGameConfig
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import showdown.web.network.Either
 
 interface GameDataSource {
-    fun connectToServer(): Completable
+    fun connectToServer(): Flow<Either>
     fun joinRoom(name: String, password: String, isSpectator: Boolean)
     fun observeGameState(): StateFlow<GameState>
     fun observeMessage(): StateFlow<String>

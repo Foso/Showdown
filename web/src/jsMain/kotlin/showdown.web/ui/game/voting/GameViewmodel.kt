@@ -2,9 +2,6 @@ package showdown.web.ui.game.voting
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import com.badoo.reaktive.completable.subscribe
-import com.badoo.reaktive.disposable.CompositeDisposable
-import com.badoo.reaktive.disposable.addTo
 import de.jensklingenberg.showdown.model.GameState
 import de.jensklingenberg.showdown.model.Member
 import de.jensklingenberg.showdown.model.Result
@@ -14,6 +11,7 @@ import kotlinx.coroutines.launch
 import showdown.web.Application
 import showdown.web.debugLog
 import showdown.web.game.GameDataSource
+import showdown.web.network.Either
 
 
 class GameViewmodel(
@@ -30,7 +28,6 @@ class GameViewmodel(
     override var selectedOption: MutableState<Int> = mutableStateOf(-1)
     override var isConnectionError: MutableState<Boolean> = mutableStateOf(false)
 
-    private val compositeDisposable = CompositeDisposable()
     private var playerName: String = ""
 
 
@@ -110,27 +107,29 @@ class GameViewmodel(
     }
 
     private fun connectToServer(playerName: String, password: String, isSpectator: Boolean) {
-        gameDataSource.connectToServer().subscribe(
-            onComplete = {
-                debugLog("ConnectToServer onComplete")
-                gameDataSource.joinRoom(playerName, password, isSpectator)
+        scope.launch {
+            gameDataSource.connectToServer().collect{
+                when(it){
+                    is Either.Error -> {
+                        println(it.showdownError.message)
+                        debugLog("connectToServer: onError" + it.showdownError.message)
+                        this@GameViewmodel.isRegistration.value = true
+                    }
+                    Either.Success -> {
+                        println("SUCCCESS")
+                        debugLog("ConnectToServer onComplete")
+                        gameDataSource.joinRoom(playerName, password, isSpectator)
 
-                isRegistration.value = false
-                this.isConnectionError.value = false
-
-
-            },
-            onError = {
-                debugLog("connectToServer: onError" + it.message)
-
-                this.isRegistration.value = true
-
+                        isRegistration.value = false
+                        this@GameViewmodel.isConnectionError.value = false
+                    }
+                }
             }
-        ).addTo(compositeDisposable)
+        }
     }
 
     override fun onDestroy() {
-        compositeDisposable.clear()
+
     }
 
 
